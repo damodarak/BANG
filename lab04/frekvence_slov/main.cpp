@@ -43,6 +43,21 @@ private:
 int main( int argc, char** argv)
 {
 	Count cnt;
-	cnt.count_words(cin);
+	vector<string> arg(argv, argv + argc);
+	if (arg.size()>1)
+	{
+		ifstream f;
+		int size = arg.size();
+		for (int i = 1; i < size; i++)
+		{
+			f.open(arg[i]);
+			cnt.count_words(f);
+			f.close();
+		}
+	}
+	else
+	{
+		cnt.count_words(cin);
+	}	
 	cnt.print_values();
 }
