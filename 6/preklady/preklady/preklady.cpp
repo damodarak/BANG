@@ -4,6 +4,7 @@
 #include <array>
 #include "preklady.h"
 #include <algorithm>
+#include <cctype>
 
 using namespace std;
 
@@ -60,6 +61,45 @@ bool cmp::operator()(const Dvojka& left, const Dvojka& right) const
 		}
 	}
 }
+bool cmp1::operator()(const string& s1, const string& s2) const
+{
+	if (s1.length() < s2.length())
+	{
+		return true;
+	}
+	else if (s1.length() == s2.length())
+	{
+		string l2 = s1;
+		string r2 = s2;
+		for (auto& c : l2)
+		{
+			c = tolower(c);
+		}
+		for (auto& c : r2)
+		{
+			c = tolower(c);
+		}
+		return l2 < r2;
+	}
+	else
+	{
+		return false;
+	}
+}
+bool cmp2::operator()(const string& s1, const string& s2) const
+{
+	string l2 = s1;
+	string r2 = s2;
+	for (auto& c : l2)
+	{
+		c = tolower(c);
+	}
+	for (auto& c : r2)
+	{
+		c = tolower(c);
+	}
+	return l2 < r2;
+}
 bool mysort(const string& s1, const string& s2)
 {
 	if (s1.length() < s2.length())
@@ -91,27 +131,66 @@ void Preklady::add(const string& slovo, const string& preklad)
 	preklady.insert(Dvojka(slovo, preklad));
 	if (slova.find(slovo)==slova.end())
 	{
-		slova.insert(pair < string, vector<string>>(slovo, vector{preklad}));
+		slova[slovo] = set{ preklad };
 	}
 	else
 	{
-		slova[slovo].push_back(preklad);
+		slova[slovo].insert(preklad);
+	}
+
+	string s = "";	
+	int size = slovo.size();
+	for (int i = 0; i < size; i++)
+	{
+		s += tolower(slovo[i]);
+		if (prefixy.find(s) == prefixy.end())
+		{
+			prefixy[s] = set{ slovo };
+		}
+		else
+		{
+			prefixy[s].insert(slovo);
+		}
 	}
 }
 
 void Preklady::del(const string& slovo, const string& preklad)
 {
 	preklady.erase(Dvojka(slovo, preklad));
+	slova[slovo].erase(preklad);
+
+
+	string in = slovo;
+	for (auto& c : in)
+	{
+		c = tolower(c);
+	}
+	if (slova[slovo].size() == 0 && prefixy.find(in) != prefixy.end()) {
+		string s = "";
+		int size = slovo.size();
+		for (int i = 0; i < size; i++)
+		{
+			s += tolower(slovo[i]);
+			prefixy[s].erase(slovo);
+		}
+		prefixy.erase(s);
+	}	
 }
 
 void Preklady::del(const string& slovo)
 {
 	if (slova.find(slovo)!=slova.end())
 	{
-		int size = slova[slovo].size();
+		vector<string> v;
+		for (auto i = slova[slovo].begin(); i != slova[slovo].end(); i++)
+		{
+			v.push_back(slovo);
+			v.push_back(*i);
+		}
+		int size = v.size() / 2;
 		for (int i = 0; i < size; i++)
 		{
-			preklady.erase(pair<string, string>(slovo, slova[slovo][i]));
+			del(v[i*2], v[(i*2)+1]);
 		}
 		slova.erase(slovo);
 	}
@@ -119,13 +198,22 @@ void Preklady::del(const string& slovo)
 
 Rozmezi Preklady::find(const string& slovo)
 {
-	set<Dvojka>::iterator it1 = preklady.end();
-	set<Dvojka>::iterator it2 = preklady.end();
+	auto it1 = preklady.end();
+	auto it2 = preklady.end();
 
 	if (slova.find(slovo) != slova.end())
 	{
-		sort(slova[slovo].begin(), slova[slovo].end(), mysort);
-		it1 = preklady.find(Dvojka(slovo, slova[slovo][0]));
+		it1 = preklady.find(Dvojka(slovo, *slova[slovo].begin()));
+		
+		cmp1 compare;
+		string nejmensi = it1->second;
+		for (auto i = slova[slovo].begin(); i != slova[slovo].end(); i++) {
+			if (compare(*i, nejmensi))
+			{
+				nejmensi = *i;
+			}
+		}
+		it1 = preklady.find(Dvojka(slovo, nejmensi));
 	}
 
 	for (auto i = it1; i != preklady.end(); ++i)
@@ -141,31 +229,35 @@ Rozmezi Preklady::find(const string& slovo)
 }
 Rozmezi Preklady::prefix(const string& pre)
 {
-	set<Dvojka>::iterator it1 = preklady.end();
-	set<Dvojka>::iterator it2 = preklady.end();
-	bool found = false;
-	int size = pre.size();
+	string prvni = *prefixy.find(pre)->second.begin();
+	string druhe = *slova[prvni].begin();
 
-	for (auto i = preklady.begin(); i != preklady.end(); ++i)
+	cmp1 compare;
+	for (auto i = slova.find(prvni)->second.begin(); i != slova.find(prvni)->second.end(); i++) {
+		if (compare(*i, druhe))
+		{
+			druhe = *i;
+		}
+	}
+	
+	auto it1 = preklady.find(Dvojka(prvni, druhe));
+	auto it2 = preklady.end();
+
+	for (auto i = it1; i != preklady.end(); i++)
 	{
 		string str = i->first;
+		int size = pre.size();
 		for (auto& c : str)
 		{
 			c = tolower(c);
 		}
 
-		if (!found && str.compare(0, size, pre) == 0)
-		{
-			found = true;
-			it1 = i;
-		}
-		else if (found && str.compare(0, size, pre) != 0)
+		if (str.compare(0, size, pre) != 0)
 		{
 			it2 = i;
 			break;
 		}
 	}
-
 	return { it1,it2 };
 }
 

@@ -6,7 +6,6 @@
 #include <string>
 #include <array>
 #include <map>
-#include <vector>
 
 using Dvojka = std::pair<std::string, std::string>;
 using Rozmezi = std::array<std::set<Dvojka>::iterator, 2>;
@@ -14,7 +13,13 @@ using Rozmezi = std::array<std::set<Dvojka>::iterator, 2>;
 struct cmp {
 	bool operator()(const Dvojka& left, const Dvojka& right) const;
 };
-bool mysort(const std::string& s1, const std::string& s2);
+struct cmp1 {
+	bool operator()(const std::string& s1, const std::string& s2) const;
+};
+struct cmp2 {
+	bool operator()(const std::string& s1, const std::string& s2) const;
+};
+bool mysort(const std::string& s1, const std::string& s2);//nepouzivam
 
 class Preklady {
 public:
@@ -25,7 +30,8 @@ public:
 	Rozmezi prefix(const std::string& pre);
 private:
 	std::set<Dvojka, cmp> preklady;
-	std::map<std::string, std::vector<std::string>> slova;
+	std::map<std::string, std::set<std::string>> slova;
+	std::map<std::string, std::set<std::string>> prefixy;
 };
 
 void print(const Rozmezi& interval);
