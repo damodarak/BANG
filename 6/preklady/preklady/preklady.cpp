@@ -230,6 +230,15 @@ Rozmezi Preklady::find(const string& slovo)
 Rozmezi Preklady::prefix(const string& pre)
 {
 	string prvni = *prefixy.find(pre)->second.begin();
+
+	cmp2 compare0;
+	for (auto i = prefixy.find(pre)->second.begin(); i != prefixy.find(pre)->second.end(); i++) {
+		if (compare0(*i, prvni))
+		{
+			prvni = *i;
+		}
+	}
+
 	string druhe = *slova[prvni].begin();
 
 	cmp1 compare;
