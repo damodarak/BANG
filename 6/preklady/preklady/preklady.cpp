@@ -61,7 +61,7 @@ bool cmp::operator()(const Dvojka& left, const Dvojka& right) const
 		}
 	}
 }
-bool cmp1::operator()(const string& s1, const string& s2) const
+bool cmp_second::operator()(const string& s1, const string& s2) const
 {
 	if (s1.length() < s2.length())
 	{
@@ -86,7 +86,7 @@ bool cmp1::operator()(const string& s1, const string& s2) const
 		return false;
 	}
 }
-bool cmp2::operator()(const string& s1, const string& s2) const
+bool cmp_first::operator()(const string& s1, const string& s2) const
 {
 	string l2 = s1;
 	string r2 = s2;
@@ -100,38 +100,13 @@ bool cmp2::operator()(const string& s1, const string& s2) const
 	}
 	return l2 < r2;
 }
-bool mysort(const string& s1, const string& s2)
-{
-	if (s1.length() < s2.length())
-	{
-		return true;
-	}
-	else if (s1.length() == s2.length())
-	{
-		string l2 = s1;
-		string r2 = s2;
-		for (auto& c : l2)
-		{
-			c = tolower(c);
-		}
-		for (auto& c : r2)
-		{
-			c = tolower(c);
-		}
-		return l2 < r2;
-	}
-	else
-	{
-		return false;
-	}
-}
 
 void Preklady::add(const string& slovo, const string& preklad)
 {
 	preklady.insert(Dvojka(slovo, preklad));
 	if (slova.find(slovo)==slova.end())
 	{
-		slova[slovo] = set{ preklad };
+		slova.insert({ slovo,{preklad} });
 	}
 	else
 	{
@@ -145,7 +120,7 @@ void Preklady::add(const string& slovo, const string& preklad)
 		s += tolower(slovo[i]);
 		if (prefixy.find(s) == prefixy.end())
 		{
-			prefixy[s] = set{ slovo };
+			prefixy.insert({ s,{slovo} });
 		}
 		else
 		{
@@ -198,23 +173,8 @@ void Preklady::del(const string& slovo)
 
 Rozmezi Preklady::find(const string& slovo)
 {
-	auto it1 = preklady.end();
+	auto it1 = preklady.find(Dvojka(slovo, *slova[slovo].begin()));
 	auto it2 = preklady.end();
-
-	if (slova.find(slovo) != slova.end())
-	{
-		it1 = preklady.find(Dvojka(slovo, *slova[slovo].begin()));
-		
-		cmp1 compare;
-		string nejmensi = it1->second;
-		for (auto i = slova[slovo].begin(); i != slova[slovo].end(); i++) {
-			if (compare(*i, nejmensi))
-			{
-				nejmensi = *i;
-			}
-		}
-		it1 = preklady.find(Dvojka(slovo, nejmensi));
-	}
 
 	for (auto i = it1; i != preklady.end(); ++i)
 	{
@@ -231,23 +191,7 @@ Rozmezi Preklady::prefix(const string& pre)
 {
 	string prvni = *prefixy.find(pre)->second.begin();
 
-	cmp2 compare0;
-	for (auto i = prefixy.find(pre)->second.begin(); i != prefixy.find(pre)->second.end(); i++) {
-		if (compare0(*i, prvni))
-		{
-			prvni = *i;
-		}
-	}
-
 	string druhe = *slova[prvni].begin();
-
-	cmp1 compare;
-	for (auto i = slova.find(prvni)->second.begin(); i != slova.find(prvni)->second.end(); i++) {
-		if (compare(*i, druhe))
-		{
-			druhe = *i;
-		}
-	}
 	
 	auto it1 = preklady.find(Dvojka(prvni, druhe));
 	auto it2 = preklady.end();

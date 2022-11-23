@@ -13,13 +13,12 @@ using Rozmezi = std::array<std::set<Dvojka>::iterator, 2>;
 struct cmp {
 	bool operator()(const Dvojka& left, const Dvojka& right) const;
 };
-struct cmp1 {
+struct cmp_second {
 	bool operator()(const std::string& s1, const std::string& s2) const;
 };
-struct cmp2 {
+struct cmp_first {
 	bool operator()(const std::string& s1, const std::string& s2) const;
 };
-bool mysort(const std::string& s1, const std::string& s2);//nepouzivam
 
 class Preklady {
 public:
@@ -30,8 +29,8 @@ public:
 	Rozmezi prefix(const std::string& pre);
 private:
 	std::set<Dvojka, cmp> preklady;
-	std::map<std::string, std::set<std::string>> slova;
-	std::map<std::string, std::set<std::string>> prefixy;
+	std::map<std::string, std::set<std::string, cmp_second>> slova;
+	std::map<std::string, std::set<std::string, cmp_first>> prefixy;
 };
 
 void print(const Rozmezi& interval);
