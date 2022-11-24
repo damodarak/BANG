@@ -5,14 +5,20 @@
 
 using namespace std;
 
-int inc(int i) { return ++i; }
+int f(int& value)
+{
+    int y = 100;
+    return value + y;
+}
 
 int main()
 {
-    vector<int> v = { 1,2,3,4,3,4,5 };
-    multiset<int> ms = {};
+    vector<int> v = { 1,2,3,4};
+    v.erase(remove_if(v.begin(), v.end(), [](int num) {return !(num>2);}));
 
-    transform(v.begin(), v.end(), ms.begin(), inc);
+    multiset<int> ms;
+    transform(v.begin(), v.end(), inserter(ms, ms.begin()), &f);
+
 
     for (auto&& x : ms)
     {
