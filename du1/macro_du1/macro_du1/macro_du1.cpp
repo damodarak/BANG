@@ -10,10 +10,15 @@ class Macro {
 public:
     Macro()
     {
-        inword = inmacro = ready = error = false;
+        inword = inmacro = ready = error = macro_last_space = false;
         last_space = true;
         word = "";
         macro = "";
+        next_must = "";
+    }
+    bool fail(istream& s)
+    {
+        return error || s.fail();
     }
     string next(istream& s)
     {
@@ -45,23 +50,51 @@ private:
     bool last_space;
     bool ready;
     bool error;
+    bool macro_last_space;
 
     string word;
     string macro;
+    string next_must;
 
     map<string, string> macra_dict;
 
+    bool control(char& c)
+    {
+        if ((next_must == "alpha" && !isalpha(c)) || (next_must == "space" && !isspace(c)))
+        {
+            ready = true;
+            error = true;
+            return false;
+        }
+
+        next_must = "";
+        return true;
+    }
+
     void process(char& c)
     {
-        if (inmacro)
+        if (!control(c))
+        {
+            return;
+        }
+        else if (inmacro)
         {
             if (c == '#')
             {
-                inmacro = false;
-                process_macro();
+                if (macro_last_space)
+                {
+                    inmacro = false;
+                    process_macro();
+                }
+                else
+                {
+                    error = false;
+                    ready = true;
+                }
             }
             else
             {
+                macro_last_space = isspace(c);
                 macro += c;
             }
         }
@@ -69,6 +102,7 @@ private:
         {
             if (c == '#' && last_space)
             {
+                next_must = "alpha";
                 inmacro = true;
                 ready = true;
             }
@@ -94,10 +128,18 @@ private:
                 {
                     word += c;
                 }
-                else
+                else//skoncilo slovo...kontrola, jestli existuje makro
                 {
-                    word += c;
-                    ready = true;
+                    if (macra_dict.find(word) == macra_dict.end())
+                    {
+                        word += c;
+                        ready = true;
+                    }
+                    else
+                    {
+                        word = macra_dict.find(word)->second + c;
+                        ready = true;
+                    }
                 }
             }
             else//nejsme uvnitr slova
@@ -121,9 +163,19 @@ private:
                         word += c;
                     }
                 }
-                else//posledni znak nebyl isspace
+                else//posledni znak nebyl isspace a nejsme ve slove
                 {
-
+                    if (isspace(c))
+                    {
+                        word += c;
+                        last_space = true;
+                        ready = true;
+                    }
+                    else
+                    {
+                        last_space = false;
+                        word += c;
+                    }
                 }
             }
         }
@@ -133,8 +185,10 @@ private:
         //dodelat vnorene macro
         //test if macro fulfils conditions mezery pred a po #
         int body = macro.find(" ");
-        macra_dict.insert({ macro.substr(1, body), macro.substr(body + 1, macro.size() - 1) });
+        string telo = macro.substr(0, body);
+        macra_dict.insert({ telo, macro.substr(body + 1, macro.size() - 2 - telo.size()) });
         macro = "";
+        next_must = "space";
     }
 };
 
@@ -147,8 +201,9 @@ int main(int argc, char** argv)
     string str;
 
     for (;;) {
-        if (cin.fail())
+        if (m.fail(cin))
         {
+            cout << "------------------\nKONEEEEEEEEEEEEEEEEEEEEEEC!!!!!!" << endl;
             return 0;
         }
         else
