@@ -16,6 +16,17 @@ public:
         macro = "";
         next_must = "";
     }
+    void handlecl(const vector<string>& arg)
+    {
+        string nazev = arg[1];
+        string telo = arg[2];
+        int size = arg.size();
+        for (int i = 3; i < size; i++)
+        {
+            telo += " " + arg[i];
+        }
+        macra_dict.insert({ nazev,telo });
+    }
     bool fail(istream& s)
     {
         return error || s.fail();
@@ -130,63 +141,87 @@ private:
                 }
                 else//skoncilo slovo...kontrola, jestli existuje makro
                 {
+                    ready = true;
                     if (macra_dict.find(word) == macra_dict.end())
                     {
-                        word += c;
-                        ready = true;
+                        word += c;          
                     }
                     else
                     {
                         word = macra_dict.find(word)->second + c;
-                        ready = true;
                     }
                 }
             }
             else//nejsme uvnitr slova
             {
+                word += c;
                 if (last_space)
                 {
                     if (isspace(c))
                     {
-                        word += c;
                         ready = true;
                     }
                     else if(isalpha(c))
                     {
                         inword = true;
                         last_space = false;
-                        word += c;
                     }
                     else
                     {
                         last_space = false;
-                        word += c;
                     }
                 }
                 else//posledni znak nebyl isspace a nejsme ve slove
                 {
-                    if (isspace(c))
-                    {
-                        word += c;
-                        last_space = true;
-                        ready = true;
-                    }
-                    else
-                    {
-                        last_space = false;
-                        word += c;
-                    }
+                    last_space = isspace(c);
+                    ready = isspace(c);
                 }
             }
         }
     }
     void process_macro()
     {
-        //dodelat vnorene macro
-        //test if macro fulfils conditions mezery pred a po #
-        int body = macro.find(" ");
-        string telo = macro.substr(0, body);
-        macra_dict.insert({ telo, macro.substr(body + 1, macro.size() - 2 - telo.size()) });
+        int telo_start = macro.find(" ");
+        string nazev = macro.substr(0, telo_start);
+        int index = telo_start + 1;
+        string definice = "";
+
+        bool inword = false;
+        string temp = "";
+        int size = macro.size();
+
+        for (;index<size; index++)
+        {
+            if (inword)
+            {
+                if (isalnum(macro[index]))
+                {
+                    temp += macro[index];
+                }
+                else if (macra_dict.find(temp) == macra_dict.end())
+                {
+                    definice += temp + macro[index];
+                    inword = false;
+                    temp = "";
+                }
+                else
+                {
+
+
+                    inword = false;
+                    temp = "";
+                }
+
+            }
+            else
+            {
+
+            }
+        }
+
+
+
+        macra_dict.insert({nazev, definice});
         macro = "";
         next_must = "space";
     }
@@ -194,16 +229,19 @@ private:
 
 int main(int argc, char** argv)
 {
-    vector<string> arg(argv, argv + argc);
     Macro m;
-    //# na vstupu za jiným znakem než isspace se chová jako bìžný znak
-
+    vector<string> arg(argv, argv + argc);
+    if (arg.size()>1)
+    {
+        m.handlecl(arg);
+    }
+    
     string str;
 
     for (;;) {
         if (m.fail(cin))
         {
-            cout << "------------------\nKONEEEEEEEEEEEEEEEEEEEEEEC!!!!!!" << endl;
+            cout << "Error" << endl;
             return 0;
         }
         else
