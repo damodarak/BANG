@@ -1,6 +1,6 @@
-#include <string>
 #include <iostream>
 #include "preklady.h"
+
 using namespace std;
 
 int main(int argc, char** argv) {
@@ -41,9 +41,9 @@ int main(int argc, char** argv) {
 		else if (command == "find")
 		{
 			cin >> s1;
-			Rozmezi roz;
+			Mapa::const_iterator roz;
 			roz = p.find(s1);
-			print(roz);
+			p.print(roz);
 		}
 		else if (command == "prefix")
 		{
@@ -53,9 +53,9 @@ int main(int argc, char** argv) {
 				c = tolower(c);
 			}
 
-			Rozmezi roz;
+			Dvojka roz;
 			roz = p.prefix(s1);
-			print_pre(roz);
+			p.print_pre(roz);
 		}
 
 		cin >> command;

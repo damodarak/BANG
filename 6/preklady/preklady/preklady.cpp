@@ -1,73 +1,23 @@
 ﻿#include <iostream>
-#include <iterator>
-#include <vector>
-#include <array>
-#include "preklady.h"
-#include <algorithm>
 #include <cctype>
+#include "preklady.h"
 
 using namespace std;
 
-bool cmp::operator()(const Dvojka& left, const Dvojka& right) const
+bool cmplen::operator()(const string& s1, const string& s2) const
 {
+	if (s1.length() != s2.length())
 	{
-		if (left.first == right.first)
-		{
-			if (left.second.length() < right.second.length())
-			{
-				return true;
-			}
-			else if (left.second.length() == right.second.length())
-			{
-				string l2 = left.second;
-				string r2 = right.second;
-				for (auto& c : l2)
-				{
-					c = tolower(c);
-				}
-				for (auto& c : r2)
-				{
-					c = tolower(c);
-				}
-				return l2 < r2;
-			}
-			else
-			{
-				return false;
-			}
-		}
-		else
-		{
-			string l1 = left.first;
-			string r1 = right.first;
-			for (auto& c : l1)
-			{
-				c = tolower(c);
-			}
-			for (auto& c : r1)
-			{
-				c = tolower(c);
-			}
-
-
-			if (l1 == r1)
-			{
-				return left.first < right.first;
-			}
-			else
-			{
-				return l1 < r1;
-			}	
-		}
+		return s1.length() < s2.length();
+	}
+	else
+	{
+		return s1 < s2;
 	}
 }
-bool cmp_second::operator()(const string& s1, const string& s2) const
+bool cmpnorm::operator()(const string& s1, const string& s2) const
 {
-	if (s1.length() < s2.length())
-	{
-		return true;
-	}
-	else if (s1.length() == s2.length())
+	if (s1 != s2)
 	{
 		string l2 = s1;
 		string r2 = s2;
@@ -79,176 +29,95 @@ bool cmp_second::operator()(const string& s1, const string& s2) const
 		{
 			c = tolower(c);
 		}
-		return l2 < r2;
+		if (l2 == r2)
+		{
+			return s1 < s2;
+		}
+		else
+		{
+			return l2 < r2;
+		}
 	}
 	else
 	{
 		return false;
 	}
 }
-bool cmp_first::operator()(const string& s1, const string& s2) const
-{
-	string l2 = s1;
-	string r2 = s2;
-	for (auto& c : l2)
-	{
-		c = tolower(c);
-	}
-	for (auto& c : r2)
-	{
-		c = tolower(c);
-	}
-	return l2 < r2;
-}
 
 void Preklady::add(const string& slovo, const string& preklad)
 {
-	preklady.insert(Dvojka(slovo, preklad));
-	if (slova.find(slovo)==slova.end())
+	if (slova.find(slovo) == slova.end())
 	{
-		slova.insert({ slovo,{preklad} });
+		slova.insert({ slovo, {preklad} });
 	}
 	else
 	{
-		slova[slovo].insert(preklad);
-	}
-
-	string s = "";	
-	int size = slovo.size();
-	for (int i = 0; i < size; i++)
-	{
-		s += tolower(slovo[i]);
-		if (prefixy.find(s) == prefixy.end())
-		{
-			prefixy.insert({ s,{slovo} });
-		}
-		else
-		{
-			prefixy[s].insert(slovo);
-		}
+		slova.find(slovo)->second.insert(preklad);
 	}
 }
 
 void Preklady::del(const string& slovo, const string& preklad)
 {
-	preklady.erase(Dvojka(slovo, preklad));
-	slova[slovo].erase(preklad);
-
-
-	string in = slovo;
-	for (auto& c : in)
+	if (slova.end() != slova.find(slovo))
 	{
-		c = tolower(c);
-	}
-	if (slova[slovo].size() == 0 && prefixy.find(in) != prefixy.end()) {
-		string s = "";
-		int size = slovo.size();
-		for (int i = 0; i < size; i++)
+		slova.find(slovo)->second.erase(preklad);
+		if (slova.find(slovo)->second.size() == 0)
 		{
-			s += tolower(slovo[i]);
-			prefixy[s].erase(slovo);
+			slova.erase(slovo);
 		}
-		prefixy.erase(s);
-	}	
+	}
 }
 
 void Preklady::del(const string& slovo)
 {
-	if (slova.find(slovo)!=slova.end())
-	{
-		vector<string> v;
-		for (auto i = slova[slovo].begin(); i != slova[slovo].end(); i++)
-		{
-			v.push_back(slovo);
-			v.push_back(*i);
-		}
-		int size = v.size() / 2;
-		for (int i = 0; i < size; i++)
-		{
-			del(v[i*2], v[(i*2)+1]);
-		}
-		slova.erase(slovo);
-	}
+	slova.erase(slovo);
 }
 
-Rozmezi Preklady::find(const string& slovo)
+Mapa::const_iterator Preklady::find(const string& slovo)
 {
-	auto it1 = preklady.find(Dvojka(slovo, *slova[slovo].begin()));
-	auto it2 = preklady.end();
-
-	for (auto i = it1; i != preklady.end(); ++i)
+	Mapa::const_iterator it = slova.find(slovo);
+	return it;
+}
+Dvojka Preklady::prefix(const string& pre)
+{
+	Mapa::const_iterator it1 = slova.lower_bound(pre);
+	if (pre.empty() || it1 == slova.end())
 	{
-		if (i->first != slovo)
-		{
-			it2 = i;
-			break;
-		}
+		return { slova.end(), slova.end() };
 	}
 
-	return { it1,it2 };
-}
-Rozmezi Preklady::prefix(const string& pre)
-{
-	string prvni = *prefixy.find(pre)->second.begin();
-
-	string druhe = *slova[prvni].begin();
-	
-	auto it1 = preklady.find(Dvojka(prvni, druhe));
-	auto it2 = preklady.end();
-
-	for (auto i = it1; i != preklady.end(); i++)
-	{
-		string str = i->first;
-		int size = pre.size();
-		for (auto& c : str)
-		{
-			c = tolower(c);
-		}
-
-		if (str.compare(0, size, pre) != 0)
-		{
-			it2 = i;
-			break;
-		}
-	}
-	return { it1,it2 };
+	string pre2 = pre;
+	char& c = pre2[pre2.size() - 1];
+	c++;
+	Mapa::const_iterator it2 = slova.lower_bound(pre2);
+	return { it1, it2 };
 }
 
-void print(const Rozmezi& interval)
+void Preklady::print(const Mapa::const_iterator& it)
 {
-	if (interval[0] == interval[1])
+	if (slova.end() == it)
 	{
 		return;
 	}
-	for (auto i = interval[0]; i != interval[1]; ++i)
+	for (Mnoz::iterator iter = it->second.begin(); iter != it->second.end(); ++iter)
 	{
-		cout << i->second << " ";
+		cout << *iter << " ";
 	}
 	cout << endl;
 }
 
-void print_pre(const Rozmezi& interval)
+void Preklady::print_pre(const Dvojka& dv)
 {
-	if (interval[0] == interval[1])
+	if (dv.first == slova.end())
 	{
 		return;
 	}
-
-	string slovo = interval[0]->first;
-	cout << slovo + ": ";
-
-	for (auto i = interval[0]; i != interval[1]; ++i)
+	else
 	{
-		if (i->first == slovo)
+		for (Mapa::const_iterator it = dv.first; it != dv.second; it++)
 		{
-			cout << i->second + " ";
-		}
-		else
-		{
-			cout << endl;
-			slovo = i->first;
-			cout << slovo + ": " << i->second + " ";
+			cout << it->first + ": ";
+			print(it);
 		}
 	}
-	cout << endl;
 }

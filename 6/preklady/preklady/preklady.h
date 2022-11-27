@@ -4,36 +4,31 @@
 #include <set>
 #include <iterator>
 #include <string>
-#include <array>
 #include <map>
 
-using Dvojka = std::pair<std::string, std::string>;
-using Rozmezi = std::array<std::set<Dvojka>::iterator, 2>;
+struct cmplen {
+    bool operator()(const std::string& s1, const std::string& s2) const;
+};
+struct cmpnorm {
+    bool operator()(const std::string& s1, const std::string& s2) const;
+};
 
-struct cmp {
-	bool operator()(const Dvojka& left, const Dvojka& right) const;
-};
-struct cmp_second {
-	bool operator()(const std::string& s1, const std::string& s2) const;
-};
-struct cmp_first {
-	bool operator()(const std::string& s1, const std::string& s2) const;
-};
+using Mnoz = std::set<std::string, cmplen>;
+using Mapa = std::map<std::string, Mnoz, cmpnorm>;
+using Dvojka = std::pair<Mapa::const_iterator, Mapa::const_iterator>;
 
 class Preklady {
 public:
 	void add(const std::string& slovo, const std::string& preklad);
 	void del(const std::string& slovo, const std::string& preklad);
 	void del(const std::string& slovo);
-	Rozmezi find(const std::string& slovo);
-	Rozmezi prefix(const std::string& pre);
-private:
-	std::set<Dvojka, cmp> preklady;
-	std::map<std::string, std::set<std::string, cmp_second>> slova;
-	std::map<std::string, std::set<std::string, cmp_first>> prefixy;
-};
+    Mapa::const_iterator find(const std::string& slovo);
+    Dvojka prefix(const std::string& pre);
 
-void print(const Rozmezi& interval);
-void print_pre(const Rozmezi& interval);
+    void print(const Mapa::const_iterator& it);
+    void print_pre(const Dvojka& dv);
+private:
+	Mapa slova;
+};
 
 #endif
