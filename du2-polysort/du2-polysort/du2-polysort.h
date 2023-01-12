@@ -77,7 +77,7 @@ public:
         matrix.push_back(new_vec);
     }
 
-    void print(std::ostream& s, const char sep) {
+    void print(std::ostream& s) {
         for (auto&& row : matrix) {
             for (int i = 0; i < row.size() - 1; ++i) {
                 row[i]->print(s);
@@ -87,8 +87,16 @@ public:
         }
         s << std::endl;
     }
+
+    void process_args(std::vector<std::string>& args);
 private:
     std::vector<std::vector<ValuePointer>> matrix;
+    std::string input = "";
+    std::string output = "";
+    char sep = ' ';
+    std::vector<std::string> col_sort;
 };
+
+
 
 #endif

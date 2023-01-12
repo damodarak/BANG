@@ -5,8 +5,8 @@
 
 using namespace std;
 
-int main()
+int main(int argc, char** argv)
 {
-	cout << "Hello CMake." << endl;
+	vector<string> arg(argv, argv + argc);
 	return 0;
 }
