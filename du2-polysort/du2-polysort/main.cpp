@@ -1,7 +1,9 @@
-﻿//David Kroupa
-//du2-polysort.h
+//David Kroupa
+//main.cpp
 
 #include "du2-polysort.h"
+#include <vector>
+#include <string>
 
 using namespace std;
 

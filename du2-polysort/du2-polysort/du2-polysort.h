@@ -1,4 +1,4 @@
-﻿//David Kroupa
+//David Kroupa
 //du2-polysort.h
 
 #ifndef DU2_POLYSORT_H
@@ -72,9 +72,10 @@ public:
     void add(ValuePointer p) {
         matrix[matrix.size() - 1].push_back(std::move(p));
     };
+
     void new_line() {
         std::vector<ValuePointer> new_vec;
-        matrix.push_back(new_vec);
+        matrix.push_back(move(new_vec));
     }
 
     void print(std::ostream& s) {
@@ -96,7 +97,6 @@ private:
     char sep = ' ';
     std::vector<std::string> col_sort;
 };
-
 
 
 #endif

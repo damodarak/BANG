@@ -1,5 +1,5 @@
 //David Kroupa
-//du2-polysort.h
+//du2-polysort.cpp
 
 #include "du2-polysort.h"
 
