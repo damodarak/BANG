@@ -9,11 +9,13 @@
 #include <string>
 #include <exception>
 #include <memory>
+#include <fstream>
+#include <cctype>
+#include <map>
 
 class AbstractValue {
 public:
     virtual void print(std::ostream& s) = 0;
-    virtual std::unique_ptr<AbstractValue> clone() = 0;
     virtual bool operator>(const AbstractValue& second) const = 0;
 };
 
@@ -22,10 +24,6 @@ using ValuePointer = std::unique_ptr<AbstractValue>;
 class IntValue : public AbstractValue {
 public:
     IntValue(int value) : value_(value) {}
-
-    virtual ValuePointer clone() override {
-        return std::make_unique<IntValue>(*this);
-    }
 
     virtual void print(std::ostream& s) {
         s << value_;
@@ -47,10 +45,6 @@ class StringValue : public AbstractValue {
 public:
     StringValue(std::string value) : value_(value) {}
 
-    virtual ValuePointer clone() override {
-        return std::make_unique<StringValue>(*this);
-    }
-
     virtual void print(std::ostream& s) {
         s << value_;
     }
@@ -69,33 +63,34 @@ private:
 
 class Table {
 public:
-    void add(ValuePointer p) {
-        matrix[matrix.size() - 1].push_back(std::move(p));
-    };
+    Table() {
+        new_line();
+    }
 
     void new_line() {
         std::vector<ValuePointer> new_vec;
         matrix.push_back(move(new_vec));
     }
 
-    void print(std::ostream& s) {
-        for (auto&& row : matrix) {
-            for (int i = 0; i < row.size() - 1; ++i) {
-                row[i]->print(s);
-                s << sep;
-            }
-            row[row.size() - 1]->print(s);
-        }
-        s << std::endl;
-    }
+    bool add(std::string& str);
+    void print();
+    void process_args(const std::vector<std::string>& args);
+    void load_input(); 
+    void sort();
 
-    void process_args(std::vector<std::string>& args);
 private:
+    std::string buffer = "";
     std::vector<std::vector<ValuePointer>> matrix;
     std::string input = "";
     std::string output = "";
     char sep = ' ';
     std::vector<std::string> col_sort;
+    std::map<int, char> col_type;
+
+    void print_matrix(std::ostream& s);
+    bool is_num(const std::string& str);
+    void process(char c);
+    void process_input(std::istream& s);
 };
 
 
