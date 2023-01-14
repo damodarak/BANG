@@ -13,6 +13,19 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+#Cmake
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+
 # Mono auto generated files
 mono_crash.*
 
