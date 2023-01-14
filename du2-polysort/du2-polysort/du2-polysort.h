@@ -7,7 +7,6 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <exception>
 #include <memory>
 #include <fstream>
 #include <cctype>
@@ -31,10 +30,6 @@ public:
 
     virtual bool operator>(const AbstractValue& second) const override {
         const IntValue* second_value = dynamic_cast<const IntValue*>(&second);
-        if (second_value == nullptr) {
-            throw std::invalid_argument("Error");
-        }
-
         return value_ > second_value->value_;
     }
 private:
@@ -48,16 +43,9 @@ public:
     virtual void print(std::ostream& s) {
         s << value_;
     }
-    std::string val() {
-        return value_;
-    }
 
     virtual bool operator>(const AbstractValue& second) const override {
         const StringValue* second_value = dynamic_cast<const StringValue*>(&second);
-        if (second_value == nullptr) {
-            throw std::invalid_argument("Error");
-        }
-
         return value_ > second_value->value_;
     }
 private:
@@ -90,13 +78,15 @@ private:
     char sep = ' ';
     std::vector<std::string> col_sort;
     std::map<int, char> col_type;
+    int column = 0;
+    int line = 0;
+    bool error = false;
 
     void print_matrix(std::ostream& s);
     bool is_num(const std::string& str);
-    void process(char c, bool last);
+    bool process(char c, bool last);
     void process_input(std::istream& s);
     void sort_by_col(int col);
 };
-
 
 #endif

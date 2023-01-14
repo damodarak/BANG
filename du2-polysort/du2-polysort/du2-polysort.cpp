@@ -62,9 +62,6 @@ bool Table::process_args(const vector<string>& args) {
                 input = args[i];
             }
         }
-        else if (args[i] == "polysort") {
-            continue;
-        }
         else if (args[i].substr(0, 2) == "-o") {
             if (args[i].size() > 2) {
                 output = args[i].substr(2);
@@ -109,37 +106,32 @@ void Table::load_input() {
             if (matrix[matrix.size() - 1].size() == 0) {
                 matrix.pop_back();
             }
-            f.close();
-            return;
         }
-        else {
-            f.close();
-            return;
-        }
+        f.close();
     }
 }
-void Table::process(char c, bool last) {
+bool Table::process(char c, bool last) {
     if (last) {
         if (matrix[0].size() > matrix[matrix.size() - 1].size() && matrix[matrix.size() - 1].size() != 0) {
             add(buffer);
         }
-        return;
+        return true;
     }
-
+    
+    bool res = true;
     if (c == '\n' || c =='\r') {
-        //bool res = add(buffer);
-        add(buffer);
+        res = add(buffer);
         new_line();
         buffer = "";
     }
     else if (c == sep) {
-        //bool res = add(buffer);
-        add(buffer);
+        res = add(buffer);
         buffer = "";
     }
     else {
         buffer += c;
     }
+    return res;
 }
 void Table::process_input(istream& s) {
     char c;
@@ -153,7 +145,12 @@ void Table::process_input(istream& s) {
         }
         else
         {
-            process(c, false);
+            bool res = process(c, false);
+            if (!res) {
+                fprintf(stderr, "error: radka %d, sloupec %d - nepripustny format", line, column);
+                error = true;
+                return;
+            }
         }
     }
 }
@@ -182,10 +179,14 @@ void Table::sort_by_col(int col) {
         });
 }
 bool Table::check() {
+    if (error) {
+        return false;
+    }
     for (auto it = col_type.begin(); it != col_type.end(); it++)
     {
         for (auto&& row : matrix) {
-            if (it->first > row.size()) {
+            
+            if (uint64_t(it->first) > row.size()) {
                 cerr << "Error in argument" << endl;
                 return false;
             }
