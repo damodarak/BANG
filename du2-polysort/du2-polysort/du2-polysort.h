@@ -48,6 +48,9 @@ public:
     virtual void print(std::ostream& s) {
         s << value_;
     }
+    std::string val() {
+        return value_;
+    }
 
     virtual bool operator>(const AbstractValue& second) const override {
         const StringValue* second_value = dynamic_cast<const StringValue*>(&second);
@@ -74,9 +77,10 @@ public:
 
     bool add(std::string& str);
     void print();
-    void process_args(const std::vector<std::string>& args);
+    bool process_args(const std::vector<std::string>& args);
     void load_input(); 
     void sort();
+    bool check();
 
 private:
     std::string buffer = "";
@@ -89,8 +93,9 @@ private:
 
     void print_matrix(std::ostream& s);
     bool is_num(const std::string& str);
-    void process(char c);
+    void process(char c, bool last);
     void process_input(std::istream& s);
+    void sort_by_col(int col);
 };
 
 

@@ -2,6 +2,7 @@
 //du2-polysort.cpp
 
 #include "du2-polysort.h"
+#include <algorithm>
 
 using namespace std;
 
@@ -10,14 +11,8 @@ bool Table::add(string& str) {
     int col = matrix[lines].size();
 
     if (col_type.find(col) == col_type.end()) {
-        if (is_num(str)) {
-            ValuePointer vp = make_unique<IntValue>(stoi(str));
-            matrix[lines].push_back(move(vp));
-        }
-        else {
-            ValuePointer vp = make_unique<StringValue>(str);
-            matrix[lines].push_back(move(vp));
-        }
+        ValuePointer vp = make_unique<StringValue>(str);
+        matrix[lines].push_back(move(vp));
     }
     else {
         char type = col_type.find(col)->second;
@@ -25,7 +20,7 @@ bool Table::add(string& str) {
             ValuePointer vp = make_unique<StringValue>(str);
             matrix[lines].push_back(move(vp));
         }
-        else if(is_num(str)){
+        else if(type == 'N' && is_num(str)){
             ValuePointer vp = make_unique<IntValue>(stoi(str));
             matrix[lines].push_back(move(vp));
         }
@@ -37,7 +32,7 @@ bool Table::add(string& str) {
 };
 void Table::print_matrix(ostream& s) {
     for (auto&& row : matrix) {
-        for (int i = 0; i < row.size() - 1; ++i) {
+        for (long unsigned i = 0; i < row.size() - 1; ++i) {
             row[i]->print(s);
             s << sep;
         }
@@ -56,8 +51,8 @@ void Table::print() {
         f.close();
     }
 }
-void Table::process_args(const vector<string>& args) {
-    for (int i = 1; i < args.size(); ++i) {
+bool Table::process_args(const vector<string>& args) {
+    for (long unsigned i = 1; i < args.size(); ++i) {
         if (args[i].substr(0, 2) == "-i") {
             if (args[i].size() > 2) {
                 input = args[i].substr(2);
@@ -90,28 +85,30 @@ void Table::process_args(const vector<string>& args) {
         }
         else if ((args[i].substr(0, 1) == "N" || args[i].substr(0, 1) == "S") && args[i].size() > 1) {
             col_sort.push_back(args[i]);
-            col_type[stoi(args[i].substr(1))] = args[i].substr(0, 1)[0];
+            col_type[stoi(args[i].substr(1)) - 1] = args[i].substr(0, 1)[0];
         }
         else {
-            /*cerr << "Error in command line arguments, " << *iter << " was not expected" << endl;
-            there_is_error = true;
-            return;*/
-            //dodelat
+            cerr << "Error in command line arguments, " << args[i] << " was not expected" << endl;
+            return false;
         }
     }
+    return true;
 }
 void Table::load_input() {
     if (input == "") {
-        //return process_input(cin) ? true : false;
         process_input(cin);
+        if (matrix[matrix.size() - 1].size() == 0) {
+            matrix.pop_back();
+        }
     }
     else {
         ifstream f;
         f.open(input);
         if (f.good()) {
-            //bool result = process_input(f) ? true : false;
             process_input(f);
-            matrix.pop_back();
+            if (matrix[matrix.size() - 1].size() == 0) {
+                matrix.pop_back();
+            }
             f.close();
             return;
         }
@@ -121,13 +118,22 @@ void Table::load_input() {
         }
     }
 }
-void Table::process(char c) {
-    if (c == '\n') {
+void Table::process(char c, bool last) {
+    if (last) {
+        if (matrix[0].size() > matrix[matrix.size() - 1].size() && matrix[matrix.size() - 1].size() != 0) {
+            add(buffer);
+        }
+        return;
+    }
+
+    if (c == '\n' || c =='\r') {
+        //bool res = add(buffer);
         add(buffer);
         new_line();
         buffer = "";
     }
     else if (c == sep) {
+        //bool res = add(buffer);
         add(buffer);
         buffer = "";
     }
@@ -142,11 +148,12 @@ void Table::process_input(istream& s) {
 
         if (s.fail())
         {
+            process(c, true);
             return;
         }
         else
         {
-            process(c);
+            process(c, false);
         }
     }
 }
@@ -159,6 +166,30 @@ bool Table::is_num(const string& str) {
         if (!isdigit(c)) {
             return false;
         }
+    }
+    return true;
+}
+void Table::sort() {
+    while (!col_sort.empty()) {
+        sort_by_col(stoi(col_sort.back().substr(1)) - 1);
+        col_sort.pop_back();
+    }
+}
+void Table::sort_by_col(int col) {
+    std::sort(matrix.begin(), matrix.end(), [&](const vector<ValuePointer>& line1, const vector<ValuePointer>& line2) 
+        { 
+            return line2[col]->operator>(*line1[col]); 
+        });
+}
+bool Table::check() {
+    for (auto it = col_type.begin(); it != col_type.end(); it++)
+    {
+        for (auto&& row : matrix) {
+            if (it->first > row.size()) {
+                cerr << "Error in argument" << endl;
+                return false;
+            }
+        }       
     }
     return true;
 }
