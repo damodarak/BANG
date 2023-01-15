@@ -10,6 +10,8 @@ bool Table::add(string& str) {
     int lines = matrix.size() - 1;
     int col = matrix[lines].size();
 
+    ++column;
+
     if (col_type.find(col) == col_type.end()) {
         ValuePointer vp = make_unique<StringValue>(str);
         matrix[lines].push_back(move(vp));

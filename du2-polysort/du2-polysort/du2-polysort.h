@@ -61,6 +61,7 @@ public:
     void new_line() {
         std::vector<ValuePointer> new_vec;
         matrix.push_back(move(new_vec));
+        ++line;
     }
 
     bool add(std::string& str);
