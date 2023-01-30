@@ -42,7 +42,6 @@ private:
         {
             ++lines;
             inside_word = false;
-            //words_inside_sentence
         }
         else if(c == '.' || c == '?' || c == '!')
         {

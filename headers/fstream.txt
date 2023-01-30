@@ -1,0 +1,6 @@
+2. lab
+
+ifstream f;
+f.open("a.txt");
+if( f.good())
+f.close();

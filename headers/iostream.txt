@@ -1,0 +1,3 @@
+f(istream& s)
+
+s.fail()
