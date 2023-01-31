@@ -11,34 +11,50 @@ public:
 
 using ValuePointer = std::unique_ptr<AbstractValue>;
 
-class IntValue : public AbstractValue {
+//class IntValue : public AbstractValue {
+//public:
+//    IntValue(int value) : value_(value) {}
+//
+//    virtual ValuePointer clone() override {
+//        return std::make_unique<IntValue>(*this);
+//    }
+//
+//    virtual void print() {
+//        std::cout << value_ << std::endl;
+//    }
+//private:
+//    int value_;
+//};
+//
+//class StringValue : public AbstractValue {
+//public:
+//    StringValue(std::string value) : value_(value) {}
+//
+//    virtual ValuePointer clone() override {
+//        return std::make_unique<StringValue>(*this);
+//    }
+//
+//    virtual void print() {
+//        std::cout << value_ << std::endl;
+//    }
+//private:
+//    std::string value_;
+//};
+
+template <typename T>
+class Value : public AbstractValue {
 public:
-    IntValue(int value) : value_(value) {}
+    Value(T value) : value_(value) {}
 
     virtual ValuePointer clone() override {
-        return std::make_unique<IntValue>(*this);
+        return std::make_unique<Value<T>>(*this);
     }
 
     virtual void print() {
         std::cout << value_ << std::endl;
     }
 private:
-    int value_;
-};
-
-class StringValue : public AbstractValue {
-public:
-    StringValue(std::string value) : value_(value) {}
-
-    virtual ValuePointer clone() override {
-        return std::make_unique<StringValue>(*this);
-    }
-
-    virtual void print() {
-        std::cout << value_ << std::endl;
-    }
-private:
-    std::string value_;
+    T value_;
 };
 
 class PolymorficList {

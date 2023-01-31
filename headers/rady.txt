@@ -76,6 +76,34 @@ struct cmp {
 set<T, cmp> v;
 v.insert( T{"jedna", 1});
 ---------------------------------------------------------------------------------
+#include <iostream>
+#include <string>
+
+class AbstractVal {
+public:
+  virtual void print() = 0;
+};
+
+template <typename T>
+class Val : public AbstractVal {
+public:
+  Val(T x) : x_(x) {}
+  virtual void print() { std::cout << x_; }
+private:
+  T x_;
+};
+
+int main() {
+  Val<int> int_val(42);
+  Val<std::string> string_val("hello");
+
+  int_val.print();
+  std::cout << std::endl;
+  string_val.print();
+  std::cout << std::endl;
+
+  return 0;
+}
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------

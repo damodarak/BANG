@@ -1,6 +1,9 @@
 ﻿#include <vector>
 #include "polymorph.cpp"
 
+using StringValue = Value<std::string>;
+using IntValue = Value<int>;
+
 int main(int argc, char* argv[]) {
     PolymorficList list;
 
