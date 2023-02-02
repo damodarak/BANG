@@ -81,37 +81,48 @@ public:
     }
     int transform_price(const string& s)
     {
-        int num = 0;
-        int end = !(7 < s.size()) ? s.size() : 7;
+        int left = 0;
+        int right = 0;
+        int dot = -1;
 
-        int i = 0;
-        for (; i < end; i++)
+        for (int i = 0; i < s.size(); i++)
         {
-            if (s[i] != '.')
+            if (s[i] == '.')
             {
-                num *= 10;
-                num += s[i] - '0';
-            }
-            else {
+                dot = i;
                 break;
             }
         }
 
-        i++;
-
-        if (i < end) 
+        if (dot == -1)
         {
-            for (int j = i; j != s.size() && j < i + 3; j++)
+            return stoi(s) * 1000;
+        }
+        else
+        {
+            for (size_t i = 0; i < dot; i++)
             {
-                num *= 10;
-                num += s[j] - '0';
+                left *= 10;
+                left += s[i] - '0';
+            }
+            left *= 1000;
+
+            int after = s.size() - dot - 1;
+
+            for (size_t i = dot + 1; i < s.size() && i < dot + 4; i++)
+            {
+                right *= 10;
+                right += s[i] - '0';
+            }
+
+            for (int i = 0; i < 3 - after; i++)
+            {
+                right *= 10;
             }
         }
 
-        while (num < 100000) {
-            num *= 10;
-        }   
-        return num;
+
+        return left + right;
     }
     void fill_vals()
     {
@@ -177,7 +188,7 @@ public:
         {
             Open op(dp[next_index].date, dp[next_index].time, ERmean, ERnew);
             open.push_back(op);
-            opened = true;
+            opened_ = true;
         }
 
         ERmean = ((ERmean * movingwin) - ERlast + ERnew) / movingwin;
@@ -217,6 +228,7 @@ int main(int argc, char** argv)
     vector<string> arg(argv, argv + argc);
 
     Forex fx;
+    cout << fx.transform_price("123.04") << endl;
     if (!fx.handle_arg(arg)) 
     {
         return 0;
@@ -234,7 +246,7 @@ int main(int argc, char** argv)
         }
         if (fx.closed())
         {
-            fx.write_close();
+            //fx.write_close();
         }
     }
 
