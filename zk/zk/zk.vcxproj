@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{95fd534f-274d-4cd8-aa94-fc161629401b}</ProjectGuid>
-    <RootNamespace>lab02</RootNamespace>
+    <ProjectGuid>{0b6ac262-6704-4c29-a0f1-0a40ec964115}</ProjectGuid>
+    <RootNamespace>zk</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -42,8 +42,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -127,7 +127,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="lab02.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="zk.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="zk.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="EURUSD_D1_example.csv" />
+    <None Include="example_10_3.in" />
+    <None Include="example_10_3.out" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
