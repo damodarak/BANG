@@ -1,0 +1,16 @@
+node_1,node_2,distance
+Albertov,Botanicka zahrada,1
+Andel,Arbesovo namesti,1
+Andel,Bertramka,2
+Botanicka zahrada,Karlovo namesti,1
+Andel,Na Knizeci,1
+Albertov,Ostrcilovo namesti,1
+Zvonarka,Bruselska,0
+Albertov,Vyton,1
+Andel,Zborovska,1
+Botanicka zahrada,Albertov,1
+Zborovska,Palackeho namesti,1
+Palackeho namesti,Karlovo namesti,2
+Karlovo namesti,Moran,1
+Moran,Botanicka zahrada,1
+Moran,Palackeho namesti,1
