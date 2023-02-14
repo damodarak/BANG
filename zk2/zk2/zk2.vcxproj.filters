@@ -21,9 +21,6 @@
     <ClCompile Include="zk2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="io.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="zk2.h">
@@ -35,6 +32,9 @@
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="pairs.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="out.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

@@ -1,4 +1,2 @@
 node_1,node_2
 a,c
-
-

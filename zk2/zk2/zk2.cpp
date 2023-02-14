@@ -63,7 +63,7 @@ string Graph::handle_pair()
 
 	if (!getline(pairs, s))
 	{
-		return "KONEC";
+		return "";
 	}
 	if (s == "node_1,node_2")
 	{
@@ -75,9 +75,10 @@ string Graph::handle_pair()
 	{
 		if (s[i] == ',')
 		{
-			Dvojka dv = Dvojka(s.substr(0, i), s.substr(i + 1));
-			int res = find_shortest(0, 0, INT_MAX, dv.first, dv.second, "none");
-			string line = dv.first + "," + dv.second + ",";
+			string first = s.substr(0, i);
+			string second = s.substr(i + 1);
+			int res = find_shortest(0, 0, INT_MAX, first, second, "none");
+			string line = first + "," + second + ",";
 			if (res == INT_MAX)
 			{
 				return line;
@@ -90,24 +91,6 @@ string Graph::handle_pair()
 	}
 	return "";//for recodex
 }
-//priority_queue<Edge> Graph::initHeap(const string& start)
-//{
-//	priority_queue<Edge> halda;
-//
-//	Edge e(0, start, start);
-//	halda.push(e);
-//
-//	for (auto i = graph.begin(); i != graph.end(); i++)
-//	{
-//		for (auto j = (*i).second.begin(); j != (*i).second.end(); j++)
-//		{
-//			Edge ed(INT_MAX, i->first, j->first);
-//			halda.push(ed);
-//		}
-//	}
-//
-//	return halda;
-//}
 
 int Graph::find_shortest(int cena, int visited, int best, const string& start, const string& end, const string& before)
 {

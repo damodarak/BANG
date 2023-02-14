@@ -11,7 +11,7 @@ int main(int argc, char** argv)
     g.process_data();
     string line = g.handle_pair();
 
-    while (line != "KONEC")
+    while (line != "")
     {
         g.print(line);
         line = g.handle_pair();
