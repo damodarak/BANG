@@ -1,0 +1,10 @@
+Karty
+Hra obsahuje:
+
+-7 karet rolí
+
+-16 karet postav
+
+-80 normálních karet
+
+-7 přehledů pravidel.

@@ -1,0 +1,45 @@
+Normální karty:
+Bang(25x) - Pomocí této karty můžeš vystřelit na jakéhokoli hráče, pokud an něj dostřelíš.
+
+Vedle(12x) - Vyhneš se střelou z kulometu a kartě Bang.
+
+Pivo(6x) - Pokud tuto kartu použiješ, vyléčí se ti život.
+
+Salón(1x) - Pokud tuto kartu použiješ tak se všem vyléčí jeden život.
+
+Wells Frago(1x) - Díky této kartě si můžeš vzít další tři karty.
+
+Dostavník(2x) - Díky této kartě si můžeš vzít další dvě kary.
+
+Hokynářství(2x) - Otoč tolik vrchních karet z balíčku, kolek je hráčů a každý si vezme jednu. Začne ten co použil Hokynářství a pokračují hráči po jeho levici.
+
+Panika(4x) - Pomocí Paniky můžeš kterémukoli hráči vzít jakoukoli kartu a můžeš si ji nechat, platí jen na vzdálenost jedna.
+
+Cat Balou(4x) - Pomocí Cat Balou můžeš někomu vzít jakoukoli kartu a hodíš ji do odhazovacího balíčku.
+
+Indiáni(2x) - Všichni sotatní hráči musí odhodit Bang jinak ztratí jeden život.
+
+Kulomet(1x) - Všichni ostatní hráči musejí odhodit kartu Vedle, jinak ztrácí život
+
+Duel(3x) - Vyzvaný hráč odhazuje Bang, potom vyzývající a tak se střídají. Ten který Bang odhodí naposledy vyhrál a jeho protivník ztrácí jeden život.
+
+Modré karty:
+Mustang(2x) - Tvoje vzdálenost od všech hráčů je o jedna větší
+
+Appalossa(1x) - Tvoje vzdálenost od všech hráčů je o jedna menší
+
+Dynamit(1x) - Hráč který použije tuto kartu si ji dá před sebe a lízne si jednu kartu, kterou poté hodí do odhazovacího balíčku, pokud bude karta piková 2-9 tak ztráčí tři životy, pokud ne tak posílá Dynamit hráči po své levici, takhle to jde dál dokud někdo neztratí tři životy nebo dokud někdo nezničí Dynamit kartou Panika nebo Cat Balou.
+
+Vězení(3x) - Pokud dáš někoho do vězení tak nemůže prakticky nic dělat, vězení se zbaví jen dkyž mu ho ostatní hráči vezmou Cat Balou nebo Panikou anebo když si lízne srdcovou kartu, když si ve Vězení smíš si líznout jen jednu kartu a na šerifa Vězení nejde dát. Jediný Šerif může střílet na hráče který je ve Vězení.
+
+Barel(2x) - Pokud po tobě někdo vystřelí kartou Bang, můžeš si líznout, pokud je karta srdcová výstřel tě minul.
+
+Volcanic(2x) - Zbraň umožňující zahrát libovolný počet karet Bang, ale pouze na vzdálenost jedna.
+
+Schofield(3x) - Zbraň umožňující dostřelit na vzdálenost dvě.
+
+Remington(1x) - Zbraň umožňující dostřelit na vzdálenost tři.
+
+Carabine(1x) - Zbraň umožňující dostřelit na vzdálenost čtyři.
+
+Winchester(1x) - Zbraň umožňující dostřelit na vzdálenost pět.

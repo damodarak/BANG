@@ -1,0 +1,32 @@
+Karty postav(seřazeny podle silnosti):
+Willy the Kid(4 životy) -  Může zahrát libovolný počet karet Bang.
+
+Calamity Janet(4 životy) - Může hrát kartu Bang místo karty Vedle a obráceně.
+
+Slab the Killer(4 životy) - Hráč potřebuje 2 karty Vedle proti jeho kartě Bang.
+
+Jourdonnais(4 životy) - Kdykoli je zasažen výstřelem karty Bang, může si líznout, pokud je karta srdcová, výstřel ho minul.
+
+Black Jack(4 životy) - Ukáže druhou kartu, kterou si líže. Pokud je srdcová nebo kárová, bere si ještě jednu kartu.
+
+Sid Ketchum(4 životy) - Za 2 vyhozené karty si může vrátit jedne život.
+
+Kit Carlson(4 životy) - Podívá se na vrchní tři karty z balíčku a vybere si dvě.
+
+Lucky Duke(4 životy) - Pokaždé když si líže kartu, vezme si vrchní dvě a vybere si jednu z nich.
+
+Vulture Sam(4 životy) - Kdykoli je některý hráč vyřazen ze hry, vezem si do ruky všechny karty tohoto hráče.
+
+Pedro Ramirez(4 životy) - První kartu si může vzít z odhazovacího balíčku.
+
+Jesse Jones(4 životy) - První kartu si může vzít z ruky některého hráče.
+
+Bart Cassidy(4 životy) - Kdykoli je zasažen, lízne si kartu.
+
+Rose Doolan(4 životy) - Vidí všechny hráče na vzdálenost o jedna větší.
+
+Suzy Lafayette(4 životy) - Jakmile nemá žádnou kartu v ruce, jednu si vezme
+
+El Cringo(3 životy) - Pokaždé když je zasažen hráčem, vezme si ejdnu kartu z ruky tohoto hráče.
+
+Paul Regret(3 životy) - Jeho vzdálenost od všech hráčů je o jedna větší.
