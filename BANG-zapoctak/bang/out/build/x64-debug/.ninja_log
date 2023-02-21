@@ -1,0 +1,11 @@
+# ninja log v5
+44	2937	6986759032206206	bang/CMakeFiles/bang.dir/game/game.cpp.obj	791248a6207b1d16
+0	1387	6986762675935760	bang/CMakeFiles/bang.dir/main.cpp.obj	f47014bed3ec2ea1
+51	2940	6986759032306198	bang/CMakeFiles/bang.dir/game/main.cpp.obj	ff7efac13e15fd01
+1389	1882	6986762680055750	bang/bang.exe	f929aed9cfc6f0dd
+1	2941	6986759032296207	bang/CMakeFiles/bang.dir/bang.cpp.obj	27aea8c736d92544
+1	855	6986785029476959	bang/CMakeFiles/bang.dir/game/card.cpp.obj	28c3c19c38fe8bdd
+8	869	6986785029436959	bang/CMakeFiles/bang.dir/game/player.cpp.obj	feee9848b8cb78f3
+20	1325	6986785034186959	bang/CMakeFiles/bang.dir/game/game.cpp.obj	791248a6207b1d16
+14	1720	6986785038146908	bang/CMakeFiles/bang.dir/main.cpp.obj	f47014bed3ec2ea1
+1721	2164	6986785041576909	bang/bang.exe	e2e91a7eb22f57f7
