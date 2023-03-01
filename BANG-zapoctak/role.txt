@@ -1,8 +1,4 @@
-Karty rolí:
-Šerif(1x) - Musí zabít všechny bandity a odpadlíka.
-
-Pomocník šerifa(2x) - Musí ochránit šerifa.
-
-Bandita(3x) - Musí zabít šerifa.
-
-Odpadlík(1x) - Musí zůstat poslední ve hře.
+4-Šerif,Bandita,Bandita,Odpadlík
+5-Šerif,Bandita,Bandita,Odpadlík,Vice
+6-Šerif,Bandita,Bandita,Odpadlík,Vice,Bandita
+7-Šerif,Bandita,Bandita,Odpadlík,Vice,Bandita,Vice

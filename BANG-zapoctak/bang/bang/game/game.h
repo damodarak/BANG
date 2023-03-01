@@ -4,8 +4,10 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <deque>
 
 #include "player.h"
+#include "card.h"
 
 class Game {
 public:
@@ -14,6 +16,7 @@ public:
 	void add_player();
 	void draw_roles();
 	void draw_characters();
+	void load_cards();
 	void add_player()
 	{
 		Player pl;
@@ -24,6 +27,7 @@ private:
 	int active_player_id;
 	int player_count;
 	int player_alive;
+	std::deque<Card> deck;
 };
 
 #endif
