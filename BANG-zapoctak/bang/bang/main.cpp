@@ -6,7 +6,10 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-    cout << "Kdo zaèal, pùl díla vykonal." << endl; 
+    cout << "Kdo zacal, pul dila vykonal." << endl; 
+
+    Game g;
+    g.load_cards();
 
     return 0;
 }

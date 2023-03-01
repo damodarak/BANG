@@ -5,9 +5,11 @@
 #include <vector>
 #include <map>
 #include <deque>
+#include <array>
 
 #include "player.h"
 #include "card.h"
+#include "willy_the_kid.h"
 
 class Game {
 public:
@@ -17,10 +19,11 @@ public:
 	void draw_roles();
 	void draw_characters();
 	void load_cards();
-	void add_player()
-	{
-		Player pl;
-	}
+	Card draw_card();
+	//void add_player()
+	//{
+	//	//Player pl;
+	//}
 private:
 	std::vector<Player> game_order;
 	std::map<int, int> distances;
@@ -28,6 +31,7 @@ private:
 	int player_count;
 	int player_alive;
 	std::deque<Card> deck;
+	std::vector<Player> characters;
 };
 
 #endif

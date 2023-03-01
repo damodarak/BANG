@@ -3,9 +3,11 @@
 
 #include <string>
 
+class Game;
+
 class Card {
 public:
-	void Play();// = 0, virtual
+	virtual void Play(Game* g) = 0;
 protected:
 	int id;
 	std::string name;

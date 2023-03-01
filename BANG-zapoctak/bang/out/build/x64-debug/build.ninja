@@ -105,6 +105,13 @@ build bang\CMakeFiles\bang.dir\game\card.cpp.obj: CXX_COMPILER__bang_Debug C$:\U
   TARGET_COMPILE_PDB = bang\CMakeFiles\bang.dir\
   TARGET_PDB = bang\bang.pdb
 
+build bang\CMakeFiles\bang.dir\game\willy_the_kid.cpp.obj: CXX_COMPILER__bang_Debug C$:\Users\Damodar\source\repos\c++lab\kroupad1\BANG-zapoctak\bang\bang\game\willy_the_kid.cpp || cmake_object_order_depends_target_bang
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++20
+  OBJECT_DIR = bang\CMakeFiles\bang.dir
+  OBJECT_FILE_DIR = bang\CMakeFiles\bang.dir\game
+  TARGET_COMPILE_PDB = bang\CMakeFiles\bang.dir\
+  TARGET_PDB = bang\bang.pdb
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target bang
@@ -113,7 +120,7 @@ build bang\CMakeFiles\bang.dir\game\card.cpp.obj: CXX_COMPILER__bang_Debug C$:\U
 #############################################
 # Link the executable bang\bang.exe
 
-build bang\bang.exe: CXX_EXECUTABLE_LINKER__bang_Debug bang\CMakeFiles\bang.dir\game\game.cpp.obj bang\CMakeFiles\bang.dir\main.cpp.obj bang\CMakeFiles\bang.dir\game\player.cpp.obj bang\CMakeFiles\bang.dir\game\card.cpp.obj
+build bang\bang.exe: CXX_EXECUTABLE_LINKER__bang_Debug bang\CMakeFiles\bang.dir\game\game.cpp.obj bang\CMakeFiles\bang.dir\main.cpp.obj bang\CMakeFiles\bang.dir\game\player.cpp.obj bang\CMakeFiles\bang.dir\game\card.cpp.obj bang\CMakeFiles\bang.dir\game\willy_the_kid.cpp.obj
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1
   LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:console
   LINK_LIBRARIES = kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
