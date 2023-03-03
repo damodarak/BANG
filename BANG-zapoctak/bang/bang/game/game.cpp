@@ -1,25 +1,18 @@
-#include <fstream>
-
 #include "game.h"
 
 using namespace std;
 
-void Game::load_cards()
+void Game::load_characters()
 {
-	std::ifstream f;
-	f.open("postavy.txt");
-	string line;
-	getline(f, line);
-	for (size_t i = 0; i < 16; i++)
-	{
-		getline(f, line);
-		size_t found1 = line.find(",");
-		size_t found2 = line.find(",", found1);
+	Player* pl1 = new Willy();
+	characters.push_back(pl1);
 
-		if (line[0] == 'W')
-		{
-			Willy player(4);
-		}
-	}
-	f.close();
+
+
+
+
+
+	auto rng = default_random_engine{};
+	shuffle(begin(characters), end(characters), rng);//pro nahodny vyber postav
+
 }

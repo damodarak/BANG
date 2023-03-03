@@ -1,11 +1,13 @@
-#ifndef WILLY_THE_KID_H
-#define WILLY_THE_KID_H
+#ifndef KIT_CARLSON_H
+#define KIT_CARLSON_H
 
 #include "player.h"
 
-class Willy : public Player {
+//override draw
+
+class Carlson : public Player {
 public:
-	Willy(int max_healt) : max_healt_(max_healt) {};
+	Carlson() : Player(8, 4, "KIT CARLSON") {};
 	virtual void draw_phase() override
 	{
 
@@ -18,8 +20,6 @@ public:
 	{
 
 	}
-private:
-	int max_healt_;
 };
 
 

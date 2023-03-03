@@ -5,11 +5,12 @@
 #include <vector>
 #include <map>
 #include <deque>
-#include <array>
+#include <algorithm>
+#include <random>
 
 #include "player.h"
 #include "card.h"
-#include "willy_the_kid.h"
+#include "char_willy.h"
 
 class Game {
 public:
@@ -18,12 +19,8 @@ public:
 	void add_player();
 	void draw_roles();
 	void draw_characters();
-	void load_cards();
+	void load_characters();
 	Card draw_card();
-	//void add_player()
-	//{
-	//	//Player pl;
-	//}
 private:
 	std::vector<Player> game_order;
 	std::map<int, int> distances;
@@ -31,7 +28,7 @@ private:
 	int player_count;
 	int player_alive;
 	std::deque<Card> deck;
-	std::vector<Player> characters;
+	std::vector<Player*> characters;
 };
 
 #endif

@@ -2,6 +2,7 @@
 #define CARD_H
 
 #include <string>
+#include <vector>
 
 class Game;
 
@@ -13,6 +14,7 @@ protected:
 	std::string name;
 	std::string suit;
 	int rank;
+	std::vector<char> card_type;//Agro, Def, Neut
 };
 
 

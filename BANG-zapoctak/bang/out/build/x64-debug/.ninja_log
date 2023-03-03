@@ -1,13 +1,19 @@
 # ninja log v5
-1	1595	6994053277213516	bang/CMakeFiles/bang.dir/game/game.cpp.obj	791248a6207b1d16
-1	1451	6994047460850468	bang/CMakeFiles/bang.dir/main.cpp.obj	f47014bed3ec2ea1
+14	1912	6995686641326323	bang/CMakeFiles/bang.dir/game/game.cpp.obj	791248a6207b1d16
+1	1971	6995686641956307	bang/CMakeFiles/bang.dir/main.cpp.obj	f47014bed3ec2ea1
 51	2940	6986759032306198	bang/CMakeFiles/bang.dir/game/main.cpp.obj	ff7efac13e15fd01
-1596	1987	6994053281283514	bang/bang.exe	3a91b082b2ca7e63
+1971	2322	6995686644786384	bang/bang.exe	7e45e32ec36d1b
 1	2941	6986759032296207	bang/CMakeFiles/bang.dir/bang.cpp.obj	27aea8c736d92544
+7	1272	6995686634916372	bang/CMakeFiles/bang.dir/game/player.cpp.obj	feee9848b8cb78f3
 1	855	6986785029476959	bang/CMakeFiles/bang.dir/game/card.cpp.obj	28c3c19c38fe8bdd
-14	1416	6994047264905432	bang/CMakeFiles/bang.dir/game/player.cpp.obj	feee9848b8cb78f3
 12	827	6994021477376859	bang/CMakeFiles/bang.dir/game/willy_the_kid.cpp.obj	a6575ab495893254
-0	2226	6994809986537058	bang/CMakeFiles/bang.dir/main.cpp.obj	f47014bed3ec2ea1
-2229	3800	6994809997684971	bang/bang.exe	3a91b082b2ca7e63
-1	1631	6994810661868417	bang/CMakeFiles/bang.dir/main.cpp.obj	f47014bed3ec2ea1
-1632	2423	6994810667388405	bang/bang.exe	3a91b082b2ca7e63
+28	597	6995669846747358	bang/CMakeFiles/bang.dir/game/char_willy.cpp.obj	8b716360daf3a333
+8	2172	6995730315080873	bang/CMakeFiles/bang.dir/game/player.cpp.obj	feee9848b8cb78f3
+15	2191	6995730315580953	bang/CMakeFiles/bang.dir/game/game.cpp.obj	791248a6207b1d16
+1	2196	6995730315610733	bang/CMakeFiles/bang.dir/main.cpp.obj	f47014bed3ec2ea1
+9	1883	6995731316515044	bang/CMakeFiles/bang.dir/game/game.cpp.obj	791248a6207b1d16
+2	1947	6995731317175034	bang/CMakeFiles/bang.dir/main.cpp.obj	f47014bed3ec2ea1
+1	623	6995731454728775	bang/CMakeFiles/bang.dir/game/player.cpp.obj	feee9848b8cb78f3
+625	1019	6995731457268783	bang/bang.exe	7e45e32ec36d1b
+1	1586	6995732044214396	bang/CMakeFiles/bang.dir/game/game.cpp.obj	791248a6207b1d16
+1635	1987	6995732047704365	bang/bang.exe	7e45e32ec36d1b

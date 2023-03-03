@@ -4,12 +4,12 @@
 
 using namespace std;
 
-int main(int argc, char** argv)
+int main(int argc, char* argv[])
 {
     cout << "Kdo zacal, pul dila vykonal." << endl; 
 
     Game g;
-    g.load_cards();
+    g.load_characters();
 
     return 0;
 }

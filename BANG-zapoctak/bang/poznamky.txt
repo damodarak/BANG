@@ -1,0 +1,26 @@
+karty:
+
+hnede
+
+bang
+cat balou
+panika
+duel
+
+indiani
+kulomet
+
+vedle
+pivo
+
+dostavnik/fargo
+hokyno
+
+
+modre
+
+volcanic
+zbran-default    >
+kon-defalut     >jen zmeni vzdalenosti
+barel
+vezeni/dynamit

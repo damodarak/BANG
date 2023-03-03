@@ -14,16 +14,24 @@ static int next_player_id = 0;
 
 class Player {
 public:
-	Player() : id_(++next_player_id), played_bang(false) {}; 
-	virtual void draw_phase();
+	Player(int rank, int max_hp, std::string char_name) : ranking(rank), id(++next_player_id), 
+		health(max_hp), max_healt(max_hp), played_bang(false), name(char_name) {};
+	virtual void draw_phase(Game* g);
 	virtual void game_phase() = 0;
 	virtual void discard_phase() = 0;
-	void choose_character();
-	void resolve_action(Game* g);
+
+
+	bool isai;
+	int ranking;//for AI to choose beter character
 protected:
-	int id_;
+	virtual bool resolve_jail(Game* g);
+	virtual bool resolve_dyn(Game* g);
+
+	int id;
 	int health;
+	int max_healt;
 	bool played_bang;
+	std::string name;
 	std::vector<Card> cards;
 	std::vector<Action> actions;
 
