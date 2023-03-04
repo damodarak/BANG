@@ -2,25 +2,28 @@ karty:
 
 hnede
 
-bang
-cat balou
-panika
-duel
+bang-karta
+cat balou-karta
+panika-karta
+duel-karta
 
-indiani
-kulomet
+indiani-karta
+kulomet-karta
 
-vedle
-pivo
+vedle-karta
+pivo-karta
 
-dostavnik/fargo
-hokyno
+dostavnik/fargo-trida
+hokyno-uvnitr hracova tahu?
 
 
 modre
 
-volcanic
-zbran-default    >
-kon-defalut     >jen zmeni vzdalenosti
-barel
-vezeni/dynamit
+volcanic-karta
+zbran-default-trida
+kon-defalut-trida
+barel-karta
+vezeni/dynamit-karta
+
+
+game bude zaznamenvata co se stalo a podle toho se bude chovat, hokyno, kulomet, indiani

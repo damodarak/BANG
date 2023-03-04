@@ -1,13 +1,13 @@
 #ifndef BLACK_JACK_H
 #define BLACK_JACK_H
 
-#include "player.h"
+#include "../player.h"
 
 //draw phase
 
 class Blackj : public Player {
 public:
-	Blackj() : Player(5, 4, "BLACK JACK") {};
+	Blackj(Game* game) : Player(5, 4, "BLACK JACK", game) {};
 	virtual void draw_phase() override
 	{
 

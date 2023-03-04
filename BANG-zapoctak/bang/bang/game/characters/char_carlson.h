@@ -1,13 +1,13 @@
 #ifndef KIT_CARLSON_H
 #define KIT_CARLSON_H
 
-#include "player.h"
+#include "../player.h"
 
 //override draw
 
 class Carlson : public Player {
 public:
-	Carlson() : Player(8, 4, "KIT CARLSON") {};
+	Carlson(Game* game) : Player(8, 4, "KIT CARLSON", game) {};
 	virtual void draw_phase() override
 	{
 

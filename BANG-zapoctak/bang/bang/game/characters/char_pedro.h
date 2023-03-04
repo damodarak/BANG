@@ -1,13 +1,13 @@
 #ifndef PEDRO_RAMIREZ_H
 #define PEDRO_RAMIREZ_H
 
-#include "player.h"
+#include "../player.h"
 
 //override draw_phase
 
 class Pedro : public Player {
 public:
-	Pedro() : Player(10, 4, "PEDRO RAMIREZ") {};
+	Pedro(Game* game) : Player(10, 4, "PEDRO RAMIREZ", game) {};
 	virtual void draw_phase() override
 	{
 

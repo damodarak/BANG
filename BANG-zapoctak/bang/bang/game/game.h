@@ -1,16 +1,12 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <string>
 #include <vector>
 #include <map>
 #include <deque>
-#include <algorithm>
-#include <random>
 
 #include "player.h"
-#include "card.h"
-#include "char_willy.h"
+#include "characters/characters.h"
 
 class Game {
 public:
@@ -18,17 +14,19 @@ public:
 	void next_player_move();
 	void add_player();
 	void draw_roles();
-	void draw_characters();
 	void load_characters();
-	Card draw_card();
+	void load_cards();
+	Card draw_from_deck();
+	void draw_cards();
 private:
-	std::vector<Player> game_order;
+	std::vector<Player*> game_order;
 	std::map<int, int> distances;
 	int active_player_id;
 	int player_count;
 	int player_alive;
-	std::deque<Card> deck;
+	std::deque<Card> deck;//front->draw, back->discard
 	std::vector<Player*> characters;
+	std::vector<Card> emporio;//odsud se budou brat karty po pouziti karty Hokynarstvi
 };
 
 #endif

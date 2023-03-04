@@ -1,13 +1,13 @@
 #ifndef ROSE_DOOLAN_H
 #define ROSE_DOOLAN_H
 
-#include "player.h"
+#include "../player.h"
 
 //pri zahajeni hry se ji nastavi vzdalenost vsech o jedna mene
 
 class Rose : public Player {
 public:
-	Rose() : Player(13, 4, "ROSE DOOLAN") {};
+	Rose(Game* game) : Player(13, 4, "ROSE DOOLAN", game) {};
 	virtual void game_phase() override
 	{
 

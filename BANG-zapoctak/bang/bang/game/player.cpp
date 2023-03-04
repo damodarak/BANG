@@ -1,17 +1,23 @@
 #include "player.h"
+#include "game.h"
 
-void Player::draw_phase(Game* g)
+void Player::draw_phase()
 {
-	int a = 0;
+	Card c;
+	for (size_t i = 0; i < 2; i++)
+	{
+		c = g->draw_from_deck();
+		cards_hand.push_back(c);
+	}
 }
 
-bool Player::resolve_jail(Game* g)
+bool Player::resolve_jail()
 {
 	int a = 0;
 	return true;
 }
 
-bool Player::resolve_dyn(Game* g)
+bool Player::resolve_dyn()
 {
 	int a = 0;
 	return true;

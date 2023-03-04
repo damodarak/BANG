@@ -1,13 +1,13 @@
 #ifndef SID_KETCHUM_H
 #define SID_KETCHUM_H
 
-#include "player.h"
+#include "../player.h"
 
 //uvnitr game_phase nebo discard_phase
 
 class Ketchum : public Player {
 public:
-	Ketchum() : Player(6, 4, "SID KETCHUM") {};
+	Ketchum(Game* game) : Player(6, 4, "SID KETCHUM", game) {};
 	virtual void game_phase() override
 	{
 

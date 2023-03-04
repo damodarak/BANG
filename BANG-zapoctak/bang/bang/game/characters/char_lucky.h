@@ -1,13 +1,13 @@
 #ifndef LUCKY_DUKE_H
 #define LUCKY_DUKE_H
 
-#include "player.h"
+#include "../player.h"
 
 //private func
 
 class Lucky : public Player {
 public:
-	Lucky() : Player(8, 4, "LUCKY DUKE") {};
+	Lucky(Game* game) : Player(8, 4, "LUCKY DUKE", game) {};
 	virtual void game_phase() override
 	{
 
@@ -17,8 +17,8 @@ public:
 
 	}
 private:
-	virtual bool resolve_jail(Game* g) override;
-	virtual bool resolve_dyn(Game* g) override;
+	virtual bool resolve_jail() override;
+	virtual bool resolve_dyn() override;
 };
 
 

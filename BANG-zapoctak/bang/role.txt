@@ -1,4 +1,0 @@
-4-Šerif,Bandita,Bandita,Odpadlík
-5-Šerif,Bandita,Bandita,Odpadlík,Vice
-6-Šerif,Bandita,Bandita,Odpadlík,Vice,Bandita
-7-Šerif,Bandita,Bandita,Odpadlík,Vice,Bandita,Vice
