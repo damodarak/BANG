@@ -18,6 +18,4 @@
 #include "char_vulture.h"
 #include "char_willy.h"
 
-
-
 #endif

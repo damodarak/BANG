@@ -51,7 +51,7 @@ void Game::load_characters()
 void Game::load_cards()//todo
 {
 	ifstream f;
-	f.open("hraci_karty.txt");
+	f.open("../../../../bang/hraci_karty.txt");
 	string line;
 	getline(f, line);
 	while (getline(f, line))
@@ -68,10 +68,12 @@ void Game::load_cards()//todo
 		string s = line.substr(found4 + 1);
 		int id = stoi(s);
 
-		Card c(id, name, barva, suit, rank);
+		Card c;
+		Card card(id, name, barva, suit, rank);
+		c = card;
+		
 		deck.push_back(c);
 	}
-	f.close();
 
 	auto rd = std::random_device{};
 	auto rng = default_random_engine{ rd() };
