@@ -19,21 +19,25 @@ public:
 	virtual void draw_phase();
 	virtual void game_phase() = 0;
 	virtual void discard_phase() = 0;
-
+	char say_role();
+	void set_role(char r);
 
 	bool isai;
 	int ranking;//for AI to choose beter character
-protected:
-	virtual bool resolve_jail();
-	virtual bool resolve_dyn();
 
 	int id;
 	int health;
 	int max_healt;
 	bool played_bang;//po kazdem bangu se rovnou podivame, jestli mame Volcanic a pripadne zmenime tuto hodnotu
 	std::string name;
-	std::vector<Card> cards_hand;
+
 	std::vector<Card> cards_desk;//modre karty, ktere jsou na stole
+protected:
+	virtual bool resolve_jail();
+	virtual bool resolve_dyn();
+
+	char role;
+	std::vector<Card> cards_hand;
 	std::vector<Action> actions;
 	Game* g;
 };

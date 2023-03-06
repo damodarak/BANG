@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include <deque>
+#include <iostream>
 
 #include "player.h"
 #include "characters/characters.h"
@@ -17,7 +18,10 @@ public:
 	void load_characters();
 	void load_cards();
 	Card draw_from_deck();
-	void draw_cards();
+	void draw_cards_start();
+	void start(int players);
+	void create_players(int count);
+	void rotate_serif();
 private:
 	std::vector<Player*> game_order;
 	std::map<int, int> distances;
@@ -27,6 +31,8 @@ private:
 	std::deque<Card> deck;//front->draw, back->discard
 	std::vector<Player*> characters;
 	std::vector<Card> emporio;//odsud se budou brat karty po pouziti karty Hokynarstvi
+
+	std::vector<std::string> convert_line(const std::string& line);
 };
 
 #endif

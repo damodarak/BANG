@@ -22,3 +22,13 @@ bool Player::resolve_dyn()
 	int a = 0;
 	return true;
 }
+
+void Player::set_role(char r)
+{
+	role = r;
+}
+
+char Player::say_role()
+{
+	return (role == 'S' ? 'S' : '?');
+}
