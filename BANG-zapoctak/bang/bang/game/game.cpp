@@ -9,38 +9,38 @@ using namespace std;
 
 void Game::load_characters()
 {
-	Player* pl = new Bart(this);
-	characters.push_back(pl);
-	pl = new Blackj(this);
-	characters.push_back(pl);
-	pl = new Calamity(this);
-	characters.push_back(pl);
-	pl = new Carlson(this);
-	characters.push_back(pl);
-	pl = new Cringo(this);
-	characters.push_back(pl);
-	pl = new Jesse(this);
-	characters.push_back(pl);
-	pl = new Jourd(this);
-	characters.push_back(pl);
-	pl = new Ketchum(this);
-	characters.push_back(pl);
-	pl = new Lucky(this);
-	characters.push_back(pl);
-	pl = new Paul(this);
-	characters.push_back(pl);
-	pl = new Pedro(this);
-	characters.push_back(pl);
-	pl = new Rose(this);
-	characters.push_back(pl);
-	pl = new Slab(this);
-	characters.push_back(pl);
-	pl = new Suzy(this);
-	characters.push_back(pl);
-	pl = new Vulture(this);
-	characters.push_back(pl);
-	pl = new Willy(this);
-	characters.push_back(pl);
+	Hrac pl = make_unique<Bart>(this);
+	characters.push_back(move(pl));
+	pl = make_unique<Blackj>(this);
+	characters.push_back(move(pl));
+	pl = make_unique<Calamity>(this);
+	characters.push_back(move(pl));
+	pl = make_unique<Carlson>(this);
+	characters.push_back(move(pl));
+	pl = make_unique<Cringo>(this);
+	characters.push_back(move(pl));
+	pl = make_unique<Jesse>(this);
+	characters.push_back(move(pl));
+	pl = make_unique<Jourd>(this);
+	characters.push_back(move(pl));
+	pl = make_unique<Ketchum>(this);
+	characters.push_back(move(pl));
+	pl = make_unique<Lucky>(this);
+	characters.push_back(move(pl));
+	pl = make_unique<Paul>(this);
+	characters.push_back(move(pl));
+	pl = make_unique<Pedro>(this);
+	characters.push_back(move(pl));
+	pl = make_unique<Rose>(this);
+	characters.push_back(move(pl));
+	pl = make_unique<Slab>(this);
+	characters.push_back(move(pl));
+	pl = make_unique<Suzy>(this);
+	characters.push_back(move(pl));
+	pl = make_unique<Vulture>(this);
+	characters.push_back(move(pl));
+	pl = make_unique<Willy>(this);
+	characters.push_back(move(pl));
 
 	auto rd = random_device{};
 	auto rng = default_random_engine{ rd() };
@@ -114,15 +114,16 @@ void Game::start(int players)
 			cin >> choice;
 			int num = stoi(choice);
 
-			Player* p = characters[players + num - 1];
+			Hrac p = move(characters[players + num - 1]);
 			characters.erase(characters.begin() + players + num - 1);
 			p->isai = false;
-			game_order.push_back(p);
+			game_order.push_back(move(p));
 
 			string roles = line.substr(2);
 			auto rd = random_device{};
 			auto rng = default_random_engine{ rd() };
 			shuffle(begin(roles), end(roles), rng);//pro nahodny vyber roli
+			shuffle(begin(roles), end(roles), rng);
 			shuffle(begin(roles), end(roles), rng);
 
 			for (size_t i = 0; i < players; i++)
@@ -141,17 +142,17 @@ void Game::create_players(int count)
 	{
 		if (characters[i]->ranking < characters[i + 1]->ranking)
 		{
-			Player* p = characters[i];
+			Hrac p = move(characters[i]);
 			characters.erase(characters.begin() + i);
 			p->isai = true;
-			game_order.push_back(p);
+			game_order.push_back(move(p));
 		}
 		else
 		{
-			Player* p = characters[i + 1];
+			Hrac p = move(characters[i + 1]);
 			characters.erase(characters.begin() + i + 1);
 			p->isai = true;
-			game_order.push_back(p);
+			game_order.push_back(move(p));
 		}
 	}
 }
