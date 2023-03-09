@@ -20,12 +20,15 @@ public:
 	void load_cards();
 	Card draw_from_deck();
 	void draw_cards_start();
-	void start(int players);
+	void create(int players);
 	void create_players(int count);
 	void rotate_serif();
+	bool finished();
+	void set_initial_enemies();
+	void set_distances();
 private:
 	std::vector<Hrac> game_order;
-	std::map<int, int> distances;
+	std::map<int, std::map<int, int>> distances;
 	int active_player_id;
 	int player_count;
 	int player_alive;

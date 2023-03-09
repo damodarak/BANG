@@ -1,17 +1,17 @@
-Karty postav(seřazeny podle silnosti):
-Willy the Kid,4,Může zahrát libovolný počet karet Bang.
-Calamity Janet,4,Může hrát kartu Bang místo karty Vedle a obráceně.
-Slab the Killer,4,Hráč potřebuje 2 karty Vedle proti jeho kartě Bang.
-Jourdonnais,4,Kdykoli je zasažen výstřelem karty Bang, může si líznout, pokud je karta srdcová, výstřel ho minul.
-Black Jack,4,Ukáže druhou kartu, kterou si líže. Pokud je srdcová nebo kárová, bere si ještě jednu kartu.
-Sid Ketchum,4,Za 2 vyhozené karty si může vrátit jedne život.
-Kit Carlson,4,Podívá se na vrchní tři karty z balíčku a vybere si dvě.
-Lucky Duke,4,Pokaždé když si líže kartu, vezme si vrchní dvě a vybere si jednu z nich.
-Vulture Sam,4,Kdykoli je některý hráč vyřazen ze hry, vezem si do ruky všechny karty tohoto hráče.
-Pedro Ramirez,4,První kartu si může vzít z odhazovacího balíčku.
-Jesse Jones,4,První kartu si může vzít z ruky některého hráče.
-Bart Cassidy,4,Kdykoli je zasažen, lízne si kartu.
-Rose Doolan,4,Vidí všechny hráče na vzdálenost 1 jedna větší.
-Suzy Lafayette,4,Jakmile nemá žádnou kartu v ruce, jednu si vezme
-Paul Regret,3,Jeho vzdálenost od všech hráčů je 1 jedna větší.
-El Cringo,3,Pokaždé když je zasažen hráčem, vezme si ejdnu kartu z ruky tohoto hráče.
+Karty postav(serazeny podle silnosti):
+Willy the Kid,4,Muze zahrat libovolny pocet karet Bang.
+Calamity Janet,4,Muze hrat kartu Bang misto karty Vedle a obracene.
+Slab the Killer,4,Hrac potrebuje 2 karty Vedle proti jeho karte Bang.
+Jourdonnais,4,Kdykoli je zasazen vystrelem karty Bang, muze si liznout, pokud je karta srdcova, vystrel ho minul.
+Black Jack,4,Ukaze druhou kartu, kterou si lize. Pokud je srdcova nebo karova, bere si jeste jednu kartu.
+Sid Ketchum,4,Za 2 vyhozene karty si muze vratit jeden zivot.
+Kit Carlson,4,Podiv se na vrchni tri karty z balicku a vybere si dve.
+Lucky Duke,4,Pokazde kdyz si lize kartu, vezme si vrchni dve a vybere si jednu z nich.
+Vulture Sam,4,Kdykoli je nektery hrac vyrazen ze hry, vezme si do ruky vsechny karty tohoto hrace.
+Pedro Ramirez,4,Prvni kartu si muze vzit z odhazovaciho balicku.
+Jesse Jones,4,Prvni kartu si muze vzit z ruky nektereho hrace.
+Bart Cassidy,4,Kdykoli je zasazen, lizne si kartu.
+Rose Doolan,4,Vidi vsechny hrace na vzdalenost  o jedna mensi.
+Suzy Lafayette,4,Jakmile nema zadnou kartu v ruce, jednu si vezme.
+Paul Regret,3,Jeho vzdalenost od vsech hracu je o 1 jedna vetsi.
+El Cringo,3,Pokazde kdyz je zasazen hracem, vezme si jednu kartu z ruky tohoto hrace.

@@ -10,8 +10,12 @@ int main(int argc, char* argv[])
     g.load_characters();
     g.load_cards();
 
-    g.start(4);
+    g.create(4);
     g.rotate_serif();
+    g.draw_cards_start();
+    g.set_initial_enemies();
+    g.set_distances();
+    //g.print_info();
 
     return 0;
 }
