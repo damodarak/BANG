@@ -14,7 +14,7 @@ static int next_player_id = 0;
 
 class Player {
 public:
-	Player(int rank, int max_hp, std::string char_name, Game* game) : isai(true), ranking(rank), id(++next_player_id), 
+	Player(int rank, int max_hp, const std::string& char_name, Game* game) : isai(true), ranking(rank), id(++next_player_id), 
 		health(max_hp), max_healt(max_hp), played_bang(false), name(char_name), role('?'), g(game) {};
 	virtual void draw_phase();
 	virtual void game_phase() = 0;

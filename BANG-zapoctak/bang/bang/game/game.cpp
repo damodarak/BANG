@@ -219,24 +219,40 @@ void Game::set_initial_enemies()
 		game_order[i]->set_enemy(sheriff_id);
 	}
 }
-void Game::set_distances()//todo
+void Game::set_distances()
 {
-	for (int i = 0; i < 4; i++)
-	{
-		cout << game_order[i]->id << ",";
-	}
-
 	for (size_t i = 0; i < game_order.size(); i++)
 	{
 		map<int, int> m;
 		for (size_t j = 0; j < game_order.size() / 2; j++)
 		{		
-			m[game_order[(i + j + 1) % player_count]->id] = j + 1;//forward
-			m[game_order[(i - j + 3) % player_count]->id] = j + 1;//backwards
+			m[game_order[(i + j + 1) % player_count]->id] = static_cast<int>(j) + 1;//forward
+			m[game_order[(i - j + player_count - 1) % player_count]->id] = static_cast<int>(j) + 1;//backwards
 		}
 
 		distances[game_order[i]->id] = m;
 	}
 
-	//loop for rosa/paul
+	for (size_t i = 0; i < game_order.size(); i++)
+	{
+		if (game_order[i]->name == "ROSE DOOLAN")
+		{
+			for (auto&& pl : distances.find(game_order[i]->id)->second)
+			{
+				pl.second--;
+			}
+		}
+		else if (game_order[i]->name == "PAUL REGRET")
+		{
+			int paul_id = game_order[i]->id;
+
+			for (auto&& pl : distances)
+			{
+				if (pl.first != paul_id)
+				{
+					pl.second[paul_id]++;
+				}
+			}
+		}
+	}
 }
