@@ -3,7 +3,7 @@
 
 #include "../player.h"
 
-//uvnitr game_phase nebo discard_phase
+//uvnitr discard_phase
 
 class Ketchum : public Player {
 public:
@@ -12,13 +12,8 @@ public:
 	{
 
 	}
-	virtual void discard_phase() override
-	{
-
-	}
+	virtual void discard_phase() override;
 };
-
-
 
 
 #endif

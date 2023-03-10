@@ -16,7 +16,6 @@ public:
 	{
 
 	}
-private:
 	virtual bool resolve_jail() override;
 	virtual bool resolve_dyn() override;
 };

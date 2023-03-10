@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
     g.load_characters();
     g.load_cards();
 
-    g.create(7);
+    g.create(4);
     g.rotate_serif();
     g.draw_cards_start();
     g.set_initial_enemies();

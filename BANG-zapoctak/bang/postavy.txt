@@ -6,12 +6,12 @@ Jourdonnais,4,Kdykoli je zasazen vystrelem karty Bang, muze si liznout, pokud je
 Black Jack,4,Ukaze druhou kartu, kterou si lize. Pokud je srdcova nebo karova, bere si jeste jednu kartu.
 Sid Ketchum,4,Za 2 vyhozene karty si muze vratit jeden zivot.
 Kit Carlson,4,Podiv se na vrchni tri karty z balicku a vybere si dve.
-Lucky Duke,4,Pokazde kdyz si lize kartu, vezme si vrchni dve a vybere si jednu z nich.
+BARELLucky Duke,4,Pokazde kdyz si lize kartu, vezme si vrchni dve a vybere si jednu z nich.
 Vulture Sam,4,Kdykoli je nektery hrac vyrazen ze hry, vezme si do ruky vsechny karty tohoto hrace.
 Pedro Ramirez,4,Prvni kartu si muze vzit z odhazovaciho balicku.
 Jesse Jones,4,Prvni kartu si muze vzit z ruky nektereho hrace.
 Bart Cassidy,4,Kdykoli je zasazen, lizne si kartu.
-Rose Doolan,4,Vidi vsechny hrace na vzdalenost  o jedna mensi.
+DONE-Rose Doolan,4,Vidi vsechny hrace na vzdalenost  o jedna mensi.
 Suzy Lafayette,4,Jakmile nema zadnou kartu v ruce, jednu si vezme.
-Paul Regret,3,Jeho vzdalenost od vsech hracu je o 1 jedna vetsi.
+DONE-Paul Regret,3,Jeho vzdalenost od vsech hracu je o 1 jedna vetsi.
 El Cringo,3,Pokazde kdyz je zasazen hracem, vezme si jednu kartu z ruky tohoto hrace.

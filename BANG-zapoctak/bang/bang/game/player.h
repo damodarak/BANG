@@ -3,10 +3,11 @@
 
 #include <string>
 #include <vector>
+#include <set>
 
 #include "card.h"
 
-enum Action { DRAW, PlAY, DISCARD, DISCARD_RANDOM_CARD, PLAY_MISS, PLAY_2MISS, PLAY_BANG, DRAW_JAIL, DRAW_DYN, DRAW_EMPORIO  };
+enum Action { DRAW, PlAY, DISCARD, DISCARD_RANDOM_CARD, PLAY_MISS, PLAY_2MISS, PLAY_BANG, DRAW_EMPORIO  };
 
 class Game;
 
@@ -18,11 +19,13 @@ public:
 		health(max_hp), max_healt(max_hp), played_bang(false), name(char_name), role('?'), g(game) {};
 	virtual void draw_phase();
 	virtual void game_phase() = 0;
-	virtual void discard_phase() = 0;
+	virtual void discard_phase();
 	char say_role();
 	void set_role(char r);
 	void take_card(Card& c);
-	void set_enemy(int sheriff);
+	void set_enemy(int sheriff, const std::vector<int>& ids);
+	virtual bool resolve_jail();
+	virtual bool resolve_dyn();
 
 	bool isai;
 	int ranking;//for AI to choose beter character
@@ -34,13 +37,10 @@ public:
 	std::string name;
 	std::vector<Card> cards_desk;//modre karty, ktere jsou na stole
 protected:
-	virtual bool resolve_jail();
-	virtual bool resolve_dyn();
-
 	char role;
 	std::vector<Card> cards_hand;
 	std::vector<Action> actions;
-	std::vector<int> enemies_id;
+	std::set<int> enemies_id;
 	Game* g;
 };
 

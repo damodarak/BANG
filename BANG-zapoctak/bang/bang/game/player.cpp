@@ -1,5 +1,6 @@
-#include "player.h"
 #include "game.h"
+
+using namespace std;
 
 void Player::draw_phase()
 {
@@ -10,19 +11,41 @@ void Player::draw_phase()
 		cards_hand.push_back(c);
 	}
 }
-
-bool Player::resolve_jail()//todo
+void Player::discard_phase()//todo
 {
-	int a = 0;
-	return true;
-}
+	if (cards_hand.size() <= health)
+	{
+		return;
+	}
 
-bool Player::resolve_dyn()//todo
+	while (cards_hand.size() > health)
+	{
+		for (size_t i = 0; i < cards_hand.size(); i++)
+		{
+			if (cards_hand[i].edge == 'M' || cards_hand[i].card_type == "neu")
+			{
+				g->deck.push_back(cards_desk[i]);
+				cards_hand.erase(cards_hand.begin() + i);
+			}
+			continue;
+			//todo
+		}
+	}
+}
+bool Player::resolve_jail()
 {
-	int a = 0;
-	return true;
+	Card c = g->draw_from_deck();
+	bool result = (c.suit == "Srdce" ? true : false);
+	g->deck.push_back(c);
+	return result;
 }
-
+bool Player::resolve_dyn()
+{
+	Card c = g->draw_from_deck();
+	bool result = (c.rank >= 2 && c.rank <= 9 && c.suit == "Piky" ? true : false);
+	g->deck.push_back(c);
+	return result;
+}
 void Player::set_role(char r)
 {
 	role = r;
@@ -32,7 +55,6 @@ void Player::set_role(char r)
 		health++;
 	}
 }
-
 char Player::say_role()
 {
 	return (role == 'S' ? 'S' : '?');
@@ -41,16 +63,35 @@ void Player::take_card(Card& c)
 {
 	cards_hand.push_back(c);
 }
-void Player::set_enemy(int sheriff)//todo
+void Player::set_enemy(int sheriff, const vector<int>& ids)
 {
 	switch (role)
 	{
-		case 'B':
-			enemies_id.push_back(sheriff);
-			break;
-		case 'O':
-			break;
-		default:
-			break;
+	case 'O':
+		for (auto&& pl : ids)
+		{
+			if (pl != sheriff && pl != id)
+			{
+				enemies_id.insert(pl);
+			}
+		}
+		break;
+	case 'B':
+		enemies_id.insert(sheriff);
+		break;
+	case 'V':
+		if (g->player_count == 5)
+		{
+			for (auto&& pl : ids)
+			{
+				if (pl != sheriff && pl != id)
+				{
+					enemies_id.insert(pl);
+				}
+			}
+		}
+		break;
+	default:
+		break;
 	}
 }

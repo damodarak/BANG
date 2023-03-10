@@ -62,7 +62,6 @@ void Game::load_cards()
 		Card c;
 		Card card(stoi(v[0]), v[1], v[2][0], v[3], stoi(v[4]), v[5]);
 		c = card;
-		
 		deck.push_back(c);
 	}
 
@@ -205,6 +204,7 @@ bool Game::finished()
 void Game::set_initial_enemies()
 {
 	int sheriff_id = 0;
+	vector<int> ids;
 
 	for (size_t i = 0; i < game_order.size(); i++)
 	{
@@ -212,11 +212,15 @@ void Game::set_initial_enemies()
 		{
 			sheriff_id = game_order[i]->id;
 		}
+		else
+		{
+			ids.push_back(game_order[i]->id);
+		}
 	}
 
 	for (size_t i = 0; i < game_order.size(); i++)
 	{
-		game_order[i]->set_enemy(sheriff_id);
+		game_order[i]->set_enemy(sheriff_id, ids);
 	}
 }
 void Game::set_distances()
@@ -237,10 +241,7 @@ void Game::set_distances()
 	{
 		if (game_order[i]->name == "ROSE DOOLAN")
 		{
-			for (auto&& pl : distances.find(game_order[i]->id)->second)
-			{
-				pl.second--;
-			}
+			change_distance(game_order[i]->id, -1);
 		}
 		else if (game_order[i]->name == "PAUL REGRET")
 		{
@@ -248,11 +249,27 @@ void Game::set_distances()
 
 			for (auto&& pl : distances)
 			{
-				if (pl.first != paul_id)
-				{
-					pl.second[paul_id]++;
-				}
+				change_distance(pl.first, 1, paul_id);
 			}
 		}
+	}
+}
+void Game::change_distance(int id1, int change, int id2)//zmena hrany v orientovanem ohodnocenem grafu
+{
+	if (id1 == id2)
+	{
+		return;
+	}
+
+	if (id2 == -1)
+	{
+		for (auto&& pl : distances.find(id1)->second)
+		{
+			pl.second += change;
+		}
+	}
+	else 
+	{
+		distances.find(id1)->second[id2] += change;
 	}
 }
