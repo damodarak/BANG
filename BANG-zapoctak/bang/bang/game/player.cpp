@@ -11,8 +11,12 @@ void Player::draw_phase()
 		cards_hand.push_back(c);
 	}
 }
-void Player::discard_phase()//todo
+void Player::discard_phase()
 {
+	/*
+	* > max_health/2 => odhazuju nejdriv 'neu' karty pak 'def' pak 'M' pak 'agr'
+	* <= max_health/2 => odhazuju nejriv 'neu' pak 'M' pak 'agr' pak 'def'
+	*/
 	if (cards_hand.size() <= health)
 	{
 		return;
@@ -20,15 +24,19 @@ void Player::discard_phase()//todo
 
 	while (cards_hand.size() > health)
 	{
-		for (size_t i = 0; i < cards_hand.size(); i++)
+		if (health > max_healt / 2)
 		{
-			if (cards_hand[i].edge == 'M' || cards_hand[i].card_type == "neu")
-			{
-				g->deck.push_back(cards_desk[i]);
-				cards_hand.erase(cards_hand.begin() + i);
-			}
-			continue;
-			//todo
+			bool result = (discard_card("neu") ? true : false);
+			result = (result ? true : discard_card("def"));
+			result = (result ? true : discard_blue());
+			result = (result ? true : discard_card("agr"));
+		}
+		else
+		{
+			bool result = (discard_card("neu") ? true : false);
+			result = (result ? true : discard_blue());
+			result = (result ? true : discard_card("agr"));
+			result = (result ? true : discard_card("def"));
 		}
 	}
 }
@@ -45,6 +53,10 @@ bool Player::resolve_dyn()
 	bool result = (c.rank >= 2 && c.rank <= 9 && c.suit == "Piky" ? true : false);
 	g->deck.push_back(c);
 	return result;
+}
+bool Player::resolve_barrel()
+{
+	return resolve_jail();
 }
 void Player::set_role(char r)
 {
@@ -94,4 +106,30 @@ void Player::set_enemy(int sheriff, const vector<int>& ids)
 	default:
 		break;
 	}
+}
+bool Player::discard_card(const string& type)
+{
+	for (size_t i = 0; i < cards_hand.size(); i++)
+	{
+		if (cards_hand[i].card_type == type)
+		{
+			g->deck.push_back(cards_desk[i]);
+			cards_hand.erase(cards_hand.begin() + i);
+			return true;
+		}
+	}
+	return false;
+}
+bool Player::discard_blue()
+{
+	for (size_t i = 0; i < cards_hand.size(); i++)
+	{
+		if (cards_hand[i].edge == 'M')
+		{
+			g->deck.push_back(cards_desk[i]);
+			cards_hand.erase(cards_hand.begin() + i);
+			return true;
+		}
+	}
+	return false;
 }

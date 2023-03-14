@@ -26,6 +26,7 @@ public:
 	void set_enemy(int sheriff, const std::vector<int>& ids);
 	virtual bool resolve_jail();
 	virtual bool resolve_dyn();
+	virtual bool resolve_barrel();
 
 	bool isai;
 	int ranking;//for AI to choose beter character
@@ -42,6 +43,9 @@ protected:
 	std::vector<Action> actions;
 	std::set<int> enemies_id;
 	Game* g;
+
+	bool discard_blue();
+	bool discard_card(const std::string& type);
 };
 
 #endif

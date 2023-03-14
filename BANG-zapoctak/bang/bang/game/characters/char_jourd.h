@@ -8,14 +8,7 @@
 class Jourd : public Player {
 public:
 	Jourd(Game* game) : Player(4, 4, "JOURDONNAIS", game) {};
-	virtual void game_phase() override
-	{
-
-	}
-	virtual void discard_phase() override
-	{
-
-	}
+	virtual bool resolve_barrel() override;
 };
 
 

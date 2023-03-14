@@ -3,24 +3,15 @@
 
 #include "../player.h"
 
-//private func
+//override resolve_jail/dyn/barrel
 
 class Lucky : public Player {
 public:
 	Lucky(Game* game) : Player(8, 4, "LUCKY DUKE", game) {};
-	virtual void game_phase() override
-	{
-
-	}
-	virtual void discard_phase() override
-	{
-
-	}
 	virtual bool resolve_jail() override;
 	virtual bool resolve_dyn() override;
+	virtual bool resolve_barrel() override;
 };
-
-
 
 
 #endif

@@ -8,10 +8,6 @@
 class Ketchum : public Player {
 public:
 	Ketchum(Game* game) : Player(6, 4, "SID KETCHUM", game) {};
-	virtual void game_phase() override
-	{
-
-	}
 	virtual void discard_phase() override;
 };
 
