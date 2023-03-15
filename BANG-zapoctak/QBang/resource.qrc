@@ -1,0 +1,51 @@
+<RCC>
+    <qresource prefix="/char_img">
+        <file>char_img/bart.png</file>
+        <file>char_img/blackj.png</file>
+        <file>char_img/calamity.png</file>
+        <file>char_img/carlson.png</file>
+        <file>char_img/gringo.png</file>
+        <file>char_img/jesse.png</file>
+        <file>char_img/jourd.png</file>
+        <file>char_img/ketchum.png</file>
+        <file>char_img/lucky.png</file>
+        <file>char_img/paul.png</file>
+        <file>char_img/pedro.png</file>
+        <file>char_img/rose.png</file>
+        <file>char_img/slab.png</file>
+        <file>char_img/suzy.png</file>
+        <file>char_img/vulture.png</file>
+        <file>char_img/willy.png</file>
+    </qresource>
+    <qresource prefix="/cards">
+        <file>cards/appaloosa.png</file>
+        <file>cards/back-character.png</file>
+        <file>cards/back-playing.png</file>
+        <file>cards/back-role.png</file>
+        <file>cards/bang.png</file>
+        <file>cards/barrel.png</file>
+        <file>cards/beer.png</file>
+        <file>cards/carabine.png</file>
+        <file>cards/catbalou.png</file>
+        <file>cards/deputy.png</file>
+        <file>cards/diligenza.png</file>
+        <file>cards/duel.png</file>
+        <file>cards/dynamite.png</file>
+        <file>cards/emporio.png</file>
+        <file>cards/gatling.png</file>
+        <file>cards/indians.png</file>
+        <file>cards/jail.png</file>
+        <file>cards/missed.png</file>
+        <file>cards/mustang.png</file>
+        <file>cards/outlaw.png</file>
+        <file>cards/panico.png</file>
+        <file>cards/remington.png</file>
+        <file>cards/renegade.png</file>
+        <file>cards/saloon.png</file>
+        <file>cards/sheriff.png</file>
+        <file>cards/schofield.png</file>
+        <file>cards/volcanic.png</file>
+        <file>cards/wellsfargo.png</file>
+        <file>cards/winchester.png</file>
+    </qresource>
+</RCC>
