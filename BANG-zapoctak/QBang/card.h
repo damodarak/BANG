@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <climits>
 
 class Card {
 public:
