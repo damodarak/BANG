@@ -36,6 +36,7 @@ public:
 			range = 0;
 		}
 	};
+    std::string file_loc();
 	int id;
 	std::string name;
 	char edge;//Modry, Hnedy okraj

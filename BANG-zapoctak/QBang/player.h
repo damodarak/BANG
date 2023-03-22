@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <QLabel>
+#include <QList>
 
 #include "card.h"
 
@@ -30,6 +32,7 @@ public:
 	virtual bool resolve_jail();
 	virtual bool resolve_dyn();
 	virtual bool resolve_barrel();
+    int card_count();
 
 	bool isai;
 	int ranking;//for AI to choose beter character
@@ -40,6 +43,13 @@ public:
 	bool played_bang;//po kazdem bangu se rovnou podivame, jestli mame Volcanic a pripadne zmenime tuto hodnotu
 	std::string name;
 	std::vector<Card> cards_desk;//modre karty, ktere jsou na stole
+
+    QList<QLabel *> m_l;
+    QList<QLabel *> cards_l;
+    QLabel* char_l;
+    QLabel* role_l;
+    QLabel* hp_l;
+    QLabel* count_l;
 protected:
 	char role;
 	std::vector<Card> cards_hand;

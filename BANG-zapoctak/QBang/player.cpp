@@ -56,7 +56,12 @@ bool Player::resolve_dyn()
 }
 bool Player::resolve_barrel()
 {
-	return resolve_jail();
+    return resolve_jail();
+}
+
+int Player::card_count()
+{
+    return cards_hand.size();
 }
 void Player::set_role(char r)
 {

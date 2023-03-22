@@ -23,29 +23,32 @@
         <file>cards/back-playing.png</file>
         <file>cards/back-role.png</file>
         <file>cards/bang.png</file>
-        <file>cards/barrel.png</file>
-        <file>cards/beer.png</file>
+        <file>cards/barel.png</file>
+        <file>cards/pivo.png</file>
         <file>cards/carabine.png</file>
         <file>cards/catbalou.png</file>
         <file>cards/deputy.png</file>
-        <file>cards/diligenza.png</file>
+        <file>cards/dostavnik.png</file>
         <file>cards/duel.png</file>
-        <file>cards/dynamite.png</file>
-        <file>cards/emporio.png</file>
-        <file>cards/gatling.png</file>
-        <file>cards/indians.png</file>
-        <file>cards/jail.png</file>
-        <file>cards/missed.png</file>
+        <file>cards/dynamit.png</file>
+        <file>cards/hokynarstvi.png</file>
+        <file>cards/kulomet.png</file>
+        <file>cards/indiani.png</file>
+        <file>cards/vezeni.png</file>
+        <file>cards/vedle.png</file>
         <file>cards/mustang.png</file>
         <file>cards/outlaw.png</file>
-        <file>cards/panico.png</file>
+        <file>cards/panika.png</file>
         <file>cards/remington.png</file>
         <file>cards/renegade.png</file>
-        <file>cards/saloon.png</file>
+        <file>cards/salon.png</file>
         <file>cards/sheriff.png</file>
         <file>cards/schofield.png</file>
         <file>cards/volcanic.png</file>
         <file>cards/wellsfargo.png</file>
         <file>cards/winchester.png</file>
+    </qresource>
+    <qresource prefix="/text">
+        <file>text/hraci_karty.txt</file>
     </qresource>
 </RCC>

@@ -23,10 +23,10 @@ void Game::load_characters()
 	characters.push_back(move(pl));
     pl = make_unique<Jourd>(this);
     characters.push_back(move(pl));
-//	pl = make_unique<Ketchum>(this);
-//	characters.push_back(move(pl));
-//	pl = make_unique<Lucky>(this);
-//	characters.push_back(move(pl));
+    pl = make_unique<Ketchum>(this);
+    characters.push_back(move(pl));
+    pl = make_unique<Lucky>(this);
+    characters.push_back(move(pl));
 	pl = make_unique<Paul>(this);
 	characters.push_back(move(pl));
 	pl = make_unique<Pedro>(this);
@@ -49,45 +49,15 @@ void Game::load_characters()
 		shuffle(begin(characters), end(characters), rng);//pro nahodny vyber postav
 	}
 }
-void Game::load_cards()
+void Game::load_card(vector<string>& v)
 {
-	ifstream f;
-	f.open("../../../../bang/hraci_karty.txt");
-	string line;
-	getline(f, line);
-	while (getline(f, line))
-	{
-		vector<string> v = convert_line(line);
+    Card card(stoi(v[4]), v[0], v[3][0], v[1], stoi(v[2]), v[5]);
 
-		Card c;
-		Card card(stoi(v[0]), v[1], v[2][0], v[3], stoi(v[4]), v[5]);
-		c = card;
-		deck.push_back(c);
-	}
+    deck.push_back(card);
 
 	auto rd = random_device{};
 	auto rng = default_random_engine{ rd() };
-	for (size_t i = 0; i < 20; i++)
-	{
-		shuffle(begin(deck), end(deck), rng);//pro nahodny vyber karet
-	}
-}
-vector<string> Game::convert_line(const string& line)
-{
-	size_t found1 = line.find(",");
-	string name = line.substr(0, found1);
-	size_t found2 = line.find(",", found1 + 1);
-	string suit = line.substr(found1 + 1, found2 - found1 - 1);
-	size_t found3 = line.find(",", found2 + 1);
-	string barva = line.substr(found3 + 1, 1);
-	string rank = line.substr(found2 + 1, found3 - found2 - 1);
-	size_t found4 = line.find(",", found3 + 1);
-	size_t found5 = line.find(",", found4 + 1);
-	string id = line.substr(found4 + 1, found5 - found4 - 1);
-	string type = line.substr(line.size() - 3, 3);
-
-	vector<string> v = {id, name, barva, suit, rank, type};
-	return v;
+    shuffle(begin(deck), end(deck), rng);//pro nahodny vyber karet
 }
 Card Game::draw_from_deck()
 {
@@ -96,49 +66,30 @@ Card Game::draw_from_deck()
 	deck.pop_front();
 	return c;
 }
-void Game::create(int players)
+void Game::create(int players, string roles)
 {
-	player_alive = player_count = players;
+    player_alive = player_count = players;
+    create_players(players - 1);
 
-	ifstream f;
-	f.open("../../../../bang/role.txt");
-	string line;
-	for (size_t i = 0; i < 4; i++)
-	{
-		getline(f, line);
-		if (line[0] - '0' == players)
-		{
-			create_players(players - 1);
+    int num = (characters[players]->ranking > characters[players + 1]->ranking ? players + 1 : players);
 
-			cout << "1-" << characters[players]->name << endl;
-			cout << "2-" << characters[players + 1]->name << endl;
-			cout << "choose: ";
-			string choice;
-			cin >> choice;
-			int num = stoi(choice);
+    Hrac p = move(characters[num]);
+    characters.erase(characters.begin() + num);
+    p->isai = false;
+    game_order.push_back(move(p));
 
-			Hrac p = move(characters[players + num - 1]);
-			characters.erase(characters.begin() + players + num - 1);
-			p->isai = false;
-			game_order.push_back(move(p));
+    auto rd = random_device{};
+    auto rng = default_random_engine{ rd() };
+    for (size_t i = 0; i < 20; i++)
+    {
+        shuffle(begin(roles), end(roles), rng);//pro nahodny vyber roli
+    }
 
-			string roles = line.substr(2);
-			auto rd = random_device{};
-			auto rng = default_random_engine{ rd() };
-			for (size_t i = 0; i < 20; i++)
-			{
-				shuffle(begin(roles), end(roles), rng);//pro nahodny vyber roli
-			}
+    for (size_t i = 0; i < players; i++)
+    {
+        game_order[i]->set_role(roles[i]);
+    }
 
-            for (size_t i = 0; i < (size_t)players; i++)
-			{
-				game_order[i]->set_role(roles[i]);
-			}
-
-			f.close();
-			return;
-		}
-	}
 }
 void Game::create_players(int count)
 {
@@ -272,4 +223,42 @@ void Game::change_distance(int id1, int change, int id2)//zmena hrany v orientov
 	{
 		distances.find(id1)->second[id2] += change;
 	}
+}
+void Game::clear()
+{
+    deck.clear();
+    emporio.clear();
+    characters.clear();
+    game_order.clear();
+    player_count = player_alive = active_player_id = 0;
+    distances.clear();
+}
+
+void Game::add_labels(QVector<QList<QLabel*>>& layout)
+{
+    size_t notai = 0;
+    size_t count = layout.size();
+    for(; notai < game_order.size(); notai++)
+    {
+        if(!game_order[notai]->isai)
+        {
+            break;
+        }
+    }
+    game_order[notai]->char_l = layout[count-1][0];
+    game_order[notai]->hp_l = layout[count-1][1];
+    game_order[notai]->role_l = layout[count-1][2];
+    for(int i = 3; i < 9; i++)
+    {
+        game_order[notai]->m_l.append(layout[count-1][i]);
+    }
+    for(int i = 9; i < 19; i++)
+    {
+        game_order[notai]->cards_l.append(layout[count-1][i]);
+    }
+
+    for(size_t i = 1; i <count; i++)
+    {
+        //setAILabels
+    }
 }
