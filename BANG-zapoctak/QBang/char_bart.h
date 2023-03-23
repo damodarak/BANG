@@ -7,7 +7,7 @@
 
 class Bart : public Player {
 public:
-	Bart(Game* game) : Player(12, 4, "BART CASSIDY", game) {};
+    Bart(Game* game) : Player(12, 4, "bart", game) {};
 	virtual void game_phase() override
 	{
 

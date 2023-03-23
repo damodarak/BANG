@@ -7,7 +7,7 @@
 
 class Calamity : public Player {
 public:
-	Calamity(Game* game) : Player(2, 4, "CALAMITY JANET", game) {};
+    Calamity(Game* game) : Player(2, 4, "calamity", game) {};
 	virtual void game_phase() override
 	{
 

@@ -7,7 +7,7 @@
 
 class Blackj : public Player {
 public:
-	Blackj(Game* game) : Player(5, 4, "BLACK JACK", game) {};
+    Blackj(Game* game) : Player(5, 4, "blackj", game) {};
 	virtual void draw_phase() override
 	{
 

@@ -7,7 +7,7 @@
 
 class Vulture : public Player {
 public:
-	Vulture(Game* game) : Player(9, 4, "VULTURE SAM", game) {};
+    Vulture(Game* game) : Player(9, 4, "vulture", game) {};
 	virtual void game_phase() override
 	{
 

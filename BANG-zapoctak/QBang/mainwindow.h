@@ -26,11 +26,13 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QVector<QList<QLabel*>> layout;
-    Game g;  
+    QList<QLabel*> emporio;
+    QLabel* discarded;
+    QLabel* deck;
+    Game* g;
 
     void SetLabel(QLabel* q, const QString& s);
     void LoadCards();
-    void ResetGame();
     void PaintLayout();
     void ClearLabels();
     void LoadLabels();

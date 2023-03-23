@@ -7,7 +7,7 @@
 
 class Jourd : public Player {
 public:
-	Jourd(Game* game) : Player(4, 4, "JOURDONNAIS", game) {};
+    Jourd(Game* game) : Player(4, 4, "jourd", game) {};
     virtual bool resolve_barrel() override {return true;};
 };
 

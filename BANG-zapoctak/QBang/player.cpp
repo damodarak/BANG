@@ -63,6 +63,30 @@ int Player::card_count()
 {
     return cards_hand.size();
 }
+
+QString Player::file_loc()
+{
+    string end = ":/char_img/char_img/" + name + ".png";
+    return QString::fromStdString(end);
+}
+
+QString Player::role_loc()
+{
+    switch(role)
+    {
+        case 'S':
+            return ":/cards/cards/sheriff.png";
+        case 'V':
+            return ":/cards/cards/deputy.png";
+        case 'O':
+            return ":/cards/cards/renegade.png";
+        case 'B':
+            return ":/cards/cards/outlaw.png";
+        default:
+            break;
+    }
+    return "";
+}
 void Player::set_role(char r)
 {
 	role = r;

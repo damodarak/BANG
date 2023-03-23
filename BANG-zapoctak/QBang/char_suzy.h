@@ -7,7 +7,7 @@
 
 class Suzy : public Player {
 public:
-	Suzy(Game* game) : Player(14, 4, "SUZE LAFAZETTE", game) {};
+    Suzy(Game* game) : Player(14, 4, "suzy", game) {};
 	virtual void game_phase() override
 	{
 

@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <climits>
+#include <QString>
 
 class Card {
 public:
@@ -36,7 +37,7 @@ public:
 			range = 0;
 		}
 	};
-    std::string file_loc();
+    QString file_loc();
 	int id;
 	std::string name;
 	char edge;//Modry, Hnedy okraj

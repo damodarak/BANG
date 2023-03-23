@@ -7,7 +7,7 @@
 
 class Pedro : public Player {
 public:
-	Pedro(Game* game) : Player(10, 4, "PEDRO RAMIREZ", game) {};
+    Pedro(Game* game) : Player(10, 4, "pedro", game) {};
 	virtual void draw_phase() override
 	{
 

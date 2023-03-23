@@ -16,17 +16,19 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ClearLabels();
+    LoadLabels();
+    g = new Game();
 }
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete g;
 }
 void MainWindow::SetLabel(QLabel* q, const QString& s)
 {
     QPixmap px(s);
-    int w = q->width();
-    int h = q->height();
-    q->setPixmap(px.scaled(w,h,Qt::KeepAspectRatio));
+    q->setPixmap(px);
 }
 void MainWindow::LoadCards()
 {
@@ -45,7 +47,7 @@ void MainWindow::LoadCards()
         foreach( QString str, list) {
           vec.push_back(str.toStdString());
         }
-        g.load_card(vec);
+        g->load_card(vec);
     }
     file.close();
 }
@@ -57,30 +59,31 @@ void MainWindow::ClearLabels()
         l->clear();
     }
 }
-void MainWindow::ResetGame()
-{
-    g.clear();
-    g.load_characters();
-    LoadCards();
-}
 void MainWindow::on_actionStart_4_triggered()
 {
 //    4-SBBO
 //    5-SBBOV
 //    6-SBBOVB
 //    7-SBBOVBV
-    LoadLabels();
-    ResetGame();
-    g.create(4, "SBBO");
-    g.rotate_serif();
-    g.draw_cards_start();
-    g.set_initial_enemies();
-    g.set_distances();
-    g.add_labels(layout);
+    delete g;
+    g = new Game();
+
+    g->load_characters();
+    LoadCards();
+    g->create(4, "SBBO");
+    g->rotate_serif();
+    g->draw_cards_start();
+    g->set_initial_enemies();//todo
+    g->set_distances();
+    g->add_labels(layout);
     PaintLayout();
 }
 void MainWindow::LoadLabels()
 {
+    emporio = ui->emporio->findChildren<QLabel*>();
+    discarded = ui->discarded;
+    deck = ui->deck;
+
     QList<QLabel *> list = ui->gb1->findChildren<QLabel *>();
     layout.append(list);
     list = ui->gb2->findChildren<QLabel *>();
@@ -102,7 +105,45 @@ void MainWindow::LoadLabels()
     pl.append(ui->pl_k->findChildren<QLabel*>());
     layout.append(pl);
 }
-void MainWindow::PaintLayout()
+void MainWindow::PaintLayout()//emporio
 {
+    //CENTER
     ClearLabels();
+    SetLabel(deck, ":/cards/cards/back-playing.png");
+    SetLabel(discarded, g->deck.back().file_loc());
+
+    //EMPORIO
+    for(size_t i = 0; i < g->emporio.size(); i++)
+    {
+        SetLabel(emporio[i], g->emporio[i].file_loc());
+    }
+
+    //REAL PERSON
+    SetLabel(g->game_order[g->notai]->char_l, g->game_order[g->notai]->file_loc());
+    g->game_order[g->notai]->hp_l->setText(QString::number(g->game_order[g->notai]->health));
+    SetLabel(g->game_order[g->notai]->role_l, g->game_order[g->notai]->role_loc());
+    for(size_t i = 0; i < g->game_order[g->notai]->cards_hand.size(); i++)
+    {
+        SetLabel(g->game_order[g->notai]->cards_l[i], g->game_order[g->notai]->cards_hand[i].file_loc());
+    }
+    for(size_t i = 0; i < g->game_order[g->notai]->cards_desk.size(); i++)
+    {
+        SetLabel(g->game_order[g->notai]->m_l[i], g->game_order[g->notai]->cards_hand[i].file_loc());
+    }
+
+    //AI
+    for(size_t i = 0; i < g->game_order.size(); i++)
+    {
+        if(i != g->notai)
+        {
+            SetLabel(g->game_order[i]->char_l, g->game_order[i]->file_loc());
+            g->game_order[i]->hp_l->setText(QString::number(g->game_order[i]->health));
+            SetLabel(g->game_order[i]->card_l, ":/cards/cards/back-playing.png");
+            g->game_order[i]->count_l->setText(QString::number(g->game_order[i]->cards_hand.size()));
+            for(size_t j = 0; j < g->game_order[i]->cards_desk.size(); j++)
+            {
+                SetLabel(g->game_order[i]->m_l[j], g->game_order[i]->cards_desk[j].file_loc());
+            }
+        }
+    }
 }

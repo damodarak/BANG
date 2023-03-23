@@ -5,7 +5,7 @@
 
 class Willy : public Player {
 public:
-	Willy(Game* game) : Player(1, 4, "WILLY THE KID", game) {};
+    Willy(Game* game) : Player(1, 4, "willy", game) {};
 	virtual void game_phase() override
 	{
 

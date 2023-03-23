@@ -6,6 +6,7 @@
 #include <set>
 #include <QLabel>
 #include <QList>
+#include <QString>
 
 #include "card.h"
 
@@ -33,6 +34,8 @@ public:
 	virtual bool resolve_dyn();
 	virtual bool resolve_barrel();
     int card_count();
+    QString file_loc();
+    QString role_loc();
 
 	bool isai;
 	int ranking;//for AI to choose beter character
@@ -46,10 +49,13 @@ public:
 
     QList<QLabel *> m_l;
     QList<QLabel *> cards_l;
+    QLabel* card_l;
     QLabel* char_l;
     QLabel* role_l;
     QLabel* hp_l;
     QLabel* count_l;
+
+    friend class MainWindow;
 protected:
 	char role;
 	std::vector<Card> cards_hand;

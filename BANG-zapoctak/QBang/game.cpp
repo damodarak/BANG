@@ -80,12 +80,12 @@ void Game::create(int players, string roles)
 
     auto rd = random_device{};
     auto rng = default_random_engine{ rd() };
-    for (size_t i = 0; i < 20; i++)
+    for (int i = 0; i < 20; i++)
     {
         shuffle(begin(roles), end(roles), rng);//pro nahodny vyber roli
     }
 
-    for (size_t i = 0; i < players; i++)
+    for (int i = 0; i < players; i++)
     {
         game_order[i]->set_role(roles[i]);
     }
@@ -224,20 +224,9 @@ void Game::change_distance(int id1, int change, int id2)//zmena hrany v orientov
 		distances.find(id1)->second[id2] += change;
 	}
 }
-void Game::clear()
-{
-    deck.clear();
-    emporio.clear();
-    characters.clear();
-    game_order.clear();
-    player_count = player_alive = active_player_id = 0;
-    distances.clear();
-}
-
 void Game::add_labels(QVector<QList<QLabel*>>& layout)
 {
-    size_t notai = 0;
-    size_t count = layout.size();
+    size_t count = game_order.size();
     for(; notai < game_order.size(); notai++)
     {
         if(!game_order[notai]->isai)
@@ -245,20 +234,31 @@ void Game::add_labels(QVector<QList<QLabel*>>& layout)
             break;
         }
     }
-    game_order[notai]->char_l = layout[count-1][0];
-    game_order[notai]->hp_l = layout[count-1][1];
-    game_order[notai]->role_l = layout[count-1][2];
+    game_order[notai]->char_l = layout[6][0];
+    game_order[notai]->hp_l = layout[6][1];
+    game_order[notai]->role_l = layout[6][2];
     for(int i = 3; i < 9; i++)
     {
-        game_order[notai]->m_l.append(layout[count-1][i]);
+        game_order[notai]->m_l.append(layout[6][i]);
     }
     for(int i = 9; i < 19; i++)
     {
-        game_order[notai]->cards_l.append(layout[count-1][i]);
+        game_order[notai]->cards_l.append(layout[6][i]);
     }
 
     for(size_t i = 1; i <count; i++)
     {
-        //setAILabels
+        add_label_ai((notai - i + count) % count, layout[i]);
+    }
+}
+void Game::add_label_ai(int ai, QList<QLabel*>& labels)
+{
+    game_order[ai]->char_l = labels[0];
+    game_order[ai]->hp_l = labels[1];
+    game_order[ai]->card_l = labels[2];
+    game_order[ai]->count_l = labels[3];
+    for(int i = 4; i < 10; i++)
+    {
+        game_order[ai]->m_l.append(labels[i]);
     }
 }

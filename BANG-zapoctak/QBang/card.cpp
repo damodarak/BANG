@@ -4,7 +4,7 @@
 
 using namespace std;
 
-string Card::file_loc()
+QString Card::file_loc()
 {
     string cname = name;
     for(auto&& c : cname)
@@ -12,5 +12,6 @@ string Card::file_loc()
         c = tolower(c);
     }
 
-    return cname + ".png";
+    string end = ":/cards/cards/" + cname + ".png";
+    return QString::fromStdString(end);
 }
