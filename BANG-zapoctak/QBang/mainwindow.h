@@ -23,6 +23,8 @@ public:
 private slots:
     void on_actionStart_4_triggered();
 
+    void on_actionStart_7_triggered();
+
 private:
     Ui::MainWindow *ui;
     QVector<QList<QLabel*>> layout;

@@ -36,9 +36,9 @@ public:
 	int player_count;
 	int player_alive;
     size_t notai;
-    std::vector<Hrac> characters;
     std::vector<Hrac> game_order;
 private:	
+    std::vector<Hrac> characters;
 	std::map<int, std::map<int, int>> distances;
 	int active_player_id;
 };

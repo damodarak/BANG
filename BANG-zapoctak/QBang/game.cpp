@@ -190,11 +190,11 @@ void Game::set_distances()
 
 	for (size_t i = 0; i < game_order.size(); i++)
 	{
-		if (game_order[i]->name == "ROSE DOOLAN")
+        if (game_order[i]->name == "rose")
 		{
 			change_distance(game_order[i]->id, -1);
 		}
-		else if (game_order[i]->name == "PAUL REGRET")
+        else if (game_order[i]->name == "paul")
 		{
 			int paul_id = game_order[i]->id;
 
@@ -227,7 +227,7 @@ void Game::change_distance(int id1, int change, int id2)//zmena hrany v orientov
 void Game::add_labels(QVector<QList<QLabel*>>& layout)
 {
     size_t count = game_order.size();
-    for(; notai < game_order.size(); notai++)
+    for(; notai < count; notai++)
     {
         if(!game_order[notai]->isai)
         {
@@ -248,7 +248,7 @@ void Game::add_labels(QVector<QList<QLabel*>>& layout)
 
     for(size_t i = 1; i <count; i++)
     {
-        add_label_ai((notai - i + count) % count, layout[i]);
+        add_label_ai((notai - i + count) % count, layout[i - 1]);
     }
 }
 void Game::add_label_ai(int ai, QList<QLabel*>& labels)
@@ -257,7 +257,8 @@ void Game::add_label_ai(int ai, QList<QLabel*>& labels)
     game_order[ai]->hp_l = labels[1];
     game_order[ai]->card_l = labels[2];
     game_order[ai]->count_l = labels[3];
-    for(int i = 4; i < 10; i++)
+    game_order[ai]->role_l = labels[4];
+    for(int i = 5; i < 11; i++)
     {
         game_order[ai]->m_l.append(labels[i]);
     }

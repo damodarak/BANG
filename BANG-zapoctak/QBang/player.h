@@ -47,6 +47,15 @@ public:
 	std::string name;
 	std::vector<Card> cards_desk;//modre karty, ktere jsou na stole
 
+    friend class MainWindow;
+    friend class Game;
+protected:
+	char role;
+	std::vector<Card> cards_hand;
+	std::vector<Action> actions;
+	std::set<int> enemies_id;
+	Game* g;
+
     QList<QLabel *> m_l;
     QList<QLabel *> cards_l;
     QLabel* card_l;
@@ -54,14 +63,6 @@ public:
     QLabel* role_l;
     QLabel* hp_l;
     QLabel* count_l;
-
-    friend class MainWindow;
-protected:
-	char role;
-	std::vector<Card> cards_hand;
-	std::vector<Action> actions;
-	std::set<int> enemies_id;
-	Game* g;
 
 	bool discard_blue();
 	bool discard_card(const std::string& type);

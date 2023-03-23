@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1377</width>
+    <width>1415</width>
     <height>773</height>
    </rect>
   </property>
@@ -19,9 +19,12 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>341</width>
+      <width>351</width>
       <height>251</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: #FAEBD7;</string>
     </property>
     <property name="title">
      <string>ID2</string>
@@ -129,6 +132,28 @@
           </property>
           <property name="text">
            <string>count</string>
+          </property>
+          <property name="scaledContents">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="role_2">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>50</width>
+            <height>100</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>role</string>
           </property>
           <property name="scaledContents">
            <bool>true</bool>
@@ -279,11 +304,14 @@
    <widget class="QGroupBox" name="gb3">
     <property name="geometry">
      <rect>
-      <x>340</x>
+      <x>360</x>
       <y>0</y>
-      <width>341</width>
+      <width>351</width>
       <height>251</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: #FAEBD7;</string>
     </property>
     <property name="title">
      <string>ID3</string>
@@ -391,6 +419,28 @@
           </property>
           <property name="text">
            <string>count</string>
+          </property>
+          <property name="scaledContents">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="role_3">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>50</width>
+            <height>100</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>role</string>
           </property>
           <property name="scaledContents">
            <bool>true</bool>
@@ -541,11 +591,14 @@
    <widget class="QGroupBox" name="gb4">
     <property name="geometry">
      <rect>
-      <x>680</x>
+      <x>710</x>
       <y>0</y>
-      <width>341</width>
+      <width>351</width>
       <height>251</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: #FAEBD7;</string>
     </property>
     <property name="title">
      <string>ID4</string>
@@ -653,6 +706,28 @@
           </property>
           <property name="text">
            <string>count</string>
+          </property>
+          <property name="scaledContents">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="role_4">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>50</width>
+            <height>100</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>role</string>
           </property>
           <property name="scaledContents">
            <bool>true</bool>
@@ -803,11 +878,14 @@
    <widget class="QGroupBox" name="gb5">
     <property name="geometry">
      <rect>
-      <x>1020</x>
+      <x>1060</x>
       <y>0</y>
-      <width>341</width>
+      <width>351</width>
       <height>251</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: #FAEBD7;</string>
     </property>
     <property name="title">
      <string>ID5</string>
@@ -915,6 +993,28 @@
           </property>
           <property name="text">
            <string>count</string>
+          </property>
+          <property name="scaledContents">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="role_5">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>50</width>
+            <height>100</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>role</string>
           </property>
           <property name="scaledContents">
            <bool>true</bool>
@@ -1067,9 +1167,12 @@
      <rect>
       <x>0</x>
       <y>250</y>
-      <width>341</width>
+      <width>351</width>
       <height>251</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: #FAEBD7;</string>
     </property>
     <property name="title">
      <string>ID1</string>
@@ -1177,6 +1280,28 @@
           </property>
           <property name="text">
            <string>count</string>
+          </property>
+          <property name="scaledContents">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="role_1">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>50</width>
+            <height>100</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>role</string>
           </property>
           <property name="scaledContents">
            <bool>true</bool>
@@ -1327,11 +1452,14 @@
    <widget class="QGroupBox" name="gb6">
     <property name="geometry">
      <rect>
-      <x>1020</x>
-      <y>240</y>
-      <width>341</width>
+      <x>1060</x>
+      <y>250</y>
+      <width>351</width>
       <height>251</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: #FAEBD7;</string>
     </property>
     <property name="title">
      <string>ID6</string>
@@ -1439,6 +1567,28 @@
           </property>
           <property name="text">
            <string>count</string>
+          </property>
+          <property name="scaledContents">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_6">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>50</width>
+            <height>100</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>role</string>
           </property>
           <property name="scaledContents">
            <bool>true</bool>
@@ -1594,6 +1744,9 @@
       <width>431</width>
       <height>131</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: #FAEBD7;</string>
     </property>
     <property name="title">
      <string>Modre</string>
@@ -1751,6 +1904,9 @@
       <width>591</width>
       <height>131</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: #FAEBD7;</string>
     </property>
     <property name="title">
      <string>Karty</string>
@@ -2024,10 +2180,13 @@
     <property name="geometry">
      <rect>
       <x>400</x>
-      <y>420</y>
+      <y>430</y>
       <width>591</width>
-      <height>141</height>
+      <height>151</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: #FAEBD7;</string>
     </property>
     <property name="title">
      <string>Emporio</string>
@@ -2036,7 +2195,7 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>10</y>
+       <y>20</y>
        <width>561</width>
        <height>121</height>
       </rect>
@@ -2169,7 +2328,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1377</width>
+     <width>1415</width>
      <height>26</height>
     </rect>
    </property>

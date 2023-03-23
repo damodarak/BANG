@@ -59,25 +59,6 @@ void MainWindow::ClearLabels()
         l->clear();
     }
 }
-void MainWindow::on_actionStart_4_triggered()
-{
-//    4-SBBO
-//    5-SBBOV
-//    6-SBBOVB
-//    7-SBBOVBV
-    delete g;
-    g = new Game();
-
-    g->load_characters();
-    LoadCards();
-    g->create(4, "SBBO");
-    g->rotate_serif();
-    g->draw_cards_start();
-    g->set_initial_enemies();//todo
-    g->set_distances();
-    g->add_labels(layout);
-    PaintLayout();
-}
 void MainWindow::LoadLabels()
 {
     emporio = ui->emporio->findChildren<QLabel*>();
@@ -105,7 +86,7 @@ void MainWindow::LoadLabels()
     pl.append(ui->pl_k->findChildren<QLabel*>());
     layout.append(pl);
 }
-void MainWindow::PaintLayout()//emporio
+void MainWindow::PaintLayout()
 {
     //CENTER
     ClearLabels();
@@ -140,6 +121,7 @@ void MainWindow::PaintLayout()//emporio
             g->game_order[i]->hp_l->setText(QString::number(g->game_order[i]->health));
             SetLabel(g->game_order[i]->card_l, ":/cards/cards/back-playing.png");
             g->game_order[i]->count_l->setText(QString::number(g->game_order[i]->cards_hand.size()));
+            SetLabel(g->game_order[i]->role_l, g->game_order[i]->role_loc());
             for(size_t j = 0; j < g->game_order[i]->cards_desk.size(); j++)
             {
                 SetLabel(g->game_order[i]->m_l[j], g->game_order[i]->cards_desk[j].file_loc());
@@ -147,3 +129,38 @@ void MainWindow::PaintLayout()//emporio
         }
     }
 }
+void MainWindow::on_actionStart_4_triggered()
+{
+//    4-SBBO
+//    5-SBBOV
+//    6-SBBOVB
+//    7-SBBOVBV
+    delete g;
+    g = new Game();
+
+    g->load_characters();
+    LoadCards();
+    g->create(4, "SBBO");
+    g->rotate_serif();
+    g->draw_cards_start();
+    g->set_initial_enemies();//todo
+    g->set_distances();
+    g->add_labels(layout);
+    PaintLayout();
+}
+void MainWindow::on_actionStart_7_triggered()
+{
+    delete g;
+    g = new Game();
+
+    g->load_characters();
+    LoadCards();
+    g->create(7, "SBBOVBV");
+    g->rotate_serif();
+    g->draw_cards_start();
+    g->set_initial_enemies();//todo
+    g->set_distances();
+    g->add_labels(layout);
+    PaintLayout();
+}
+

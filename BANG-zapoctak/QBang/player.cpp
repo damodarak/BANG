@@ -77,11 +77,11 @@ QString Player::role_loc()
         case 'S':
             return ":/cards/cards/sheriff.png";
         case 'V':
-            return ":/cards/cards/deputy.png";
+            return (health > 0  && isai ? ":/cards/cards/back-role.png" : ":/cards/cards/deputy.png");
         case 'O':
-            return ":/cards/cards/renegade.png";
+            return (health > 0  && isai ? ":/cards/cards/back-role.png" : ":/cards/cards/renegade.png");
         case 'B':
-            return ":/cards/cards/outlaw.png";
+            return (health > 0  && isai ? ":/cards/cards/back-role.png" : ":/cards/cards/outlaw.png");
         default:
             break;
     }
