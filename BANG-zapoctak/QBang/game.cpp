@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <random>
 #include <fstream>
 #include <string>
 
@@ -123,7 +122,7 @@ void Game::draw_cards_start()
 	Card c;
 	for (size_t i = 0; i < game_order.size(); i++)
 	{
-        for (size_t j = 0; j < (size_t)game_order[i]->max_healt; j++)
+        for (size_t j = 0; j < (size_t)game_order[i]->max_health; j++)
 		{
 			c = draw_from_deck();
 			game_order[i]->take_card(c);
@@ -176,6 +175,7 @@ void Game::set_initial_enemies()
 }
 void Game::set_distances()
 {
+    //ZAKLADNI GRAF
 	for (size_t i = 0; i < game_order.size(); i++)
 	{
 		map<int, int> m;
@@ -188,6 +188,7 @@ void Game::set_distances()
 		distances[game_order[i]->id] = m;
 	}
 
+    //SCHOPNOSTI POSTAV
 	for (size_t i = 0; i < game_order.size(); i++)
 	{
         if (game_order[i]->name == "rose")
@@ -204,6 +205,36 @@ void Game::set_distances()
 			}
 		}
 	}
+
+    //ZBRANE
+    for(size_t i = 0; i < game_order.size(); i++)
+    {
+        if(game_order[i]->has_gun() != -1)
+        {
+            change_distance(game_order[i]->id, -(game_order[i]->has_gun() - 1));
+        }
+    }
+
+    //KONE
+    for(size_t i = 0; i < game_order.size(); i++)
+    {
+        if(game_order[i]->index(game_order[i]->cards_desk, "Appaloosa") != -1)
+        {
+            change_distance(game_order[i]->id, -1);
+        }
+    }
+    for(size_t i = 0; i < game_order.size(); i++)
+    {
+        if(game_order[i]->index(game_order[i]->cards_desk, "Mustang") != -1)
+        {
+            int id = game_order[i]->id;
+
+            for (auto&& pl : distances)
+            {
+                change_distance(pl.first, 1, id);
+            }
+        }
+    }
 }
 void Game::change_distance(int id1, int change, int id2)//zmena hrany v orientovanem ohodnocenem grafu
 {

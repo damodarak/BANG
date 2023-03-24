@@ -35,6 +35,10 @@ private slots:
 
     void on_ability_clicked();
 
+    void on_actionStart_5_triggered();
+
+    void on_actionStart_6_triggered();
+
 private:
     Ui::MainWindow *ui;
     QVector<QList<QLabel*>> layout;
@@ -50,5 +54,6 @@ private:
     void ClearLabels();
     void LoadLabels();
     void AddLivePlayers();
+    void Start(int players, const std::string& roles);
 };
 #endif // MAINWINDOW_H

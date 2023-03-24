@@ -11,8 +11,14 @@ CONFIG += c++17
 SOURCES += \
     card.cpp \
     char_bart.cpp \
+    char_blackj.cpp \
+    char_carlson.cpp \
+    char_jesse.cpp \
+    char_jourd.cpp \
     char_ketchum.cpp \
     char_lucky.cpp \
+    char_pedro.cpp \
+    char_suzy.cpp \
     game.cpp \
     main.cpp \
     mainwindow.cpp \

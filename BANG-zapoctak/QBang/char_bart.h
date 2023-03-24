@@ -7,7 +7,7 @@
 
 class Bart : public Player {
 public:
-    Bart(Game* game) : Player(12, 4, "bart", game) {};
+    Bart(Game* game) : Player(12, 4, "bart", game) {}
     virtual bool dec_hp(int lifes) override;
 };
 

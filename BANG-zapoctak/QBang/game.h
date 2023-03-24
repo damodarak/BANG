@@ -8,6 +8,7 @@
 #include <memory>
 #include <string>
 #include <QVector>
+#include <random>
 
 #include "player.h"
 #include "characters.h"
@@ -16,7 +17,7 @@ typedef std::unique_ptr<Player> Hrac;
 
 class Game {
 public:
-    Game() : player_count(0), player_alive(0), notai(0), active_player(0) {};
+    Game() : player_count(0), player_alive(0), notai(0), active_player(0) {}
 	void load_characters();
     void load_card(std::vector<std::string>& v);
 	Card draw_from_deck();

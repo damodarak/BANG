@@ -5,10 +5,7 @@
 
 class Vulture : public Player {
 public:
-    Vulture(Game* game) : Player(9, 4, "vulture", game) {};
+    Vulture(Game* game) : Player(9, 4, "vulture", game) {}
 };
-
-
-
 
 #endif

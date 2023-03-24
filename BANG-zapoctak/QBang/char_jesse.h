@@ -7,19 +7,9 @@
 
 class Jesse : public Player {
 public:
-    Jesse(Game* game) : Player(11, 4, "jesse", game) {};
-	virtual void draw_phase() override
-	{
-
-	}
-	virtual void game_phase() override
-	{
-
-	}
-	virtual void discard_phase() override
-	{
-
-	}
+    Jesse(Game* game) : Player(11, 4, "jesse", game) {}
+    virtual void draw_phase() override;
+    virtual void ability() override;
 };
 
 

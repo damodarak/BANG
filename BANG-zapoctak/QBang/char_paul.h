@@ -7,18 +7,7 @@
 
 class Paul : public Player {
 public:
-    Paul(Game* game) : Player(15, 3, "paul", game) {};
-	virtual void game_phase() override
-	{
-
-	}
-	virtual void discard_phase() override
-	{
-
-	}
+    Paul(Game* game) : Player(15, 3, "paul", game) {}
 };
-
-
-
 
 #endif

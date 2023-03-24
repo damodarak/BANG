@@ -7,15 +7,11 @@
 
 class Suzy : public Player {
 public:
-    Suzy(Game* game) : Player(14, 4, "suzy", game) {};
-	virtual void game_phase() override
-	{
-
-	}
-	virtual void discard_phase() override
-	{
-
-	}
+    Suzy(Game* game) : Player(14, 4, "suzy", game) {}
+    virtual int game_phase() override;
+    virtual Card give_random_card() override;
+    virtual Card give_random_card_hand() override;
+    virtual void ability() override;
 };
 
 

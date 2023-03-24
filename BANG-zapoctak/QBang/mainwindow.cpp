@@ -107,6 +107,22 @@ void MainWindow::AddLivePlayers()
         ui->choose_p->addItem(QIcon(g->game_order[i]->file_loc()), QString::fromStdString(g->game_order[i]->name));
     }
 }
+void MainWindow::Start(int players, const std::string& roles)
+{
+    delete g;
+    g = new Game();
+
+    g->load_characters();
+    LoadCards();
+    g->create(players, roles);
+    g->rotate_serif();
+    g->draw_cards_start();
+    g->set_initial_enemies();
+    g->set_distances();
+    g->add_labels(layout);
+    notai = g->notai;
+    PaintLayout();
+}
 void MainWindow::PaintLayout()
 {
     AddLivePlayers();
@@ -180,43 +196,23 @@ void MainWindow::PaintLayout()
 }
 void MainWindow::on_actionStart_4_triggered()
 {
-//    4-SBBO
-//    5-SBBOV
-//    6-SBBOVB
-//    7-SBBOVBV
-    delete g;
-    g = new Game();
-
-    g->load_characters();
-    LoadCards();
-    g->create(4, "SBBO");
-    g->rotate_serif();
-    g->draw_cards_start();
-    g->set_initial_enemies();//todo
-    g->set_distances();   
-    g->add_labels(layout);
-    notai = g->notai;
-    PaintLayout();
+    Start(4, "SBBO");
+}
+void MainWindow::on_actionStart_5_triggered()
+{
+    Start(5, "SBBOV");
+}
+void MainWindow::on_actionStart_6_triggered()
+{
+    Start(6, "SBBOVB");
 }
 void MainWindow::on_actionStart_7_triggered()
 {
-    delete g;
-    g = new Game();
-
-    g->load_characters();
-    LoadCards();
-    g->create(7, "SBBOVBV");
-    g->rotate_serif();
-    g->draw_cards_start();
-    g->set_initial_enemies();//todo
-    g->set_distances();
-    g->add_labels(layout);
-    notai = g->notai;
-    PaintLayout();
+    Start(7, "SBBOVBV");
 }
 void MainWindow::on_play_clicked()
 {
-
+    g->game_order[notai]->drawed = true;
 }
 void MainWindow::on_draw_clicked()
 {
@@ -230,16 +226,20 @@ void MainWindow::on_draw_clicked()
 }
 void MainWindow::on_discard_clicked()
 {
+    g->game_order[notai]->drawed = true;
     int i = ui->choose_d->currentIndex();
+    if(i == -1)
+    {
+        return;
+    }
     g->game_order[notai]->discard_card(i);
     PaintLayout();
 }
 void MainWindow::on_finish_clicked()
 {
-
+    g->game_order[notai]->drawed = true;
 }
 void MainWindow::on_ability_clicked()
 {
-
+    g->game_order[notai]->drawed = true;
 }
-

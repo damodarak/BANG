@@ -24,7 +24,7 @@ void Player::discard_phase()
 
     while (cards_hand.size() > (size_t)health)
 	{
-		if (health > max_healt / 2)
+        if (health > max_health / 2)
 		{
 			bool result = (discard_card("neu") ? true : false);
 			result = (result ? true : discard_card("def"));
@@ -56,20 +56,19 @@ bool Player::resolve_dyn()
 }
 bool Player::resolve_barrel()
 {
-    return resolve_jail();
+    bool result = resolve_jail();
+    played_vedle += (result ? 1 : 0);
+    return result;
 }
-
 int Player::card_count()
 {
     return cards_hand.size();
 }
-
 QString Player::file_loc()
 {
     string end = ":/char_img/char_img/" + name + ".png";
     return QString::fromStdString(end);
 }
-
 QString Player::role_loc()
 {
     switch(role)
@@ -87,12 +86,24 @@ QString Player::role_loc()
     }
     return "";
 }
+
+int Player::has_gun()
+{
+    for(size_t i = 0; i < cards_desk.size(); i++)
+    {
+        if(cards_desk[i].range != 0)
+        {
+            return cards_desk[i].range;
+        }
+    }
+    return -1;
+}
 void Player::set_role(char r)
 {
 	role = r;
 	if (role == 'S')
 	{
-		max_healt++;
+        max_health++;
 		health++;
 	}
 }
@@ -134,7 +145,45 @@ void Player::set_enemy(int sheriff, const vector<int>& ids)
 		break;
 	default:
 		break;
-	}
+    }
+}
+Card Player::give_random_card()
+{
+    size_t max = cards_hand.size() + cards_desk.size() - 1;
+
+    random_device dev;
+    mt19937 rng(dev());
+    uniform_int_distribution<std::mt19937::result_type> dist(0,max);
+
+    size_t i = dist(rng);
+    if(i < cards_hand.size())
+    {
+        Card c;
+        c = cards_hand[i];
+        cards_hand.erase(cards_hand.begin() + i);
+        return c;
+    }
+    else
+    {
+        Card c;
+        c = cards_desk[i - cards_hand.size()];
+        cards_desk.erase(cards_hand.begin() + i - cards_hand.size());
+        return c;
+    }
+}
+Card Player::give_random_card_hand()
+{
+    size_t max = cards_hand.size() - 1;
+
+    random_device dev;
+    mt19937 rng(dev());
+    uniform_int_distribution<std::mt19937::result_type> dist(0,max);
+
+    size_t i = dist(rng);
+    Card c;
+    c = cards_hand[i];
+    cards_hand.erase(cards_hand.begin() + i);
+    return c;
 }
 bool Player::discard_card(const string& type)
 {
@@ -149,11 +198,62 @@ bool Player::discard_card(const string& type)
 	}
     return false;
 }
-
 void Player::discard_card(int index)
 {
     g->deck.push_back(cards_hand[index]);
     cards_hand.erase(cards_hand.begin() + index);
+}
+int Player::index(const std::vector<Card>& cards, const std::string& name_type)
+{
+    for(size_t i = 0; i < cards.size(); i++)
+    {
+        if(cards[i].name == name_type || cards[i].card_type == name_type)
+        {
+            return static_cast<int>(i);
+        }
+    }
+    return -1;
+}
+int Player::choose(const std::vector<Card>& cards)
+{
+    if(index(cards, "Dostavnik") != -1)
+    {
+        return index(cards, "Dostavnik");
+    }
+    else if(index(cards, "WellsFargo") != -1)
+    {
+        return index(cards, "WellsFargo");
+    }
+    else if(health > max_health / 2)
+    {
+        if(index(cards, "agr") != -1)
+        {
+            return index(cards, "agr");
+        }
+        else if(index(cards, "def") != -1)
+        {
+            return index(cards, "def");
+        }
+        else
+        {
+            return index(cards, "neu");
+        }
+    }
+    else
+    {
+        if(index(cards, "def") != -1)
+        {
+            return index(cards, "def");
+        }
+        else if(index(cards, "agr") != -1)
+        {
+            return index(cards, "agr");
+        }
+        else
+        {
+            return index(cards, "neu");
+        }
+    }
 }
 bool Player::discard_blue()
 {

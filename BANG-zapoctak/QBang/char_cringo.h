@@ -7,18 +7,7 @@
 
 class Cringo : public Player {
 public:
-    Cringo(Game* game) : Player(16, 3, "gringo", game) {};
-	virtual void game_phase() override
-	{
-
-	}
-	virtual void discard_phase() override
-	{
-
-	}
+    Cringo(Game* game) : Player(16, 3, "gringo", game) {}
 };
-
-
-
 
 #endif

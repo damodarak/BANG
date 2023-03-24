@@ -7,18 +7,7 @@
 
 class Slab : public Player {
 public:
-    Slab(Game* game) : Player(3, 4, "slab", game) {};
-	virtual void game_phase() override
-	{
-
-	}
-	virtual void discard_phase() override
-	{
-
-	}
+    Slab(Game* game) : Player(3, 4, "slab", game) {}
 };
-
-
-
 
 #endif

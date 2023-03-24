@@ -7,7 +7,7 @@
 
 class Lucky : public Player {
 public:
-    Lucky(Game* game) : Player(8, 4, "lucky", game) {};
+    Lucky(Game* game) : Player(8, 4, "lucky", game) {}
 	virtual bool resolve_jail() override;
 	virtual bool resolve_dyn() override;
 	virtual bool resolve_barrel() override;
