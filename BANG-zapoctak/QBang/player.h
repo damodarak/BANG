@@ -18,14 +18,16 @@ static int next_player_id = 0;
 
 class Player {
 public:
-	Player(int rank, int max_hp, const std::string& char_name, Game* game) : isai(true), ranking(rank), id(++next_player_id), 
-		health(max_hp), max_healt(max_hp), played_bang(false), name(char_name), role('?'), g(game) {};
+    Player(int rank, int max_hp, const std::string& char_name, Game* game) : isai(true),
+        ranking(rank), id(++next_player_id), health(max_hp), max_healt(max_hp), played_bang(false),
+        drawed(false), name(char_name), role('?'), g(game) {};
 	virtual void draw_phase();
     virtual void game_phase()
     {
 
     }
 	virtual void discard_phase();
+    virtual bool dec_hp(int lifes) {health -= lifes; return health > 0;};
 	char say_role();
 	void set_role(char r);
 	void take_card(Card& c);
@@ -44,7 +46,8 @@ public:
 	int health;
 	int max_healt;
 	bool played_bang;//po kazdem bangu se rovnou podivame, jestli mame Volcanic a pripadne zmenime tuto hodnotu
-	std::string name;
+    bool drawed;
+    std::string name;
 	std::vector<Card> cards_desk;//modre karty, ktere jsou na stole
 
     friend class MainWindow;
@@ -66,6 +69,7 @@ protected:
 
 	bool discard_blue();
 	bool discard_card(const std::string& type);
+    void discard_card(int index);
 };
 
 #endif

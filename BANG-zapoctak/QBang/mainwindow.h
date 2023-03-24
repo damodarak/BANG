@@ -25,6 +25,16 @@ private slots:
 
     void on_actionStart_7_triggered();
 
+    void on_play_clicked();
+
+    void on_draw_clicked();
+
+    void on_discard_clicked();
+
+    void on_finish_clicked();
+
+    void on_ability_clicked();
+
 private:
     Ui::MainWindow *ui;
     QVector<QList<QLabel*>> layout;
@@ -32,11 +42,13 @@ private:
     QLabel* discarded;
     QLabel* deck;
     Game* g;
+    int notai;
 
     void SetLabel(QLabel* q, const QString& s);
     void LoadCards();
     void PaintLayout();
     void ClearLabels();
     void LoadLabels();
+    void AddLivePlayers();
 };
 #endif // MAINWINDOW_H

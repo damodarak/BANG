@@ -116,7 +116,7 @@ void Game::rotate_serif()
 		rotate(game_order.begin(), game_order.begin() + 1, game_order.end());
 	}
 
-	active_player_id = game_order[0]->id;
+    active_player = 0;
 }
 void Game::draw_cards_start()
 {

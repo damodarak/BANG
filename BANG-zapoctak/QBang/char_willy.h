@@ -10,10 +10,8 @@ public:
 	{
 
 	}
-	virtual void discard_phase() override
-	{
-
-	}
+private:
+    void ability() {played_bang = false;}
 };
 
 

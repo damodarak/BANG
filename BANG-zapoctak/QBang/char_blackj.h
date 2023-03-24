@@ -12,14 +12,6 @@ public:
 	{
 
 	}
-	virtual void game_phase() override
-	{
-
-	}
-	virtual void discard_phase() override
-	{
-
-	}
 };
 
 

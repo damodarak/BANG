@@ -147,7 +147,13 @@ bool Player::discard_card(const string& type)
 			return true;
 		}
 	}
-	return false;
+    return false;
+}
+
+void Player::discard_card(int index)
+{
+    g->deck.push_back(cards_hand[index]);
+    cards_hand.erase(cards_hand.begin() + index);
 }
 bool Player::discard_blue()
 {

@@ -8,17 +8,26 @@
 #include <QFile>
 #include <QTextStream>
 #include <QMessageBox>
+#include <QGroupBox>
+#include <QWidget>
 
 using namespace std;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    , ui(new Ui::MainWindow), notai(0)
 {
     ui->setupUi(this);
     ClearLabels();
     LoadLabels();
     g = new Game();
+
+    ui->play->setEnabled(false);
+    ui->finish->setEnabled(false);
+    ui->discard->setEnabled(false);
+    ui->ability->setEnabled(false);
+    ui->choose_e->setEnabled(false);
+    ui->draw->setEnabled(false);
 }
 MainWindow::~MainWindow()
 {
@@ -86,37 +95,77 @@ void MainWindow::LoadLabels()
     pl.append(ui->pl_k->findChildren<QLabel*>());
     layout.append(pl);
 }
+void MainWindow::AddLivePlayers()
+{
+    ui->choose_p->clear();
+    for(size_t i = 0; i < g->game_order.size(); i++)
+    {
+        if((size_t)notai == i)
+        {
+            continue;
+        }
+        ui->choose_p->addItem(QIcon(g->game_order[i]->file_loc()), QString::fromStdString(g->game_order[i]->name));
+    }
+}
 void MainWindow::PaintLayout()
 {
+    AddLivePlayers();
+
     //CENTER
     ClearLabels();
     SetLabel(deck, ":/cards/cards/back-playing.png");
     SetLabel(discarded, g->deck.back().file_loc());
 
     //EMPORIO
+    ui->choose_e->setEnabled(g->emporio.size() != 0);
     for(size_t i = 0; i < g->emporio.size(); i++)
     {
         SetLabel(emporio[i], g->emporio[i].file_loc());
+        ui->choose_e->addItem(QIcon(g->emporio[i].file_loc()), QString::fromStdString(g->emporio[i].name));
     }
 
+    //REAL PERSON CARDS
+    ui->choose_c->clear();
+    ui->choose_d->clear();
+    for(size_t i = 0; i < g->game_order[notai]->cards_hand.size(); i++)
+    {
+        ui->choose_c->addItem(QIcon(g->game_order[notai]->cards_hand[i].file_loc()), QString::fromStdString(g->game_order[notai]->cards_hand[i].name));
+        ui->choose_d->addItem(QIcon(g->game_order[notai]->cards_hand[i].file_loc()), QString::fromStdString(g->game_order[notai]->cards_hand[i].name));
+    }
+    for(size_t i = 0; i < g->game_order[notai]->cards_desk.size(); i++)
+    {
+        ui->choose_c->addItem(QIcon(g->game_order[notai]->cards_desk[i].file_loc()), QString::fromStdString(g->game_order[notai]->cards_desk[i].name));
+        ui->choose_d->addItem(QIcon(g->game_order[notai]->cards_desk[i].file_loc()), QString::fromStdString(g->game_order[notai]->cards_desk[i].name));
+    }
+
+
     //REAL PERSON
-    SetLabel(g->game_order[g->notai]->char_l, g->game_order[g->notai]->file_loc());
-    g->game_order[g->notai]->hp_l->setText(QString::number(g->game_order[g->notai]->health));
-    SetLabel(g->game_order[g->notai]->role_l, g->game_order[g->notai]->role_loc());
-    for(size_t i = 0; i < g->game_order[g->notai]->cards_hand.size(); i++)
+    SetLabel(g->game_order[notai]->char_l, g->game_order[notai]->file_loc());
+    g->game_order[notai]->hp_l->setText(QString::number(g->game_order[notai]->health));
+    SetLabel(g->game_order[notai]->role_l, g->game_order[notai]->role_loc());
+    for(size_t i = 0; i < g->game_order[notai]->cards_hand.size(); i++)
     {
-        SetLabel(g->game_order[g->notai]->cards_l[i], g->game_order[g->notai]->cards_hand[i].file_loc());
+        SetLabel(g->game_order[notai]->cards_l[i], g->game_order[notai]->cards_hand[i].file_loc());
     }
-    for(size_t i = 0; i < g->game_order[g->notai]->cards_desk.size(); i++)
+    for(size_t i = 0; i < g->game_order[notai]->cards_desk.size(); i++)
     {
-        SetLabel(g->game_order[g->notai]->m_l[i], g->game_order[g->notai]->cards_hand[i].file_loc());
+        SetLabel(g->game_order[notai]->m_l[i], g->game_order[notai]->cards_hand[i].file_loc());
     }
+    ui->play->setEnabled(notai == g->active_player);
+    ui->finish->setEnabled(notai == g->active_player);
+    ui->discard->setEnabled(notai == g->active_player);
+    ui->ability->setEnabled(notai == g->active_player);
+    ui->draw->setEnabled(notai == g->active_player);
 
     //AI
     for(size_t i = 0; i < g->game_order.size(); i++)
     {
-        if(i != g->notai)
+        if(i != (size_t)notai)
         {
+            qobject_cast<QGroupBox*>(g->game_order[i]->char_l->parent()->parent())
+                    ->setTitle((size_t)g->active_player == i ? "PLAYING" : "");
+
+
             SetLabel(g->game_order[i]->char_l, g->game_order[i]->file_loc());
             g->game_order[i]->hp_l->setText(QString::number(g->game_order[i]->health));
             SetLabel(g->game_order[i]->card_l, ":/cards/cards/back-playing.png");
@@ -144,8 +193,9 @@ void MainWindow::on_actionStart_4_triggered()
     g->rotate_serif();
     g->draw_cards_start();
     g->set_initial_enemies();//todo
-    g->set_distances();
+    g->set_distances();   
     g->add_labels(layout);
+    notai = g->notai;
     PaintLayout();
 }
 void MainWindow::on_actionStart_7_triggered()
@@ -161,6 +211,35 @@ void MainWindow::on_actionStart_7_triggered()
     g->set_initial_enemies();//todo
     g->set_distances();
     g->add_labels(layout);
+    notai = g->notai;
     PaintLayout();
+}
+void MainWindow::on_play_clicked()
+{
+
+}
+void MainWindow::on_draw_clicked()
+{
+    if(g->game_order[notai]->drawed)
+    {
+        return;
+    }
+    g->game_order[notai]->drawed = true;
+    g->game_order[notai]->draw_phase();
+    PaintLayout();
+}
+void MainWindow::on_discard_clicked()
+{
+    int i = ui->choose_d->currentIndex();
+    g->game_order[notai]->discard_card(i);
+    PaintLayout();
+}
+void MainWindow::on_finish_clicked()
+{
+
+}
+void MainWindow::on_ability_clicked()
+{
+
 }
 

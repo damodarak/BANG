@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     card.cpp \
+    char_bart.cpp \
     char_ketchum.cpp \
     char_lucky.cpp \
     game.cpp \
