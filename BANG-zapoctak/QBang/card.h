@@ -40,6 +40,7 @@ public:
     QString file_loc();
     QString suit_loc();
     QString rnk();
+    bool need_target();
 	int id;
 	std::string name;
 	char edge;//Modry, Hnedy okraj

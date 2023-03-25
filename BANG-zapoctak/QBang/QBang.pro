@@ -9,9 +9,11 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    ask.cpp \
     card.cpp \
     char_bart.cpp \
     char_blackj.cpp \
+    char_calamity.cpp \
     char_carlson.cpp \
     char_jesse.cpp \
     char_jourd.cpp \
@@ -25,6 +27,7 @@ SOURCES += \
     player.cpp
 
 HEADERS += \
+    ask.h \
     card.h \
     char_bart.h \
     char_blackj.h \
@@ -48,6 +51,7 @@ HEADERS += \
     player.h
 
 FORMS += \
+    ask.ui \
     mainwindow.ui
 
 # Default rules for deployment.

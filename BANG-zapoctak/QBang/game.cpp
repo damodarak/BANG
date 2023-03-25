@@ -135,21 +135,21 @@ bool Game::finished()
 	{
 		return true;
 	}
-	else
-	{
-		for (size_t i = 0; i < game_order.size(); i++)
-		{
-			if (game_order[i]->say_role() != 'S')
-			{
-				continue;
-			}
-			else
-			{
-				return (game_order[i]->health == 0 ? true : false);
-			}
-		}
-		return true;
-	}
+    else if(game_order[0]->health == 0)
+    {
+        return true;
+    }
+    else
+    {
+        for(size_t i = 0; i < game_order.size(); i++)
+        {
+            if(game_order[i]->role != 'S' && game_order[i]->role != 'V')
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 }
 void Game::set_initial_enemies()
 {
@@ -293,4 +293,57 @@ void Game::add_label_ai(int ai, QList<QLabel*>& labels)
     {
         game_order[ai]->m_l.append(labels[i]);
     }
+}
+void Game::saloon()
+{
+    for(size_t i = 0; i < game_order.size(); i++)
+    {
+        if(game_order[i]->max_health != game_order[i]->health)
+        {
+            game_order[i]->health++;
+        }
+    }
+}
+int Game::game_loop()
+{
+    if(notai == (size_t)active_player)
+    {
+        if(deck.back().name == "Vezeni" && game_order[notai]->target_id != -1)
+        {
+
+        }
+        else if(deck.back().range != 0 && game_order[notai]->has_gun() == -1)
+        {
+            Card c = deck.back();
+            deck.pop_back();
+            game_order[notai]->cards_desk.push_back(c);
+            set_distances();
+        }
+        else if(deck.back().edge == 'M' && !(game_order[notai]->has_blue(deck.back().name))
+                && deck.back().range == 0)
+        {
+            Card c = deck.back();
+            deck.pop_back();
+            game_order[notai]->cards_desk.push_back(c);
+            set_distances();
+        }
+    }
+    else
+    {
+
+    }
+    return 0;
+}
+
+int Game::id_name(const QString& name)
+{
+    string n = name.toStdString();
+    for(size_t i = 0; i < game_order.size(); i++)
+    {
+        if(n == game_order[i]->name)
+        {
+            return game_order[i]->id;
+        }
+    }
+    return -1;
 }

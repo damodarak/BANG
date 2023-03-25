@@ -49,3 +49,23 @@ QString Card::rnk()
         return end;
     }
 }
+
+bool Card::need_target()
+{
+    if(name == "Vezeni")
+    {
+        return true;
+    }
+    else if(edge == 'M')
+    {
+        return false;
+    }
+    else if(card_type == "agr")
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}

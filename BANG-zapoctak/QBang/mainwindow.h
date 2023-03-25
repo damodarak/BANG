@@ -7,6 +7,7 @@
 #include "game.h"
 #include <QVector>
 #include <QList>
+#include "ask.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -39,6 +40,7 @@ private slots:
 
     void on_actionStart_6_triggered();
 
+    friend class Ask;
 private:
     Ui::MainWindow *ui;
     QVector<QList<QLabel*>> layout;
@@ -50,6 +52,8 @@ private:
     Game* g;
     int notai;
 
+    Ask* a;
+
     void SetLabel(QLabel* q, const QString& s);
     void LoadCards();
     void PaintLayout();
@@ -57,5 +61,6 @@ private:
     void LoadLabels();
     void AddLivePlayers();
     void Start(int players, const std::string& roles);
+    void SetButtons(bool state);
 };
 #endif // MAINWINDOW_H

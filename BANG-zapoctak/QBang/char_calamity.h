@@ -8,10 +8,7 @@
 class Calamity : public Player {
 public:
     Calamity(Game* game) : Player(2, 4, "calamity", game) {}
-    virtual int game_phase() override
-	{
-        return 0;
-	}
+    virtual int game_phase() override;
 };
 
 #endif

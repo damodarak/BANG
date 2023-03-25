@@ -21,13 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
     ClearLabels();
     LoadLabels();
     g = new Game();
-
-    ui->play->setEnabled(false);
-    ui->finish->setEnabled(false);
-    ui->discard->setEnabled(false);
-    ui->ability->setEnabled(false);
-    ui->choose_e->setEnabled(false);
-    ui->draw->setEnabled(false);
+    SetButtons(false);
 }
 MainWindow::~MainWindow()
 {
@@ -131,6 +125,16 @@ void MainWindow::Start(int players, const std::string& roles)
     notai = g->notai;
     PaintLayout();
 }
+
+void MainWindow::SetButtons(bool state)
+{
+    ui->play->setEnabled(state);
+    ui->finish->setEnabled(state);
+    ui->discard->setEnabled(state);
+    ui->ability->setEnabled(state);
+    ui->choose_e->setEnabled(state);
+    ui->draw->setEnabled(state);
+}
 void MainWindow::PaintLayout()
 {
     AddLivePlayers();
@@ -175,13 +179,9 @@ void MainWindow::PaintLayout()
     }
     for(size_t i = 0; i < g->game_order[notai]->cards_desk.size(); i++)
     {
-        SetLabel(g->game_order[notai]->m_l[i], g->game_order[notai]->cards_hand[i].file_loc());
+        SetLabel(g->game_order[notai]->m_l[i], g->game_order[notai]->cards_desk[i].file_loc());
     }
-    ui->play->setEnabled(notai == g->active_player);
-    ui->finish->setEnabled(notai == g->active_player);
-    ui->discard->setEnabled(notai == g->active_player);
-    ui->ability->setEnabled(notai == g->active_player);
-    ui->draw->setEnabled(notai == g->active_player);
+    SetButtons(notai == g->active_player);
 
     //AI
     for(size_t i = 0; i < g->game_order.size(); i++)
@@ -223,6 +223,21 @@ void MainWindow::on_actionStart_7_triggered()
 void MainWindow::on_play_clicked()
 {
     g->game_order[notai]->drawed = true;
+    int i = ui->choose_c->currentIndex();
+    int p = ui->choose_p->currentIndex();
+    if(i == -1 || (g->game_order[notai]->cards_hand[i].need_target() && p == -1) ||
+            (size_t)i >= g->game_order[notai]->cards_hand.size())//barel
+    {
+        return;
+    }
+    if(p != -1)
+    {
+        g->game_order[notai]->target_id = g->id_name(ui->choose_p->currentText());
+    }
+    g->game_order[notai]->discard_card(i);
+    g->game_order[notai]->set_target_id(ui->choose_p->currentText().toStdString());
+    g->game_loop();
+    PaintLayout();
 }
 void MainWindow::on_draw_clicked()
 {
@@ -248,8 +263,13 @@ void MainWindow::on_discard_clicked()
 void MainWindow::on_finish_clicked()
 {
     g->game_order[notai]->drawed = true;
+
+//    Ask b(this, this);
+//    b.setModal(true);
+//    b.exec();
 }
 void MainWindow::on_ability_clicked()
 {
     g->game_order[notai]->drawed = true;
+    g->game_order[notai]->ability();
 }
