@@ -67,12 +67,20 @@ void MainWindow::ClearLabels()
     {
         l->clear();
     }
+    ui->gb1->setTitle("");
+    ui->gb2->setTitle("");
+    ui->gb3->setTitle("");
+    ui->gb4->setTitle("");
+    ui->gb5->setTitle("");
+    ui->gb6->setTitle("");
 }
 void MainWindow::LoadLabels()
 {
     emporio = ui->emporio->findChildren<QLabel*>();
     discarded = ui->discarded;
     deck = ui->deck;
+    suit = ui->suit;
+    rank = ui->rank;
 
     QList<QLabel *> list = ui->gb1->findChildren<QLabel *>();
     layout.append(list);
@@ -131,6 +139,8 @@ void MainWindow::PaintLayout()
     ClearLabels();
     SetLabel(deck, ":/cards/cards/back-playing.png");
     SetLabel(discarded, g->deck.back().file_loc());
+    SetLabel(suit, g->deck.back().suit_loc());
+    rank->setText(g->deck.back().rnk());
 
     //EMPORIO
     ui->choose_e->setEnabled(g->emporio.size() != 0);

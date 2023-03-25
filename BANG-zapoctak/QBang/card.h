@@ -38,6 +38,8 @@ public:
 		}
 	};
     QString file_loc();
+    QString suit_loc();
+    QString rnk();
 	int id;
 	std::string name;
 	char edge;//Modry, Hnedy okraj

@@ -51,4 +51,10 @@
     <qresource prefix="/text">
         <file>text/hraci_karty.txt</file>
     </qresource>
+    <qresource prefix="/suits">
+        <file>suits/Kary.png</file>
+        <file>suits/Krize.png</file>
+        <file>suits/Piky.png</file>
+        <file>suits/Srdce.png</file>
+    </qresource>
 </RCC>

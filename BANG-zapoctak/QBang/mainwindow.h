@@ -45,6 +45,8 @@ private:
     QList<QLabel*> emporio;
     QLabel* discarded;
     QLabel* deck;
+    QLabel* suit;
+    QLabel* rank;
     Game* g;
     int notai;
 
