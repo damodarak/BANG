@@ -232,7 +232,7 @@ void MainWindow::on_play_clicked()
     }
     if(p != -1)
     {
-        g->game_order[notai]->target_id = g->id_name(ui->choose_p->currentText());
+        g->game_order[notai]->target_id = g->name_to_id(ui->choose_p->currentText());
     }
     g->game_order[notai]->discard_card(i);
     g->game_order[notai]->set_target_id(ui->choose_p->currentText().toStdString());

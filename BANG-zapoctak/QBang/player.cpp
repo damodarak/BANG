@@ -10,6 +10,7 @@ void Player::draw_phase()
 		c = g->draw_from_deck();
 		cards_hand.push_back(c);
 	}
+    drawed = true;
 }
 int Player::game_phase()
 {
@@ -19,29 +20,30 @@ int Player::game_phase()
         if(cards_hand[i].name == "Dostavnik")
         {
             dostavnik_wells(2);
-            return 2;
+            return game_phase();
         }
         else if(cards_hand[i].name == "WellsFargo")
         {
             dostavnik_wells(3);
-            return 2;
+            return game_phase();
         }
         else if(cards_hand[i].name == "Pivo" && health < max_health)
         {
             g->deck.push_back(cards_hand[i]);
             cards_hand.erase(cards_hand.begin() + i);
-            return 2;
+            health++;
+            return game_phase();
         }
         else if(cards_hand[i].name == "Vezeni" && exist_enemy_jail() != -1)
         {
             pass_jail(i, exist_enemy_jail());
-            return 2;
+            return game_phase();
         }
         else if(cards_hand[i].name == "Dynamit")
         {
             cards_desk.push_back(cards_hand[i]);
             cards_hand.erase(cards_desk.begin() + i);
-            return 2;
+            return game_phase();
         }
 
         //Modre
@@ -54,7 +56,7 @@ int Player::game_phase()
                     discard_card(j + cards_hand.size());
                     cards_desk.push_back(cards_hand[i]);
                     cards_hand.erase(cards_hand.begin() + i);
-                    return 2;
+                    return game_phase();
                 }
             }
         }
@@ -63,7 +65,7 @@ int Player::game_phase()
         {
             cards_desk.push_back(cards_hand[i]);
             cards_hand.erase(cards_hand.begin() + i);
-            return 2;
+            return game_phase();
         }
 
         //neu
@@ -85,7 +87,7 @@ int Player::game_phase()
                 cards_hand.erase(cards_hand.begin() + i);
                 return 1;
             }
-            else if(name == "Bang" || name == "Panika")
+            else if(name == "Bang")
             {
                 for(size_t j = 0; j < g->game_order.size(); j++)
                 {
@@ -95,10 +97,21 @@ int Player::game_phase()
                         target_id = g->game_order[j]->id;
                         g->deck.push_back(cards_hand[i]);
                         cards_hand.erase(cards_hand.begin() + i);
-                        if(name == "Bang")
-                        {
-                            played_bang = true;
-                        }
+                        played_bang = true;
+                        return 1;
+                    }
+                }
+            }
+            else if(name == "Panika")
+            {
+                for(size_t j = 0; j < g->game_order.size(); j++)
+                {
+                    if(enemies_id.find(g->game_order[j]->id) != enemies_id.end() &&
+                        can_play_panika(g->game_order[j]->id))
+                    {
+                        target_id = g->game_order[j]->id;
+                        g->deck.push_back(cards_hand[i]);
+                        cards_hand.erase(cards_hand.begin() + i);
                         return 1;
                     }
                 }
@@ -115,6 +128,11 @@ void Player::dostavnik_wells(int count)
         c = g->draw_from_deck();
         cards_hand.push_back(c);
     }
+}
+
+int Player::hand_size()
+{
+    return static_cast<int>(cards_hand.size());
 }
 void Player::discard_phase()
 {
@@ -483,6 +501,13 @@ bool Player::play_neu()
     default:
         return true;
     }
+}
+
+bool Player::can_play_panika(int enemy_id)
+{
+    int gun = has_gun();
+    gun = (gun == -1 ? 0 : gun - 1);
+    return g->distances.find(id)->second[enemy_id] + gun <= 1;
 }
 bool Player::discard_blue()
 {

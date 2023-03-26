@@ -12,8 +12,9 @@ void Carlson::draw_phase()
         v.erase(v.begin() + j);
     }
     g->deck.push_front(v[0]);
+    drawed = true;
 }
 void Carlson::ability()
 {
-
+    //dodelat pro notai hrace
 }

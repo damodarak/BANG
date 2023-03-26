@@ -3,6 +3,7 @@
 void Pedro::draw_phase()
 {
     ability_used = true;
+    drawed = true;
 
     if(g->deck.back().name == "Dostavnik" || g->deck.back().name == "WellsFargo")
     {
@@ -33,4 +34,5 @@ void Pedro::ability()
     cards_hand.push_back(g->deck.back());
     g->deck.pop_back();
     ability_used = true;
+    drawed = true;
 }

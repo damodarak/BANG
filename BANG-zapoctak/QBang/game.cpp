@@ -135,6 +135,10 @@ bool Game::finished()
 	{
 		return true;
 	}
+    else if(game_order[0]->say_role() != 'S')
+    {
+        return true;
+    }
     else if(game_order[0]->health == 0)
     {
         return true;
@@ -181,8 +185,8 @@ void Game::set_distances()
 		map<int, int> m;
 		for (size_t j = 0; j < game_order.size() / 2; j++)
 		{		
-			m[game_order[(i + j + 1) % player_count]->id] = static_cast<int>(j) + 1;//forward
-			m[game_order[(i - j + player_count - 1) % player_count]->id] = static_cast<int>(j) + 1;//backwards
+            m[game_order[(i + j + 1) % player_alive]->id] = static_cast<int>(j) + 1;//forward
+            m[game_order[(i - j + player_alive - 1) % player_alive]->id] = static_cast<int>(j) + 1;//backwards
 		}
 
 		distances[game_order[i]->id] = m;
@@ -306,36 +310,46 @@ void Game::saloon()
 }
 int Game::game_loop()
 {
-    if(notai == (size_t)active_player)
+    if(!ai_drawed)
     {
-        if(deck.back().name == "Vezeni" && game_order[notai]->target_id != -1)
-        {
-
-        }
-        else if(deck.back().range != 0 && game_order[notai]->has_gun() == -1)
-        {
-            Card c = deck.back();
-            deck.pop_back();
-            game_order[notai]->cards_desk.push_back(c);
-            set_distances();
-        }
-        else if(deck.back().edge == 'M' && !(game_order[notai]->has_blue(deck.back().name))
-                && deck.back().range == 0)
-        {
-            Card c = deck.back();
-            deck.pop_back();
-            game_order[notai]->cards_desk.push_back(c);
-            set_distances();
-        }
+        game_order[active_player]->draw_phase();
     }
-    else
-    {
 
-    }
+
+
+
+
     return 0;
+//    if(notai == (size_t)active_player)
+//    {
+//        if(deck.back().name == "Vezeni" && game_order[notai]->target_id != -1)
+//        {
+
+//        }
+//        else if(deck.back().range != 0 && game_order[notai]->has_gun() == -1)
+//        {
+//            Card c = deck.back();
+//            deck.pop_back();
+//            game_order[notai]->cards_desk.push_back(c);
+//            set_distances();
+//        }
+//        else if(deck.back().edge == 'M' && !(game_order[notai]->has_blue(deck.back().name))
+//                && deck.back().range == 0)
+//        {
+//            Card c = deck.back();
+//            deck.pop_back();
+//            game_order[notai]->cards_desk.push_back(c);
+//            set_distances();
+//        }
+//    }
+//    else
+//    {
+
+//    }
+//    return 0;
 }
 
-int Game::id_name(const QString& name)
+int Game::name_to_id(const QString& name)
 {
     string n = name.toStdString();
     for(size_t i = 0; i < game_order.size(); i++)

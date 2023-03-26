@@ -17,7 +17,7 @@ typedef std::unique_ptr<Player> Hrac;
 
 class Game {
 public:
-    Game() : player_count(0), player_alive(0), notai(0), mode(""), active_player(0) {}
+    Game() : player_count(0), player_alive(0), notai(0), mode(""), ai_drawed(false), active_player(0) {}
 	void load_characters();
     void load_card(std::vector<std::string>& v);
 	Card draw_from_deck();
@@ -32,8 +32,8 @@ public:
     void add_labels(QVector<QList<QLabel*>>& layout);
     void add_label_ai(int ai, QList<QLabel*>& labels);
     void saloon();
-    int game_loop();//0-notai turn, 1-notai react, 2-ai play, 3-notai choose emporio
-    int id_name(const QString& name);
+    int game_loop();//0-notai turn, 1-notai react, 2-notai choose emporio, 3-ai play
+    int name_to_id(const QString& name);
 
 	std::deque<Card> deck;//front->draw, back->discard
 	std::vector<Card> emporio;//odsud se budou brat karty po pouziti karty Hokynarstvi
@@ -43,6 +43,7 @@ public:
     std::vector<Hrac> game_order;
     std::string mode;//emporio,duel,kulomet,indiani,none
     std::map<int, std::map<int, int>> distances;
+    bool ai_drawed;
 
     friend class MainWindow;
 private:	

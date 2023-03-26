@@ -1,6 +1,6 @@
 #include "game.h"
 
-void Ketchum::discard_phase()//todo
+void Ketchum::discard_phase()
 {
     if (max_health == health || (cards_hand.size() - health) == 1)
 	{
@@ -8,7 +8,7 @@ void Ketchum::discard_phase()//todo
 	}
 	else
 	{
-        while ((cards_hand.size() - health) % 2 == 0 && max_health > health)
+        while ((cards_hand.size() - health) > 1 && max_health > health)
 		{
             for(int i = 0; i < 2; i++)
             {
@@ -29,5 +29,10 @@ void Ketchum::discard_phase()//todo
             }
             health++;
 		}
+
+        if((cards_hand.size() - health) > 0)
+        {
+            Player::discard_phase();
+        }
 	}
 }

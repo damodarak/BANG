@@ -44,6 +44,7 @@ public:
     QString role_loc();
     int has_gun();
     void dostavnik_wells(int count);
+    int hand_size();
 
 	bool isai;
 	int ranking;//for AI to choose beter character
@@ -86,6 +87,7 @@ protected:
     void pass_jail(int c_index, int id);
     int best_gun_hand();
     bool play_neu();
+    bool can_play_panika(int enemy_id);
 };
 
 #endif
