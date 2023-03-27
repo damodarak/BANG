@@ -18,10 +18,15 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow), notai(0)
 {
     ui->setupUi(this);
+
+    qt = new QTimer(this);
+    connect(qt, SIGNAL(timeout()), this, SLOT(on_finish_clicked()));
+
     ClearLabels();
     LoadLabels();
     g = new Game();
     SetButtons(false);
+    ui->choose_e->setEnabled(false);
 }
 MainWindow::~MainWindow()
 {
@@ -132,7 +137,6 @@ void MainWindow::SetButtons(bool state)
     ui->finish->setEnabled(state);
     ui->discard->setEnabled(state);
     ui->ability->setEnabled(state);
-    ui->choose_e->setEnabled(state);
     ui->draw->setEnabled(state);
 }
 void MainWindow::PaintLayout()
@@ -145,6 +149,8 @@ void MainWindow::PaintLayout()
     SetLabel(discarded, g->deck.back().file_loc());
     SetLabel(suit, g->deck.back().suit_loc());
     rank->setText(g->deck.back().rnk());
+    ui->target->setText(g->id_to_name(g->game_order[g->active_player]->target_id));
+    ui->label->setText("Target:");
 
     //EMPORIO
     ui->choose_e->setEnabled(g->emporio.size() != 0);
@@ -203,6 +209,9 @@ void MainWindow::PaintLayout()
             }
         }
     }
+
+
+    ui->finish->setEnabled(true);
 }
 void MainWindow::on_actionStart_4_triggered()
 {
@@ -262,7 +271,13 @@ void MainWindow::on_discard_clicked()
 }
 void MainWindow::on_finish_clicked()
 {
-    g->game_order[notai]->drawed = true;
+    qt->start(1000);
+    g->game_loop();
+    PaintLayout();
+
+
+
+
 
 //    Ask b(this, this);
 //    b.setModal(true);

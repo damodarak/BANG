@@ -20,3 +20,35 @@ int Calamity::game_phase()
     }
     return result;
 }
+
+bool Calamity::play_bang()
+{
+    bool res = Player::play_bang();
+
+    if(!res)
+    {
+        if(index(cards_hand, "Vedle") != -1)
+        {
+            res = true;
+            discard_card(index(cards_hand, "Vedle"));
+        }
+    }
+
+    return res;
+}
+
+bool Calamity::play_vedle()
+{
+    bool res = Player::play_vedle();
+
+    if(!res)
+    {
+        if(index(cards_hand, "Bang") != -1)
+        {
+            res = true;
+            discard_card(index(cards_hand, "Bang"));
+        }
+    }
+
+    return res;
+}

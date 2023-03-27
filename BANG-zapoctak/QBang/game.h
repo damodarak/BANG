@@ -17,7 +17,8 @@ typedef std::unique_ptr<Player> Hrac;
 
 class Game {
 public:
-    Game() : player_count(0), player_alive(0), notai(0), mode(""), ai_drawed(false), active_player(0) {}
+    Game() : player_count(0), player_alive(0), notai(0), mode(""), neu_turn(-1), duel_active_turn(false),
+        active_player(0), error("") {}
 	void load_characters();
     void load_card(std::vector<std::string>& v);
 	Card draw_from_deck();
@@ -32,8 +33,14 @@ public:
     void add_labels(QVector<QList<QLabel*>>& layout);
     void add_label_ai(int ai, QList<QLabel*>& labels);
     void saloon();
-    int game_loop();//0-notai turn, 1-notai react, 2-notai choose emporio, 3-ai play
+    int game_loop();//0-notai turn, 1-notai react,  3-ai play, 404-konec hry
     int name_to_id(const QString& name);
+    QString id_to_name(int id);
+    void vulture_sam(std::vector<Card>& reward);
+    void resolve_played_card();
+    int id_to_pos(int id);
+    void after_kill(int player_id, int dead_id);
+    void load_emporio();
 
 	std::deque<Card> deck;//front->draw, back->discard
 	std::vector<Card> emporio;//odsud se budou brat karty po pouziti karty Hokynarstvi
@@ -41,14 +48,18 @@ public:
 	int player_alive;
     size_t notai;
     std::vector<Hrac> game_order;
-    std::string mode;//emporio,duel,kulomet,indiani,none
+    std::string mode;//emporio,kulomet,indiani,bang,duel
     std::map<int, std::map<int, int>> distances;
-    bool ai_drawed;
+    int neu_turn;
+    bool duel_active_turn;
+    int active_player;
 
     friend class MainWindow;
 private:	
-    std::vector<Hrac> characters;
-    int active_player;
+    std::vector<Hrac> characters;  
+    std::string error;
+
+    void rm_enemy(int id);
 };
 
 #endif

@@ -26,7 +26,7 @@ public:
 
     }
 	virtual void discard_phase();
-    virtual bool dec_hp(int lifes) {health -= lifes; return health > 0;}
+    virtual bool dec_hp(int lifes);
 	char say_role();
 	void set_role(char r);
 	void take_card(Card& c);
@@ -45,6 +45,7 @@ public:
     int has_gun();
     void dostavnik_wells(int count);
     int hand_size();
+    bool panika_balou_play(int enemy_id);
 
 	bool isai;
 	int ranking;//for AI to choose beter character
@@ -61,6 +62,7 @@ public:
 
     friend class MainWindow;
     friend class Game;
+    friend class Cringo;
 protected:
 	char role;
 	std::vector<Card> cards_hand;
@@ -86,8 +88,9 @@ protected:
     int exist_enemy_jail();
     void pass_jail(int c_index, int id);
     int best_gun_hand();
-    bool play_neu();
+    bool play_neu(const std::string& name);
     bool can_play_panika(int enemy_id);
+    std::vector<Card> give_all_cards();
 };
 
 #endif

@@ -302,7 +302,7 @@ void Game::saloon()
 {
     for(size_t i = 0; i < game_order.size(); i++)
     {
-        if(game_order[i]->max_health != game_order[i]->health)
+        if(game_order[i]->max_health > game_order[i]->health)
         {
             game_order[i]->health++;
         }
@@ -310,45 +310,65 @@ void Game::saloon()
 }
 int Game::game_loop()
 {
-    if(!ai_drawed)
+    if(finished())
     {
-        game_order[active_player]->draw_phase();
+        return 404;
     }
 
 
+    if(mode == "")
+    {
+        if(!game_order[active_player]->drawed)
+        {
+            game_order[active_player]->drawed = true;
+            if(game_order[active_player]->resolve_dyn())
+            {
+                if(!game_order[active_player]->dec_hp(3))//neprezil to
+                {
+                    vector<Card> reward = game_order[active_player]->give_all_cards();
+                    vulture_sam(reward);
+                    int del = active_player;
+                    rm_enemy(game_order[active_player]->id);
+                    active_player = (active_player + 1) % player_alive;
+                    game_order.erase(game_order.begin() + del);
+                    player_alive--;
+                    set_distances();
+                    return 3;
+                }
+            }
+            if(!game_order[active_player]->resolve_jail())
+            {
+                active_player = (active_player + 1) % player_alive;
+                return 3;
+            }
+            game_order[active_player]->draw_phase();
+            return 3;
+        }
+        else
+        {
+            int game = game_order[active_player]->game_phase();
+            if(game == 0)
+            {
+                game_order[active_player]->discard_phase();
+                active_player = (active_player + 1) % player_alive;
+            }
+            else if(game == 1)
+            {
+                mode = deck.back().name;
+            }
+            else
+            {
+                return 3;
+            }
+        }
+    }
+    else
+    {
+        resolve_played_card();
+    }
 
-
-
-    return 0;
-//    if(notai == (size_t)active_player)
-//    {
-//        if(deck.back().name == "Vezeni" && game_order[notai]->target_id != -1)
-//        {
-
-//        }
-//        else if(deck.back().range != 0 && game_order[notai]->has_gun() == -1)
-//        {
-//            Card c = deck.back();
-//            deck.pop_back();
-//            game_order[notai]->cards_desk.push_back(c);
-//            set_distances();
-//        }
-//        else if(deck.back().edge == 'M' && !(game_order[notai]->has_blue(deck.back().name))
-//                && deck.back().range == 0)
-//        {
-//            Card c = deck.back();
-//            deck.pop_back();
-//            game_order[notai]->cards_desk.push_back(c);
-//            set_distances();
-//        }
-//    }
-//    else
-//    {
-
-//    }
-//    return 0;
+    return 3;
 }
-
 int Game::name_to_id(const QString& name)
 {
     string n = name.toStdString();
@@ -360,4 +380,240 @@ int Game::name_to_id(const QString& name)
         }
     }
     return -1;
+}
+QString Game::id_to_name(int id)
+{
+    if(id == -1)
+    {
+        return "";
+    }
+    for(size_t i = 0; i < game_order.size(); i++)
+    {
+        if(game_order[i]->id == id)
+        {
+            return QString::fromStdString(game_order[i]->name);
+        }
+    }
+    return "";
+}
+void Game::vulture_sam(std::vector<Card>& reward)
+{
+    for(size_t i = 0; i < game_order.size(); i++)
+    {
+        if(game_order[i]->name == "vulture")
+        {
+            for(size_t j = 0; j < reward.size(); j++)
+            {
+                game_order[i]->cards_hand.push_back(reward[j]);
+            }
+        }
+        return;
+    }
+
+    for(size_t j = 0; j < reward.size(); j++)
+    {
+        deck.push_back(reward[j]);
+    }
+}
+void Game::resolve_played_card()
+{
+    if(mode == "Kulomet")
+    {
+        if(neu_turn == -1)
+        {
+            neu_turn = (active_player + 1) % player_alive;
+        }
+        bool vedle = game_order[neu_turn]->play_vedle();
+        if(!vedle)
+        {
+            bool hp = game_order[neu_turn]->dec_hp(1);
+            if(!hp)
+            {
+                vector<Card> reward = game_order[neu_turn]->give_all_cards();
+                vulture_sam(reward);
+                rm_enemy(game_order[neu_turn]->id);
+                game_order.erase(game_order.begin() + neu_turn);
+                player_alive--;
+                set_distances();
+            }
+        }
+
+        neu_turn = (neu_turn + 1) % player_alive;
+        if(active_player == neu_turn)
+        {
+            mode = "";
+            neu_turn = -1;
+        }
+    }
+    else if(mode == "Indiani")
+    {
+        if(neu_turn == -1)
+        {
+            neu_turn = (active_player + 1) % player_alive;
+        }
+        bool bang = game_order[neu_turn]->play_bang();
+        if(!bang)
+        {
+            bool hp = game_order[neu_turn]->dec_hp(1);
+            if(!hp)
+            {
+                vector<Card> reward = game_order[neu_turn]->give_all_cards();
+                vulture_sam(reward);
+                rm_enemy(game_order[neu_turn]->id);
+                game_order.erase(game_order.begin() + neu_turn);
+                player_alive--;
+                set_distances();
+            }
+        }
+
+        neu_turn = (neu_turn + 1) % player_alive;
+        if(active_player == neu_turn)
+        {
+            mode = "";
+            neu_turn = -1;
+        }
+    }
+    else if(mode == "Hokynarstvi")
+    {
+        if(neu_turn == -1)
+        {
+            neu_turn = active_player;
+            load_emporio();
+        }
+        int choice = game_order[neu_turn]->choose(emporio);
+        game_order[neu_turn]->cards_hand.push_back(emporio[choice]);
+        emporio.erase(emporio.begin() + choice);
+
+        neu_turn = (neu_turn + 1) % player_alive;
+        if(active_player == neu_turn)
+        {
+            mode = "";
+            neu_turn = -1;
+        }
+    }
+    else if(mode == "Duel")
+    {
+        bool result;
+        if(duel_active_turn)
+        {
+            result = game_order[active_player]->play_bang();
+
+            if(!result)
+            {
+                bool hp = game_order[active_player]->dec_hp(1);
+                if(!hp)
+                {
+                    active_player = (active_player + 1) % player_alive;
+                    game_order[active_player]->drawed = false;
+                    game_order[active_player]->played_bang = false;
+
+                    vector<Card> reward = game_order[neu_turn]->give_all_cards();
+                    vulture_sam(reward);
+                    rm_enemy(game_order[active_player]->id);
+                    game_order.erase(game_order.begin() + active_player);
+                    player_alive--;
+                    set_distances();
+                }
+                mode = "";
+            }
+        }
+        else
+        {
+            int enemy_id = game_order[active_player]->target_id;
+            int pos = id_to_pos(enemy_id);
+            result = game_order[pos]->play_bang();
+
+            if(!result)
+            {
+                bool hp = game_order[pos]->dec_hp(1);
+                if(!hp)
+                {
+                    vector<Card> reward = game_order[pos]->give_all_cards();
+                    vulture_sam(reward);
+                    rm_enemy(game_order[pos]->id);
+                    game_order.erase(game_order.begin() + pos);
+                    player_alive--;
+                    set_distances();
+                }
+                mode = "";
+            }
+        }
+        duel_active_turn = !duel_active_turn;
+    }
+    else if(mode == "Bang")
+    {
+        int enemy_id = game_order[active_player]->target_id;
+        int pos = id_to_pos(enemy_id);
+        bool vedle = game_order[pos]->play_vedle();
+        if(!vedle)
+        {
+            bool hp = game_order[pos]->dec_hp(1);
+            if(!hp)
+            {
+                vector<Card> reward = game_order[pos]->give_all_cards();
+                vulture_sam(reward);
+                rm_enemy(enemy_id);
+                game_order.erase(game_order.begin() + pos);
+                player_alive--;
+                set_distances();
+            }
+        }
+        mode = "";
+    }
+    else if(mode == "CatBalou")
+    {
+        int pos = id_to_pos(game_order[active_player]->target_id);
+        Card c = game_order[pos]->give_random_card();
+        deck.push_back(c);
+        mode = "";
+    }
+    else if(mode == "Panika")
+    {
+        int enemy_id = game_order[active_player]->target_id;
+
+        if(game_order[active_player]->can_play_panika(enemy_id))
+        {
+            int pos = id_to_pos(enemy_id);
+            Card c = game_order[pos]->give_random_card();
+            game_order[active_player]->cards_hand.push_back(c);
+            mode = "";
+        }
+
+        mode = "";
+    }
+
+    error = "resolve_played_card";
+}
+int Game::id_to_pos(int id)
+{
+    for(size_t i = 0; i < game_order.size(); i++)
+    {
+        if(game_order[i]->id == id)
+        {
+            return static_cast<int>(i);
+        }
+    }
+    return -1;
+}
+void Game::after_kill(int player_id, int dead_id)
+{
+
+}
+
+void Game::load_emporio()
+{
+    for(size_t i = 0; i < game_order.size(); i++)
+    {
+        emporio.push_back(draw_from_deck());
+    }
+}
+void Game::rm_enemy(int id)
+{
+    for(size_t i = 0; i <game_order.size(); i++)
+    {
+        if(game_order[i]->enemies_id.find(id) != game_order[i]->enemies_id.end())
+        {
+            game_order[i]->enemies_id.erase(id);
+        }
+    }
 }

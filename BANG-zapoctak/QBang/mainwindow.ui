@@ -2212,6 +2212,12 @@
      <layout class="QHBoxLayout" name="horizontalLayout_5">
       <item>
        <widget class="QLabel" name="em_1">
+        <property name="minimumSize">
+         <size>
+          <width>50</width>
+          <height>100</height>
+         </size>
+        </property>
         <property name="text">
          <string>em</string>
         </property>
@@ -2222,6 +2228,12 @@
       </item>
       <item>
        <widget class="QLabel" name="em_2">
+        <property name="minimumSize">
+         <size>
+          <width>50</width>
+          <height>100</height>
+         </size>
+        </property>
         <property name="text">
          <string>em</string>
         </property>
@@ -2232,6 +2244,12 @@
       </item>
       <item>
        <widget class="QLabel" name="em_3">
+        <property name="minimumSize">
+         <size>
+          <width>50</width>
+          <height>100</height>
+         </size>
+        </property>
         <property name="text">
          <string>em</string>
         </property>
@@ -2242,6 +2260,12 @@
       </item>
       <item>
        <widget class="QLabel" name="em_4">
+        <property name="minimumSize">
+         <size>
+          <width>50</width>
+          <height>100</height>
+         </size>
+        </property>
         <property name="text">
          <string>em</string>
         </property>
@@ -2252,6 +2276,12 @@
       </item>
       <item>
        <widget class="QLabel" name="em_5">
+        <property name="minimumSize">
+         <size>
+          <width>50</width>
+          <height>100</height>
+         </size>
+        </property>
         <property name="text">
          <string>em</string>
         </property>
@@ -2262,6 +2292,12 @@
       </item>
       <item>
        <widget class="QLabel" name="em_6">
+        <property name="minimumSize">
+         <size>
+          <width>50</width>
+          <height>100</height>
+         </size>
+        </property>
         <property name="text">
          <string>em</string>
         </property>
@@ -2277,6 +2313,12 @@
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>50</width>
+          <height>100</height>
+         </size>
         </property>
         <property name="text">
          <string>em</string>
@@ -2491,6 +2533,32 @@
     <property name="scaledContents">
      <bool>true</bool>
     </property>
+   </widget>
+   <widget class="QWidget" name="layoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>850</x>
+      <y>290</y>
+      <width>141</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_17">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Target:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="target">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

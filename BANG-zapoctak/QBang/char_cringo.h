@@ -8,6 +8,7 @@
 class Cringo : public Player {
 public:
     Cringo(Game* game) : Player(16, 3, "gringo", game) {}
+
 };
 
 #endif

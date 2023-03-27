@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QLabel>
 #include <QString>
+#include <QTimer>
 #include "game.h"
 #include <QVector>
 #include <QList>
@@ -53,6 +54,7 @@ private:
     int notai;
 
     Ask* a;
+    QTimer* qt;
 
     void SetLabel(QLabel* q, const QString& s);
     void LoadCards();
