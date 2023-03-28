@@ -3,7 +3,7 @@
 int Calamity::game_phase()
 {
     int result = Player::game_phase();
-    if(!played_bang && index(cards_hand, "Vedle") != -1)
+    if(!played_bang && index(cards_hand, "Vedle") != -1 && result == 0)
     {
         for(size_t i = 0; i < g->game_order.size(); i++)
         {

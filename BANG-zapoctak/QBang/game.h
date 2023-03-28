@@ -39,8 +39,9 @@ public:
     void vulture_sam(std::vector<Card>& reward);
     void resolve_played_card();
     int id_to_pos(int id);
-    void after_kill(int player_id, int dead_id);
     void load_emporio();
+    void killed(int id);
+    void set_notai();
 
 	std::deque<Card> deck;//front->draw, back->discard
 	std::vector<Card> emporio;//odsud se budou brat karty po pouziti karty Hokynarstvi

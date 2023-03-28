@@ -19,9 +19,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    qt = new QTimer(this);
-    connect(qt, SIGNAL(timeout()), this, SLOT(on_finish_clicked()));
-
     ClearLabels();
     LoadLabels();
     g = new Game();
@@ -271,7 +268,6 @@ void MainWindow::on_discard_clicked()
 }
 void MainWindow::on_finish_clicked()
 {
-    qt->start(1000);
     g->game_loop();
     PaintLayout();
 

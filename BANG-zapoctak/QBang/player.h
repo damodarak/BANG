@@ -46,6 +46,7 @@ public:
     void dostavnik_wells(int count);
     int hand_size();
     bool panika_balou_play(int enemy_id);
+    void add_enemy_vice(int enemy_id);
 
 	bool isai;
 	int ranking;//for AI to choose beter character
@@ -86,11 +87,12 @@ protected:
     void set_target_id(const std::string& name);
     bool has_blue(const std::string& name);
     int exist_enemy_jail();
-    void pass_jail(int c_index, int id);
+    void pass_jail(int c_index, int enemy_id);
     int best_gun_hand();
     bool play_neu(const std::string& name);
     bool can_play_panika(int enemy_id);
     std::vector<Card> give_all_cards();
+    void turn_reset();
 };
 
 #endif

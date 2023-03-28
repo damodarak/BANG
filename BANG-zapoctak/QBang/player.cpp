@@ -4,6 +4,13 @@ using namespace std;
 
 void Player::draw_phase()
 {
+    //pokud zbyva posledni hrac mimo nas tak ho pridame na seznam nepratel
+    if(g->game_order.size() == 2)
+    {
+        enemies_id.insert(g->game_order[(g->active_player + 1) % 2]->id);
+    }
+
+
 	Card c;
 	for (size_t i = 0; i < 2; i++)
 	{
@@ -84,7 +91,6 @@ int Player::game_phase()
         {
            g->deck.push_back(cards_hand[i]);
            cards_hand.erase(cards_hand.begin() + i);
-           g->mode = cards_hand[i].name;
            return 1;
         }
 
@@ -170,6 +176,16 @@ bool Player::panika_balou_play(int enemy_id)
         }
     }
     return false;
+}
+void Player::add_enemy_vice(int enemy_id)
+{
+    for(size_t i = 0; i < g->game_order.size(); i++)
+    {
+        if(g->game_order[i]->role == 'V')
+        {
+            g->game_order[i]->enemies_id.insert(enemy_id);
+        }
+    }
 }
 void Player::discard_phase()
 {
@@ -294,12 +310,17 @@ bool Player::play_bang()
         {
             discard_card(index(cards_hand, "Bang"));
             res = true;
+            break;
         }
     }
 
-    if(g->mode == "Duel")
+    if(g->mode == "Duel" && id != g->game_order[g->active_player]->id)
     {
         enemies_id.insert(g->game_order[g->active_player]->id);
+        if(role == 'S')
+        {
+            add_enemy_vice(g->game_order[g->active_player]->id);
+        }
     }
 
     return res;
@@ -316,13 +337,18 @@ bool Player::play_vedle()
             {
                 discard_card(index(cards_hand, "Vedle"));
                 barel = true;
+                break;
             }
         }
     }
 
-    if(g->mode == "Bang")
+    if(g->mode == "Bang" || g->mode == "Vedle")
     {
         enemies_id.insert(g->game_order[g->active_player]->id);
+        if(role == 'S')
+        {
+            add_enemy_vice(g->game_order[g->active_player]->id);
+        }
     }
 
     return barel;
@@ -468,7 +494,7 @@ Card Player::give_random_card()
     {
         Card c;
         c = cards_desk[i - cards_hand.size()];
-        cards_desk.erase(cards_hand.begin() + i - cards_hand.size());
+        cards_desk.erase(cards_desk.begin() + i - cards_hand.size());
         return c;
     }
 }
@@ -587,7 +613,7 @@ int Player::exist_enemy_jail()
         if(p != g->game_order[0]->id)
         {
             int pos = g->id_to_pos(p);
-            if(g->game_order[pos]->index(g->game_order[pos]->cards_desk, "Vezeni") != -1)
+            if(g->game_order[pos]->index(g->game_order[pos]->cards_desk, "Vezeni") == -1)
             {
                 return p;
             }
@@ -596,7 +622,7 @@ int Player::exist_enemy_jail()
 
     return -1;
 }
-void Player::pass_jail(int c_index, int id)
+void Player::pass_jail(int c_index, int enemy_id)
 {
     Card c;
     c = cards_hand[c_index];
@@ -604,9 +630,10 @@ void Player::pass_jail(int c_index, int id)
 
     for(size_t i = 0; i < g->game_order.size(); i++)
     {
-        if(g->game_order[i]->id == id)
+        if(g->game_order[i]->id == enemy_id)
         {
             g->game_order[i]->cards_desk.push_back(c);
+            g->game_order[i]->enemies_id.insert(id);
         }
     }
 }
@@ -706,13 +733,21 @@ std::vector<Card> Player::give_all_cards()
 
     return v;
 }
+void Player::turn_reset()
+{
+    played_bang = false;
+    played_vedle = 0;
+    drawed = false;
+    target_id = -1;
+    ability_used = false;
+}
 bool Player::discard_blue()
 {
 	for (size_t i = 0; i < cards_hand.size(); i++)
 	{
 		if (cards_hand[i].edge == 'M')
 		{
-			g->deck.push_back(cards_desk[i]);
+            g->deck.push_back(cards_hand[i]);
 			cards_hand.erase(cards_hand.begin() + i);
 			return true;
 		}
