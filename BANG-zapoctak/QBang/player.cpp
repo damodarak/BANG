@@ -368,7 +368,7 @@ bool Player::resolve_slab_bang()
         vedle++;
     }
 
-    int hand_vedle;
+    int hand_vedle = 0;
     for(size_t i = 0; i < cards_hand.size(); i++)
     {
         if(cards_hand[i].name == "Vedle")
@@ -476,6 +476,15 @@ void Player::set_enemy(int sheriff, const vector<int>& ids)
 }
 Card Player::give_random_card()
 {
+    if(id != g->game_order[g->active_player]->id)
+    {
+        enemies_id.insert(g->game_order[g->active_player]->id);
+        if(role == 'S')
+        {
+            add_enemy_vice(g->game_order[g->active_player]->id);
+        }
+    }
+
     size_t max = cards_hand.size() + cards_desk.size() - 1;
 
     random_device dev;
@@ -500,6 +509,15 @@ Card Player::give_random_card()
 }
 Card Player::give_random_card_hand()
 {
+    if(id != g->game_order[g->active_player]->id)
+    {
+        enemies_id.insert(g->game_order[g->active_player]->id);
+        if(role == 'S')
+        {
+            add_enemy_vice(g->game_order[g->active_player]->id);
+        }
+    }
+
     size_t max = cards_hand.size() - 1;
 
     random_device dev;

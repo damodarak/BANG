@@ -49,6 +49,7 @@ public:
 	int player_alive;
     size_t notai;
     std::vector<Hrac> game_order;
+    std::vector<Hrac> dead;
     std::string mode;//emporio,kulomet,indiani,bang,duel
     std::map<int, std::map<int, int>> distances;
     int neu_turn;

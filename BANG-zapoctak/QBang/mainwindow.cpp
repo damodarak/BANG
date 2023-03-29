@@ -139,6 +139,7 @@ void MainWindow::SetButtons(bool state)
 void MainWindow::PaintLayout()
 {
     AddLivePlayers();
+    notai = g->notai;
 
     //CENTER
     ClearLabels();

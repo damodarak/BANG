@@ -588,9 +588,28 @@ void Game::killed(int id)
     int active_id = game_order[active_player]->id;
 
     int pos = id_to_pos(id);
+    char role = game_order[pos]->role;
+    //nekdo zabil banditu
+    if(role == 'B')
+    {
+        for(int i = 0; i < 3; i++)
+        {
+            game_order[active_player]->cards_hand.push_back(draw_from_deck());
+        }
+    }
+    //Serif zabil sveho pomocnika
+    else if(role == 'V' && game_order[active_player]->say_role() == 'S')
+    {
+        vector<Card> shame = game_order[active_player]->give_all_cards();
+        for(size_t i = 0; i < shame.size(); i++)
+        {
+            deck.push_back(shame[i]);
+        }
+    }
     vector<Card> reward = game_order[pos]->give_all_cards();
 
     rm_enemy(id);
+    dead.push_back(move(game_order[pos]));
     game_order.erase(game_order.begin() + pos);
     player_alive--;
 
@@ -606,7 +625,6 @@ void Game::killed(int id)
         }
     }
 }
-
 void Game::set_notai()
 {
     for(size_t i = 0; i < game_order.size(); i++)
