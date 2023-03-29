@@ -563,6 +563,21 @@ void Game::resolve_played_card()
         saloon();
         mode = "";
     }
+    else if(mode == "Slab")
+    {
+        int enemy_id = game_order[active_player]->target_id;
+        int pos = id_to_pos(enemy_id);
+        bool slab_vedle = game_order[pos]->resolve_slab_bang();
+        if(!slab_vedle)
+        {
+            bool hp = game_order[pos]->dec_hp(1);
+            if(!hp)
+            {
+                killed(enemy_id);
+            }
+        }
+        mode = "";
+    }
     error = "resolve_played_card";
 }
 int Game::id_to_pos(int id)

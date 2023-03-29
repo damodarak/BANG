@@ -52,3 +52,46 @@ bool Calamity::play_vedle()
 
     return res;
 }
+
+bool Calamity::resolve_slab_bang()
+{
+    bool barel1 = resolve_barrel();
+    bool barel2 = resolve_barrel();
+    int vedle = 0;
+
+    if(barel1)
+    {
+        vedle++;
+    }
+    if(barel2)
+    {
+        vedle++;
+    }
+
+    int hand_vedle_bang = 0;
+    for(size_t i = 0; i < cards_hand.size(); i++)
+    {
+        if(cards_hand[i].name == "Vedle" || cards_hand[i].name == "Bang")
+        {
+            hand_vedle_bang++;
+        }
+    }
+
+    if(vedle + hand_vedle_bang >= 2)
+    {
+        while(vedle < 2)
+        {
+            if(index(cards_hand, "Vedle") != -1)
+            {
+                discard_card(index(cards_hand, "Vedle"));
+            }
+            else
+            {
+                discard_card(index(cards_hand, "Bang"));
+            }
+            vedle++;
+        }
+        return true;
+    }
+    return false;
+}

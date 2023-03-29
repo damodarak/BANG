@@ -16,6 +16,5 @@ bool Jourd::resolve_barrel()
 
 void Jourd::ability()
 {
-    bool result = resolve_barrel();
-    played_vedle += (result ? 1 : 0);
+
 }
