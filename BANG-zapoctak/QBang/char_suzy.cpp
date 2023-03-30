@@ -47,3 +47,17 @@ void Suzy::ability()
         cards_hand.push_back(g->draw_from_deck());
     }
 }
+
+std::vector<Card> Suzy::give_all_cards()
+{
+    if(health != 0)
+    {
+        std::vector<Card> v = Player::give_all_cards();
+        ability();
+        return v;
+    }
+    else
+    {
+        return Player::give_all_cards();
+    }
+}

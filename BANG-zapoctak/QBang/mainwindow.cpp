@@ -22,7 +22,13 @@ MainWindow::MainWindow(QWidget *parent)
     ClearLabels();
     LoadLabels();
     g = new Game();
-    SetButtons(false);
+
+    ui->play->setEnabled(false);
+    ui->finish->setEnabled(false);
+    ui->discard->setEnabled(false);
+    ui->ability->setEnabled(false);
+    ui->draw->setEnabled(false);
+
     ui->choose_e->setEnabled(false);
 }
 MainWindow::~MainWindow()
@@ -127,18 +133,29 @@ void MainWindow::Start(int players, const std::string& roles)
     notai = g->notai;
     PaintLayout();
 }
-
-void MainWindow::SetButtons(bool state)
+void MainWindow::SetButtons()
 {
-    ui->play->setEnabled(state);
-    ui->finish->setEnabled(state);
-    ui->discard->setEnabled(state);
-    ui->ability->setEnabled(state);
-    ui->draw->setEnabled(state);
+    if(g->mode == "Hokynarstvi" && g->neu_turn != -1 && !g->game_order[g->neu_turn]->isai)
+    {
+        ui->choose_e->setEnabled(true);
+    }
+    else if(!g->game_order[g->active_player]->isai)
+    {
+        ui->play->setEnabled(true);
+        ui->finish->setEnabled(true);
+        ui->discard->setEnabled(true);
+        ui->ability->setEnabled(g->game_order[g->active_player]->has_notai_ability());
+        ui->draw->setEnabled(g->game_order[notai]->drawed);
+    }
+    else if(g->neu_turn != -1 && !g->game_order[g->neu_turn]->isai)
+    {
+
+    }
 }
 void MainWindow::PaintLayout()
 {
     AddLivePlayers();
+    SetButtons();
     notai = g->notai;
 
     //CENTER
@@ -151,50 +168,25 @@ void MainWindow::PaintLayout()
     ui->label->setText("Target:");
 
     //EMPORIO
-    ui->choose_e->setEnabled(g->emporio.size() != 0);
+    ui->choose_e->clear();
     for(size_t i = 0; i < g->emporio.size(); i++)
     {
         SetLabel(emporio[i], g->emporio[i].file_loc());
         ui->choose_e->addItem(QIcon(g->emporio[i].file_loc()), QString::fromStdString(g->emporio[i].name));
     }
 
-    //REAL PERSON CARDS
+    //clear cards, discard
     ui->choose_c->clear();
     ui->choose_d->clear();
-    for(size_t i = 0; i < g->game_order[notai]->cards_hand.size(); i++)
-    {
-        ui->choose_c->addItem(QIcon(g->game_order[notai]->cards_hand[i].file_loc()), QString::fromStdString(g->game_order[notai]->cards_hand[i].name));
-        ui->choose_d->addItem(QIcon(g->game_order[notai]->cards_hand[i].file_loc()), QString::fromStdString(g->game_order[notai]->cards_hand[i].name));
-    }
-    for(size_t i = 0; i < g->game_order[notai]->cards_desk.size(); i++)
-    {
-        ui->choose_c->addItem(QIcon(g->game_order[notai]->cards_desk[i].file_loc()), QString::fromStdString(g->game_order[notai]->cards_desk[i].name));
-        ui->choose_d->addItem(QIcon(g->game_order[notai]->cards_desk[i].file_loc()), QString::fromStdString(g->game_order[notai]->cards_desk[i].name));
-    }
 
 
-    //REAL PERSON
-    SetLabel(g->game_order[notai]->char_l, g->game_order[notai]->file_loc());
-    g->game_order[notai]->hp_l->setText(QString::number(g->game_order[notai]->health));
-    SetLabel(g->game_order[notai]->role_l, g->game_order[notai]->role_loc());
-    for(size_t i = 0; i < g->game_order[notai]->cards_hand.size(); i++)
-    {
-        SetLabel(g->game_order[notai]->cards_l[i], g->game_order[notai]->cards_hand[i].file_loc());
-    }
-    for(size_t i = 0; i < g->game_order[notai]->cards_desk.size(); i++)
-    {
-        SetLabel(g->game_order[notai]->m_l[i], g->game_order[notai]->cards_desk[i].file_loc());
-    }
-    SetButtons(notai == g->active_player);
-
-    //AI
     for(size_t i = 0; i < g->game_order.size(); i++)
     {
-        if(i != (size_t)notai)
+        if(g->game_order[i]->isai)
         {
+            //AI
             qobject_cast<QGroupBox*>(g->game_order[i]->char_l->parent()->parent())
                     ->setTitle((size_t)g->active_player == i ? "PLAYING" : "");
-
 
             SetLabel(g->game_order[i]->char_l, g->game_order[i]->file_loc());
             g->game_order[i]->hp_l->setText(QString::number(g->game_order[i]->health));
@@ -206,8 +198,46 @@ void MainWindow::PaintLayout()
                 SetLabel(g->game_order[i]->m_l[j], g->game_order[i]->cards_desk[j].file_loc());
             }
         }
-    }
+        else
+        {
+            //REAL PERSON CARDS
+            for(size_t j = 0; j < g->game_order[i]->cards_hand.size(); j++)
+            {
+                ui->choose_c->addItem(QIcon(g->game_order[i]->cards_hand[j].file_loc()), QString::fromStdString(g->game_order[i]->cards_hand[j].name));
+                ui->choose_d->addItem(QIcon(g->game_order[i]->cards_hand[j].file_loc()), QString::fromStdString(g->game_order[i]->cards_hand[j].name));
+            }
+            for(size_t j = 0; j < g->game_order[i]->cards_desk.size(); j++)
+            {
+                ui->choose_c->addItem(QIcon(g->game_order[i]->cards_desk[j].file_loc()), QString::fromStdString(g->game_order[i]->cards_desk[j].name));
+                ui->choose_d->addItem(QIcon(g->game_order[i]->cards_desk[j].file_loc()), QString::fromStdString(g->game_order[i]->cards_desk[j].name));
+            }
 
+            //REAL PERSON
+            SetLabel(g->game_order[i]->char_l, g->game_order[i]->file_loc());
+            g->game_order[i]->hp_l->setText(QString::number(g->game_order[i]->health));
+            SetLabel(g->game_order[i]->role_l, g->game_order[i]->role_loc());
+            for(size_t j = 0; j < g->game_order[i]->cards_hand.size(); j++)
+            {
+                SetLabel(g->game_order[i]->cards_l[j], g->game_order[i]->cards_hand[j].file_loc());
+            }
+            for(size_t j = 0; j < g->game_order[i]->cards_desk.size(); j++)
+            {
+                SetLabel(g->game_order[i]->m_l[j], g->game_order[i]->cards_desk[j].file_loc());
+            }
+        }
+    }
+    for(size_t i = 0; i < g->dead.size(); i++)
+    {
+        SetLabel(g->dead[i]->char_l, g->dead[i]->file_loc());
+        SetLabel(g->dead[i]->role_l, g->dead[i]->role_loc());
+
+        if(g->dead[i]->isai)
+        {
+            qobject_cast<QGroupBox*>(g->dead[i]->char_l->parent()->parent())
+                    ->setTitle("DEAD");
+        }
+
+    }
 
     ui->finish->setEnabled(true);
 }
@@ -248,10 +278,6 @@ void MainWindow::on_play_clicked()
 }
 void MainWindow::on_draw_clicked()
 {
-    if(g->game_order[notai]->drawed)
-    {
-        return;
-    }
     g->game_order[notai]->drawed = true;
     g->game_order[notai]->draw_phase();
     PaintLayout();
@@ -265,16 +291,26 @@ void MainWindow::on_discard_clicked()
         return;
     }
     g->game_order[notai]->discard_card(i);
+    if(g->game_order[notai]->name == "ketchum")
+    {
+        g->game_order[notai]->discarded++;
+    }
     PaintLayout();
 }
 void MainWindow::on_finish_clicked()
 {
-    g->game_loop();
+    int res = g->game_loop();
     PaintLayout();
-
-
-
-
+    if(res == 404)
+    {
+        ui->play->setEnabled(false);
+        ui->finish->setEnabled(false);
+        ui->discard->setEnabled(false);
+        ui->ability->setEnabled(false);
+        ui->draw->setEnabled(false);
+        ui->finish->setEnabled(false);
+        ui->choose_e->setEnabled(false);
+    }
 
 //    Ask b(this, this);
 //    b.setModal(true);
@@ -282,6 +318,23 @@ void MainWindow::on_finish_clicked()
 }
 void MainWindow::on_ability_clicked()
 {
-    g->game_order[notai]->drawed = true;
     g->game_order[notai]->ability();
+    PaintLayout();
 }
+
+void MainWindow::on_choose_e_activated(int index)
+{
+    Card c = g->emporio[index];
+    g->emporio.erase(g->emporio.begin() + index);
+    g->game_order[g->neu_turn]->cards_hand.push_back(c);
+
+    g->neu_turn = (g->neu_turn + 1) % g->player_alive;
+    if(g->active_player == g->neu_turn)
+    {
+        g->mode = "";
+        g->neu_turn = -1;
+    }
+
+    PaintLayout();
+}
+

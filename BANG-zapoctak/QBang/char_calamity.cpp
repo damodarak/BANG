@@ -55,6 +55,16 @@ bool Calamity::play_vedle()
 
 bool Calamity::resolve_slab_bang()
 {
+    if(id != g->game_order[g->active_player]->id)
+    {
+        enemies_id.insert(g->game_order[g->active_player]->id);
+        if(role == 'S')
+        {
+            add_enemy_vice(g->game_order[g->active_player]->id);
+        }
+    }
+
+
     bool barel1 = resolve_barrel();
     bool barel2 = resolve_barrel();
     int vedle = 0;

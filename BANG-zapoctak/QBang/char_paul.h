@@ -3,7 +3,7 @@
 
 #include "player.h"
 
-//pri zahajeni hry se MU nastavi vzdalenost vsech o jedna VICE
+//pri zahajeni hry se mu nastavi vzdalenost vsech o jedna vice
 
 class Paul : public Player {
 public:

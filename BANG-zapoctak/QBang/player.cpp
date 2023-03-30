@@ -4,10 +4,16 @@ using namespace std;
 
 void Player::draw_phase()
 {
+    discarded = 0;
     //pokud zbyva posledni hrac mimo nas tak ho pridame na seznam nepratel
     if(g->game_order.size() == 2)
     {
         enemies_id.insert(g->game_order[(g->active_player + 1) % 2]->id);
+    }
+    //Kdyby nahodou si tam pomocnik serifa dal serifa
+    if(role == 'V' && enemies_id.find(g->game_order[0]->id) != enemies_id.end())
+    {
+        enemies_id.erase(enemies_id.find(g->game_order[0]->id));
     }
 
 
@@ -91,6 +97,11 @@ int Player::game_phase()
         {
            g->deck.push_back(cards_hand[i]);
            cards_hand.erase(cards_hand.begin() + i);
+           if(g->deck.back().name == "Salon")
+           {
+               g->saloon();
+               return 0;
+           }
            return 1;
         }
 
@@ -186,6 +197,14 @@ void Player::add_enemy_vice(int enemy_id)
             g->game_order[i]->enemies_id.insert(enemy_id);
         }
     }
+}
+bool Player::has_notai_ability()
+{
+    if(name == "jourde" || name == "ketchum" || name == "pedro" || name == "jesse" || name == "carlson")
+    {
+        return true;
+    }
+    return false;
 }
 void Player::discard_phase()
 {
@@ -342,7 +361,7 @@ bool Player::play_vedle()
         }
     }
 
-    if(g->mode == "Bang" || g->mode == "Vedle")
+    if(g->mode == "Bang" || g->mode == "Vedle" || g->mode == "Slab")
     {
         enemies_id.insert(g->game_order[g->active_player]->id);
         if(role == 'S')
@@ -377,6 +396,12 @@ bool Player::resolve_slab_bang()
         }
     }
 
+    enemies_id.insert(g->game_order[g->active_player]->id);
+    if(role == 'S')
+    {
+        add_enemy_vice(g->game_order[g->active_player]->id);
+    }
+
     if(vedle + hand_vedle >= 2)
     {
         while(vedle < 2)
@@ -399,16 +424,17 @@ QString Player::file_loc()
 }
 QString Player::role_loc()
 {
+    bool end = g->finished();
     switch(role)
     {
         case 'S':
             return ":/cards/cards/sheriff.png";
         case 'V':
-            return (health > 0  && isai ? ":/cards/cards/back-role.png" : ":/cards/cards/deputy.png");
+            return (health > 0  && isai && !end ? ":/cards/cards/back-role.png" : ":/cards/cards/deputy.png");
         case 'O':
-            return (health > 0  && isai ? ":/cards/cards/back-role.png" : ":/cards/cards/renegade.png");
+            return (health > 0  && isai && !end ? ":/cards/cards/back-role.png" : ":/cards/cards/renegade.png");
         case 'B':
-            return (health > 0  && isai ? ":/cards/cards/back-role.png" : ":/cards/cards/outlaw.png");
+            return (health > 0  && isai && !end ? ":/cards/cards/back-role.png" : ":/cards/cards/outlaw.png");
         default:
             break;
     }
@@ -570,11 +596,11 @@ int Player::index(const std::vector<Card>& cards, const std::string& name_type)
 }
 int Player::choose(const std::vector<Card>& cards)
 {
-    if(index(cards, "Dostavnik") != -1)
+    if(index(cards, "WellsFargo") != -1)
     {
         return index(cards, "Dostavnik");
     }
-    else if(index(cards, "WellsFargo") != -1)
+    else if(index(cards, "Dostavnik") != -1)
     {
         return index(cards, "WellsFargo");
     }

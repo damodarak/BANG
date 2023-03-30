@@ -3,12 +3,12 @@
 
 #include "player.h"
 
-//v resolve action
+//kdykoli dostane ranu
 
 class Cringo : public Player {
 public:
     Cringo(Game* game) : Player(16, 3, "gringo", game) {}
-
+    virtual bool dec_hp(int lifes) override;
 };
 
 #endif

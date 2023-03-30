@@ -4,6 +4,7 @@
 #include "player.h"
 
 //funkce vedle, nebo skryty barel, jina karta nez obyc barel
+//resolve slab bang resi i tuto postavu
 
 class Jourd : public Player {
 public:

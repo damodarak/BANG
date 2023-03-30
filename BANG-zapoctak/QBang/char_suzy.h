@@ -15,6 +15,7 @@ public:
     virtual bool play_vedle() override;
     virtual bool resolve_slab_bang() override;
     virtual void ability() override;
+    virtual std::vector<Card> give_all_cards();
 };
 
 

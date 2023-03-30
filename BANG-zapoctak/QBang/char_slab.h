@@ -3,7 +3,7 @@
 
 #include "player.h"
 
-//slab bude sam davat miss2 do actionu nebo tak neco nebo hra
+//slab zmeni mode pote co zahraje bang
 
 class Slab : public Player {
 public:

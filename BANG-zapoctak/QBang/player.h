@@ -17,7 +17,7 @@ static int next_player_id = 0;
 class Player {
 public:
     Player(int rank, int max_hp, const std::string& char_name, Game* game) : isai(true),
-        ranking(rank), id(++next_player_id), health(max_hp), max_health(max_hp), played_bang(false),
+        ranking(rank), id(++next_player_id), health(max_hp), max_health(max_hp), discarded(0), played_bang(false),
         drawed(false), ability_used(false), played_vedle(0), name(char_name), role('?'), g(game), target_id(-1) {}
 	virtual void draw_phase();
     virtual int game_phase();//0-koncim, 1-chci pokracovat,po vyreseni odehrane karty, 2-chci hrat hned
@@ -47,6 +47,7 @@ public:
     int hand_size();
     bool panika_balou_play(int enemy_id);
     void add_enemy_vice(int enemy_id);
+    bool has_notai_ability();
 
 	bool isai;
 	int ranking;//for AI to choose beter character
@@ -54,6 +55,7 @@ public:
 	int id;
 	int health;
     int max_health;
+    int discarded;
 	bool played_bang;//po kazdem bangu se rovnou podivame, jestli mame Volcanic a pripadne zmenime tuto hodnotu
     bool drawed;
     bool ability_used;

@@ -15,6 +15,7 @@ SOURCES += \
     char_blackj.cpp \
     char_calamity.cpp \
     char_carlson.cpp \
+    char_cringo.cpp \
     char_jesse.cpp \
     char_jourd.cpp \
     char_ketchum.cpp \

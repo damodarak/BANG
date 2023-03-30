@@ -407,8 +407,9 @@ void Game::vulture_sam(std::vector<Card>& reward)
             {
                 game_order[i]->cards_hand.push_back(reward[j]);
             }
+            return;
         }
-        return;
+
     }
 
     for(size_t j = 0; j < reward.size(); j++)
@@ -600,6 +601,13 @@ void Game::load_emporio()
 }
 void Game::killed(int id)
 {
+    if(!game_order[id_to_pos(id)]->isai)
+    {
+        notai_dead = true;
+    }
+
+
+
     int active_id = game_order[active_player]->id;
 
     int pos = id_to_pos(id);

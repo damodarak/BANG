@@ -18,7 +18,7 @@ typedef std::unique_ptr<Player> Hrac;
 class Game {
 public:
     Game() : player_count(0), player_alive(0), notai(0), mode(""), neu_turn(-1), duel_active_turn(false),
-        active_player(0), error("") {}
+        active_player(0), notai_dead(false), error("") {}
 	void load_characters();
     void load_card(std::vector<std::string>& v);
 	Card draw_from_deck();
@@ -55,6 +55,7 @@ public:
     int neu_turn;
     bool duel_active_turn;
     int active_player;
+    bool notai_dead;
 
     friend class MainWindow;
 private:	

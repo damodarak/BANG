@@ -14,6 +14,7 @@ bool Jourd::resolve_barrel()
     return result1 || result2;
 }
 
+//for not AI
 void Jourd::ability()
 {
 
