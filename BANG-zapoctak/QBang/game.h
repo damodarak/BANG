@@ -18,7 +18,7 @@ typedef std::unique_ptr<Player> Hrac;
 class Game {
 public:
     Game() : player_count(0), player_alive(0), notai(0), mode(""), neu_turn(-1), duel_active_turn(false),
-        active_player(0), notai_dead(false), error("") {}
+        active_player(0), notai_dead(false) {}
 	void load_characters();
     void load_card(std::vector<std::string>& v);
 	Card draw_from_deck();
@@ -34,7 +34,6 @@ public:
     void add_label_ai(int ai, QList<QLabel*>& labels);
     void saloon();
     int game_loop();//0-notai turn, 1-notai react,  3-ai play, 404-konec hry
-    int name_to_id(const QString& name);
     QString id_to_name(int id);
     void vulture_sam(std::vector<Card>& reward);
     void resolve_played_card();
@@ -42,6 +41,10 @@ public:
     void load_emporio();
     void killed(int id);
     void set_notai();
+    void resolve_notai_play();
+    void ai_react();
+    bool notai_duel_react();
+    bool can_respond_with_card(std::string name);
 
 	std::deque<Card> deck;//front->draw, back->discard
 	std::vector<Card> emporio;//odsud se budou brat karty po pouziti karty Hokynarstvi
@@ -60,7 +63,6 @@ public:
     friend class MainWindow;
 private:	
     std::vector<Hrac> characters;  
-    std::string error;
 
     void rm_enemy(int id);
 };

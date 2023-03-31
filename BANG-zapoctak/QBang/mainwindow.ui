@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1415</width>
+    <width>1480</width>
     <height>773</height>
    </rect>
   </property>
@@ -2439,7 +2439,7 @@
      <rect>
       <x>1073</x>
       <y>520</y>
-      <width>344</width>
+      <width>397</width>
       <height>201</height>
      </rect>
     </property>
@@ -2509,6 +2509,13 @@
         <widget class="QPushButton" name="draw">
          <property name="text">
           <string>Draw</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="react">
+         <property name="text">
+          <string>AI React</string>
          </property>
         </widget>
        </item>
@@ -2602,7 +2609,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1415</width>
+     <width>1480</width>
      <height>26</height>
     </rect>
    </property>

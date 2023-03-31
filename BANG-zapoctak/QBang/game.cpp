@@ -318,8 +318,7 @@ int Game::game_loop()
     }
     set_distances();
 
-
-    if(mode == "")
+    if(mode == "" && game_order[active_player]->isai)
     {
         if(!game_order[active_player]->drawed)
         {
@@ -342,7 +341,7 @@ int Game::game_loop()
                 return 0;
             }
             game_order[active_player]->draw_phase();
-            return 3;
+            return 0;
         }
         else
         {
@@ -357,30 +356,19 @@ int Game::game_loop()
             {
                 mode = deck.back().name;
             }
-            else if(game == 2)
-            {
-                return 3;
-            }
+            //game == 2 => return 0
         }
     }
-    else
+    else if(mode != "")
     {
         resolve_played_card();
     }
-
-    return 3;
-}
-int Game::name_to_id(const QString& name)
-{
-    string n = name.toStdString();
-    for(size_t i = 0; i < game_order.size(); i++)
+    else if(!game_order[active_player]->isai)
     {
-        if(n == game_order[i]->name)
-        {
-            return game_order[i]->id;
-        }
+        resolve_notai_play();
     }
-    return -1;
+
+    return 0;
 }
 QString Game::id_to_name(int id)
 {
@@ -425,19 +413,24 @@ void Game::resolve_played_card()
         {
             neu_turn = (active_player + 1) % player_alive;
         }
+        if(!game_order[neu_turn]->isai)
+        {
+            return;
+        }
         bool vedle = game_order[neu_turn]->play_vedle();
+        int react = neu_turn;
+        neu_turn = (neu_turn + 1) % player_alive;
 
         if(!vedle)
         {
-            bool hp = game_order[neu_turn]->dec_hp(1);
+            bool hp = game_order[react]->dec_hp(1);
             if(!hp)
             {
 
-                killed(game_order[neu_turn]->id);
+                killed(game_order[react]->id);
             }
         }
 
-        neu_turn = (neu_turn + 1) % player_alive;
         if(active_player == neu_turn)
         {
             mode = "";
@@ -450,18 +443,24 @@ void Game::resolve_played_card()
         {
             neu_turn = (active_player + 1) % player_alive;
         }
+        if(!game_order[neu_turn]->isai)
+        {
+            return;
+        }
         bool bang = game_order[neu_turn]->play_bang();
+        int react = neu_turn;
+        neu_turn = (neu_turn + 1) % player_alive;
 
         if(!bang)
         {
-            bool hp = game_order[neu_turn]->dec_hp(1);
+            bool hp = game_order[react]->dec_hp(1);
             if(!hp)
             {
-                killed(game_order[neu_turn]->id);
+                killed(game_order[react]->id);
             }
         }
 
-        neu_turn = (neu_turn + 1) % player_alive;
+
         if(active_player == neu_turn)
         {
             mode = "";
@@ -474,6 +473,10 @@ void Game::resolve_played_card()
         {
             neu_turn = active_player;
             load_emporio();
+            return;
+        }
+        if(!game_order[neu_turn]->isai)
+        {
             return;
         }
         int choice = game_order[neu_turn]->choose(emporio);
@@ -520,6 +523,7 @@ void Game::resolve_played_card()
                     killed(game_order[pos]->id);
                 }
                 mode = "";
+                duel_active_turn = false;
                 return;
             }
         }
@@ -579,7 +583,6 @@ void Game::resolve_played_card()
         }
         mode = "";
     }
-    error = "resolve_played_card";
 }
 int Game::id_to_pos(int id)
 {
@@ -658,6 +661,280 @@ void Game::set_notai()
             return;
         }
     }
+}
+void Game::resolve_notai_play()
+{
+    int pos = id_to_pos(game_order[active_player]->target_id);
+    int enemy = game_order[active_player]->target_id;
+
+    //zbran
+    if(deck.back().range != 0)
+    {
+        if(game_order[active_player]->has_gun() == -1)
+        {
+            Card c = deck.back();
+            deck.pop_back();
+            game_order[active_player]->cards_desk.push_back(c);
+            set_distances();
+            if(c.name == "Volcanic")
+            {
+                game_order[active_player]->played_bang = false;
+            }
+        }
+    }
+    //vezeni
+    else if(deck.back().name == "Vezeni")
+    {
+        if(pos != -1 && game_order[pos]->say_role() != 'S'
+                && game_order[pos]->index(game_order[pos]->cards_desk, "Vezeni") == -1)
+        {
+            Card c = deck.back();
+            deck.pop_back();
+            game_order[pos]->cards_desk.push_back(c);
+            set_distances();
+            game_order[pos]->enemies_id.insert(game_order[active_player]->id);
+        }
+    }
+    //ostatni modre karty
+    else if(deck.back().edge == 'M')
+    {
+        if(game_order[active_player]->index(game_order[active_player]->cards_desk, deck.back().name) == -1)
+        {
+            Card c = deck.back();
+            deck.pop_back();
+            game_order[active_player]->cards_desk.push_back(c);
+            set_distances();
+        }
+    }
+    //wellsfargo/dostavnik
+    else if(deck.back().name == "Dostavnik")
+    {
+        game_order[active_player]->dostavnik_wells(2);
+    }
+    else if(deck.back().name == "WellsFargo")
+    {
+        game_order[active_player]->dostavnik_wells(3);
+    }
+    //pivo
+    else if(deck.back().name == "Pivo")
+    {
+        if(game_order[active_player]->health < game_order[active_player]->max_health)
+        {
+            game_order[active_player]->health++;
+        }
+    }
+    //neu
+    else if(deck.back().card_type == "neu")
+    {
+        if(deck.back().name == "Salon")
+        {
+            saloon();
+        }
+        else
+        {
+            mode = deck.back().name;
+            if(mode == "Hokynarstvi")
+            {
+                neu_turn = active_player;
+                load_emporio();
+            }
+            else
+            {
+                neu_turn = (active_player + 1) % player_alive;
+            }
+        }
+    }
+    //Cat Balou
+    else if(deck.back().name == "CatBalou")
+    {
+        if(pos != -1 && game_order[pos]->panika_balou_play(enemy))
+        {
+            Card c = game_order[pos]->give_random_card();
+            deck.push_back(c);
+            set_distances();
+        }
+    }
+    //Panika
+    else if(deck.back().name == "Panika")
+    {
+        if(pos != -1 && game_order[pos]->panika_balou_play(enemy) &&
+                game_order[active_player]->can_play_panika(enemy))
+        {
+            Card c = game_order[pos]->give_random_card();
+            game_order[active_player]->cards_hand.push_back(c);
+            set_distances();
+        }
+    }
+    else if((deck.back().name == "Bang" ||
+             (deck.back().name == "Vedle" && game_order[active_player]->name == "calamity")) &&
+            !game_order[active_player]->played_bang &&
+            distances.find(game_order[active_player]->id)->second[enemy] <= 1)
+    {
+        if(game_order[active_player]->name == "willy" || game_order[active_player]->has_gun() == 1)
+        {
+            game_order[active_player]->played_bang = false;
+        }
+        else
+        {
+            game_order[active_player]->played_bang = true;
+        }
+        mode = (game_order[active_player]->name == "slab") ? "Slab" : "Bang";
+    }
+    else if(deck.back().name == "Duel")
+    {
+        mode = deck.back().name;
+        duel_active_turn = false;
+    }
+}
+void Game::ai_react()
+{
+    if(mode == "Duel")
+    {
+        int enemy_id = game_order[active_player]->target_id;
+        int pos = id_to_pos(enemy_id);
+        bool result = game_order[pos]->play_bang();
+
+        if(!result)
+        {
+            bool hp = game_order[pos]->dec_hp(1);
+            if(!hp)
+            {
+                killed(game_order[pos]->id);
+            }
+            mode = "";
+            duel_active_turn = false;
+            return;
+        }
+    }
+    else if(mode == "Bang" || mode == "Vedle")
+    {
+        int enemy_id = game_order[active_player]->target_id;
+        int pos = id_to_pos(enemy_id);
+        bool vedle = game_order[pos]->play_vedle();
+        if(!vedle)
+        {
+            bool hp = game_order[pos]->dec_hp(1);
+            if(!hp)
+            {
+                killed(enemy_id);
+            }
+        }
+        mode = "";
+    }
+    else if(mode == "Slab")
+    {
+        int enemy_id = game_order[active_player]->target_id;
+        int pos = id_to_pos(enemy_id);
+        bool slab_vedle = game_order[pos]->resolve_slab_bang();
+        if(!slab_vedle)
+        {
+            bool hp = game_order[pos]->dec_hp(1);
+            if(!hp)
+            {
+                killed(enemy_id);
+            }
+        }
+        mode = "";
+    }
+    else if(mode == "Hokynarstvi")
+    {
+        int choice = game_order[neu_turn]->choose(emporio);
+        game_order[neu_turn]->cards_hand.push_back(emporio[choice]);
+        emporio.erase(emporio.begin() + choice);
+
+        neu_turn = (neu_turn + 1) % player_alive;
+        if(active_player == neu_turn)
+        {
+            mode = "";
+            neu_turn = -1;
+        }
+    }
+    else if(mode == "Indiani")
+    {
+        bool bang = game_order[neu_turn]->play_bang();
+        int react = neu_turn;
+        neu_turn = (neu_turn + 1) % player_alive;
+
+        if(!bang)
+        {
+            bool hp = game_order[react]->dec_hp(1);
+            if(!hp)
+            {
+                killed(game_order[react]->id);
+            }
+        }
+
+
+        if(active_player == neu_turn)
+        {
+            mode = "";
+            neu_turn = -1;
+        }
+    }
+    else if(mode == "Kulomet")
+    {
+        bool vedle = game_order[neu_turn]->play_vedle();
+        int react = neu_turn;
+        neu_turn = (neu_turn + 1) % player_alive;
+
+        if(!vedle)
+        {
+            bool hp = game_order[react]->dec_hp(1);
+            if(!hp)
+            {
+
+                killed(game_order[react]->id);
+            }
+        }
+
+        if(active_player == neu_turn)
+        {
+            mode = "";
+            neu_turn = -1;
+        }
+    }
+}
+bool Game::notai_duel_react()
+{
+    if(mode != "Duel")
+    {
+        return false;
+    }
+
+    if(game_order[active_player]->isai &&
+            !duel_active_turn && !game_order[id_to_pos(game_order[active_player]->target_id)]->isai)
+    {
+        return true;
+    }
+    else if(!game_order[active_player]->isai && duel_active_turn)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool Game::can_respond_with_card(string name)
+{
+    if(mode == "Duel" || mode == "Indiani")
+    {
+        return name == "Bang" || (game_order[notai]->name == "calamity" && name == "Vedle");
+    }
+    else if(mode == "Kulomet")
+    {
+        return name == "Vedle" || (game_order[notai]->name == "calamity" && name == "Bang") ||
+                name == "Barel";
+    }
+    else if(mode == "Bang" || mode == "Vedle")
+    {
+        return name == "Vedle" || (game_order[notai]->name == "calamity" && name == "Bang") ||
+                name == "Barel";
+    }
+    else if(mode == "Slab")
+    {
+        return name == "Vedle" || (game_order[notai]->name == "calamity" && name == "Bang") ||
+                        name == "Barel";
+    }
+    return false;
 }
 void Game::rm_enemy(int id)
 {

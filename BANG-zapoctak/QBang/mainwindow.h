@@ -43,6 +43,8 @@ private slots:
     friend class Ask;
     void on_choose_e_activated(int index);
 
+    void on_react_clicked();
+
 private:
     Ui::MainWindow *ui;
     QVector<QList<QLabel*>> layout;
@@ -64,5 +66,6 @@ private:
     void AddLivePlayers();
     void Start(int players, const std::string& roles);
     void SetButtons();
+    bool NotaiReact();
 };
 #endif // MAINWINDOW_H

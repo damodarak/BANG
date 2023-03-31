@@ -100,7 +100,7 @@ int Player::game_phase()
            if(g->deck.back().name == "Salon")
            {
                g->saloon();
-               return 0;
+               return 2;
            }
            return 1;
         }
@@ -645,6 +645,7 @@ void Player::set_target_id(const std::string& name)
             return;
         }
     }
+    target_id = -1;
 }
 bool Player::has_blue(const std::string &name)
 {
@@ -781,6 +782,7 @@ void Player::turn_reset()
 {
     played_bang = false;
     played_vedle = 0;
+    discarded = 0;
     drawed = false;
     target_id = -1;
     ability_used = false;

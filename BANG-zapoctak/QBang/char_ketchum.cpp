@@ -37,6 +37,12 @@ void Ketchum::discard_phase()
     }
 }
 
+void Ketchum::draw_phase()
+{
+    discarded = 0;
+    Player::draw_phase();
+}
+
 void Ketchum::ability()
 {
     if(discarded >= 2 && health < max_health)

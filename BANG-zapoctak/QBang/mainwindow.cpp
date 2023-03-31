@@ -28,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->discard->setEnabled(false);
     ui->ability->setEnabled(false);
     ui->draw->setEnabled(false);
+    ui->react->setEnabled(false);
 
     ui->choose_e->setEnabled(false);
 }
@@ -135,28 +136,95 @@ void MainWindow::Start(int players, const std::string& roles)
 }
 void MainWindow::SetButtons()
 {
+    //emporio
     if(g->mode == "Hokynarstvi" && g->neu_turn != -1 && !g->game_order[g->neu_turn]->isai)
     {
         ui->choose_e->setEnabled(true);
+        ui->play->setEnabled(false);
+        ui->finish->setEnabled(false);
+        ui->discard->setEnabled(false);
+        ui->ability->setEnabled(false);
+        ui->draw->setEnabled(false);
+        ui->react->setEnabled(false);
     }
-    else if(!g->game_order[g->active_player]->isai)
+    //hraje notai
+    else if(!g->game_order[g->active_player]->isai && g->mode == "")
     {
+        ui->choose_e->setEnabled(false);
         ui->play->setEnabled(true);
         ui->finish->setEnabled(true);
         ui->discard->setEnabled(true);
-        ui->ability->setEnabled(g->game_order[g->active_player]->has_notai_ability());
-        ui->draw->setEnabled(g->game_order[notai]->drawed);
+        ui->ability->setEnabled(g->game_order[g->active_player]->has_notai_ability() && !g->game_order[notai]->ability_used);
+        ui->draw->setEnabled(!g->game_order[notai]->drawed);
+        ui->react->setEnabled(false);
     }
+    //hraje notai, AI bude reagovat
+    else if(!g->game_order[g->active_player]->isai && g->mode != "" && !g->duel_active_turn)
+    {
+        ui->choose_e->setEnabled(false);
+        ui->play->setEnabled(false);
+        ui->finish->setEnabled(false);
+        ui->discard->setEnabled(false);
+        ui->ability->setEnabled(false);
+        ui->draw->setEnabled(false);
+        ui->react->setEnabled(true);
+    }
+    //indiani, kulomet,
     else if(g->neu_turn != -1 && !g->game_order[g->neu_turn]->isai)
     {
-
+        //dovolit jen bang, vedle, pivo, barel, jourd
+        ui->play->setEnabled(true);
+        ui->ability->setEnabled(g->game_order[g->active_player]->has_notai_ability() && !g->game_order[notai]->ability_used);
+        ui->draw->setEnabled(false);
+        ui->react->setEnabled(false);
+        ui->discard->setEnabled(false);
+        ui->choose_e->setEnabled(false);
+        ui->finish->setEnabled(true);
     }
+    //hraje AI
+    //bang, vedle, Slab
+    else if((g->mode == "Bang" || g->mode == "Vedle" || g->mode == "Slab") && NotaiReact())
+    {
+        ui->play->setEnabled(true);
+        ui->ability->setEnabled(g->game_order[g->active_player]->has_notai_ability() && !g->game_order[notai]->ability_used);
+        ui->draw->setEnabled(false);
+        ui->react->setEnabled(false);
+        ui->discard->setEnabled(false);
+        ui->choose_e->setEnabled(false);
+        ui->finish->setEnabled(true);
+    }
+    //duel, hraje notai
+    else if(g->notai_duel_react())
+    {
+        ui->play->setEnabled(true);
+        ui->ability->setEnabled(g->game_order[g->active_player]->has_notai_ability() && !g->game_order[notai]->ability_used);
+        ui->draw->setEnabled(false);
+        ui->react->setEnabled(false);
+        ui->discard->setEnabled(false);
+        ui->choose_e->setEnabled(false);
+        ui->finish->setEnabled(true);
+    }
+    //hraje AI
+    else
+    {
+        ui->play->setEnabled(false);
+        ui->ability->setEnabled(false);
+        ui->draw->setEnabled(false);
+        ui->react->setEnabled(false);
+        ui->discard->setEnabled(false);
+        ui->choose_e->setEnabled(false);
+        ui->finish->setEnabled(true);
+    }
+}
+bool MainWindow::NotaiReact()
+{
+    return !g->game_order[g->id_to_pos(g->game_order[g->active_player]->target_id)]->isai;
 }
 void MainWindow::PaintLayout()
 {
     AddLivePlayers();
-    SetButtons();
     notai = g->notai;
+    SetButtons();
 
     //CENTER
     ClearLabels();
@@ -259,17 +327,33 @@ void MainWindow::on_actionStart_7_triggered()
 }
 void MainWindow::on_play_clicked()
 {
-    g->game_order[notai]->drawed = true;
-    int i = ui->choose_c->currentIndex();
-    int p = ui->choose_p->currentIndex();
-    if(i == -1 || (g->game_order[notai]->cards_hand[i].need_target() && p == -1) ||
-            (size_t)i >= g->game_order[notai]->cards_hand.size())//barel
+    std::string name = g->can_respond_with_card(ui->choose_c->currentText().toStdString());
+    if(g->mode != "" && name)
+    {
+        if(name == "Barel")
+        {
+
+        }
+        else
+        {
+
+        }
+    }
+    else
     {
         return;
     }
-    if(p != -1)
+
+    g->game_order[notai]->drawed = true;
+    int i = ui->choose_c->currentIndex();
+    int p = ui->choose_p->currentIndex();
+    if((size_t)i >= g->game_order[notai]->cards_hand.size())
     {
-        g->game_order[notai]->target_id = g->name_to_id(ui->choose_p->currentText());
+        return;
+    }
+    if(i == -1 || (g->game_order[notai]->cards_hand[i].need_target() && p == -1))
+    {
+        return;
     }
     g->game_order[notai]->discard_card(i);
     g->game_order[notai]->set_target_id(ui->choose_p->currentText().toStdString());
@@ -299,6 +383,12 @@ void MainWindow::on_discard_clicked()
 }
 void MainWindow::on_finish_clicked()
 {
+    if(!g->game_order[g->active_player]->isai &&
+            g->game_order[g->active_player]->hand_size() <= g->game_order[g->active_player]->health)
+    {
+        g->game_order[g->active_player]->turn_reset();
+        g->active_player = (g->active_player + 1) % g->player_alive;
+    }
     int res = g->game_loop();
     PaintLayout();
     if(res == 404)
@@ -310,6 +400,9 @@ void MainWindow::on_finish_clicked()
         ui->draw->setEnabled(false);
         ui->finish->setEnabled(false);
         ui->choose_e->setEnabled(false);
+        ui->choose_c->setEnabled(false);
+        ui->choose_d->setEnabled(false);
+        ui->choose_p->setEnabled(false);
     }
 
 //    Ask b(this, this);
@@ -321,7 +414,6 @@ void MainWindow::on_ability_clicked()
     g->game_order[notai]->ability();
     PaintLayout();
 }
-
 void MainWindow::on_choose_e_activated(int index)
 {
     Card c = g->emporio[index];
@@ -337,4 +429,8 @@ void MainWindow::on_choose_e_activated(int index)
 
     PaintLayout();
 }
-
+void MainWindow::on_react_clicked()
+{
+    g->ai_react();
+    PaintLayout();
+}
