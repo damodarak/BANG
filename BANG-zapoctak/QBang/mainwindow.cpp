@@ -10,6 +10,7 @@
 #include <QMessageBox>
 #include <QGroupBox>
 #include <QWidget>
+#include <QTimer>
 
 using namespace std;
 
@@ -18,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow), notai(0)
 {
     ui->setupUi(this);
+    QTimer::singleShot(0, this, SLOT(showMaximized()));
 
     ClearLabels();
     LoadLabels();
@@ -132,10 +134,19 @@ void MainWindow::Start(int players, const std::string& roles)
     g->set_distances();
     g->add_labels(layout);
     notai = g->notai;
+
+
+
+    ui->choose_c->setEnabled(true);
+    ui->choose_d->setEnabled(true);
+    ui->choose_p->setEnabled(true);
+
     PaintLayout();
 }
 void MainWindow::SetButtons()
 {
+    ui->choose_e->setEnabled(false);
+
     //emporio
     if(g->mode == "Hokynarstvi" && g->neu_turn != -1 && !g->game_order[g->neu_turn]->isai)
     {
@@ -147,10 +158,51 @@ void MainWindow::SetButtons()
         ui->draw->setEnabled(false);
         ui->react->setEnabled(false);
     }
+    //Kit Carlson Ability
+    else if(g->mode == "Carlson")
+    {
+        ui->choose_e->setEnabled(true);
+        ui->play->setEnabled(false);
+        ui->finish->setEnabled(false);
+        ui->discard->setEnabled(false);
+        ui->ability->setEnabled(false);
+        ui->draw->setEnabled(false);
+        ui->react->setEnabled(false);
+    }
+    //indiani, kulomet...notai reaguje
+    else if(g->neu_turn != -1 && !g->game_order[g->neu_turn]->isai)
+    {
+        //dovolit jen bang, vedle, pivo, barel, jourd
+        ui->play->setEnabled(true);
+        ui->ability->setEnabled(g->game_order[notai]->has_notai_ability() && !g->game_order[notai]->ability_used);
+        ui->draw->setEnabled(false);
+        ui->react->setEnabled(false);
+        ui->discard->setEnabled(false);
+        ui->finish->setEnabled(true);
+    }
+    //hraje notai, lize si na DYNAMIT
+    else if(!g->game_order[g->active_player]->isai && g->game_order[g->active_player]->has_dyn())
+    {
+        ui->play->setEnabled(false);
+        ui->finish->setEnabled(false);
+        ui->discard->setEnabled(false);
+        ui->ability->setEnabled(false);
+        ui->draw->setEnabled(true);
+        ui->react->setEnabled(false);
+    }
+    //hraje notai, lize si na VEZENI
+    else if(!g->game_order[g->active_player]->isai && g->game_order[g->active_player]->has_jail())
+    {
+        ui->play->setEnabled(false);
+        ui->finish->setEnabled(false);
+        ui->discard->setEnabled(false);
+        ui->ability->setEnabled(false);
+        ui->draw->setEnabled(true);
+        ui->react->setEnabled(false);
+    }
     //hraje notai
     else if(!g->game_order[g->active_player]->isai && g->mode == "")
     {
-        ui->choose_e->setEnabled(false);
         ui->play->setEnabled(true);
         ui->finish->setEnabled(true);
         ui->discard->setEnabled(true);
@@ -161,7 +213,6 @@ void MainWindow::SetButtons()
     //hraje notai, AI bude reagovat
     else if(!g->game_order[g->active_player]->isai && g->mode != "" && !g->duel_active_turn)
     {
-        ui->choose_e->setEnabled(false);
         ui->play->setEnabled(false);
         ui->finish->setEnabled(false);
         ui->discard->setEnabled(false);
@@ -169,39 +220,24 @@ void MainWindow::SetButtons()
         ui->draw->setEnabled(false);
         ui->react->setEnabled(true);
     }
-    //indiani, kulomet,
-    else if(g->neu_turn != -1 && !g->game_order[g->neu_turn]->isai)
-    {
-        //dovolit jen bang, vedle, pivo, barel, jourd
-        ui->play->setEnabled(true);
-        ui->ability->setEnabled(g->game_order[g->active_player]->has_notai_ability() && !g->game_order[notai]->ability_used);
-        ui->draw->setEnabled(false);
-        ui->react->setEnabled(false);
-        ui->discard->setEnabled(false);
-        ui->choose_e->setEnabled(false);
-        ui->finish->setEnabled(true);
-    }
-    //hraje AI
-    //bang, vedle, Slab
+    //bang, vedle, Slab...hraje AI
     else if((g->mode == "Bang" || g->mode == "Vedle" || g->mode == "Slab") && NotaiReact())
     {
         ui->play->setEnabled(true);
-        ui->ability->setEnabled(g->game_order[g->active_player]->has_notai_ability() && !g->game_order[notai]->ability_used);
+        ui->ability->setEnabled(g->game_order[notai]->has_notai_ability() && !g->game_order[notai]->ability_used);
         ui->draw->setEnabled(false);
         ui->react->setEnabled(false);
         ui->discard->setEnabled(false);
-        ui->choose_e->setEnabled(false);
         ui->finish->setEnabled(true);
     }
-    //duel, hraje notai
+    //duel, hraje notai...reaguje
     else if(g->notai_duel_react())
     {
         ui->play->setEnabled(true);
-        ui->ability->setEnabled(g->game_order[g->active_player]->has_notai_ability() && !g->game_order[notai]->ability_used);
+        ui->ability->setEnabled(false);
         ui->draw->setEnabled(false);
         ui->react->setEnabled(false);
         ui->discard->setEnabled(false);
-        ui->choose_e->setEnabled(false);
         ui->finish->setEnabled(true);
     }
     //hraje AI
@@ -212,7 +248,6 @@ void MainWindow::SetButtons()
         ui->draw->setEnabled(false);
         ui->react->setEnabled(false);
         ui->discard->setEnabled(false);
-        ui->choose_e->setEnabled(false);
         ui->finish->setEnabled(true);
     }
 }
@@ -222,6 +257,7 @@ bool MainWindow::NotaiReact()
 }
 void MainWindow::PaintLayout()
 {
+    g->set_distances();
     AddLivePlayers();
     notai = g->notai;
     SetButtons();
@@ -234,6 +270,11 @@ void MainWindow::PaintLayout()
     rank->setText(g->deck.back().rnk());
     ui->target->setText(g->id_to_name(g->game_order[g->active_player]->target_id));
     ui->label->setText("Target:");
+    ui->label_2->setText("React:");
+    if(g->neu_turn != -1)
+    {
+        ui->neu->setText(g->id_to_name(g->game_order[g->neu_turn]->id));
+    }
 
     //EMPORIO
     ui->choose_e->clear();
@@ -307,7 +348,6 @@ void MainWindow::PaintLayout()
 
     }
 
-    ui->finish->setEnabled(true);
 }
 void MainWindow::on_actionStart_4_triggered()
 {
@@ -327,22 +367,19 @@ void MainWindow::on_actionStart_7_triggered()
 }
 void MainWindow::on_play_clicked()
 {
-    std::string name = g->can_respond_with_card(ui->choose_c->currentText().toStdString());
-    if(g->mode != "" && name)
+    std::string name = ui->choose_c->currentText().toStdString();
+    bool can_play = g->can_respond_with_card(name);
+    if(g->mode != "")
     {
-        if(name == "Barel")
+        if(can_play)
         {
-
+            int i = ui->choose_c->currentIndex();
+            g->resolve_notai_react(i);
         }
-        else
-        {
-
-        }
-    }
-    else
-    {
+        PaintLayout();
         return;
     }
+
 
     g->game_order[notai]->drawed = true;
     int i = ui->choose_c->currentIndex();
@@ -362,6 +399,36 @@ void MainWindow::on_play_clicked()
 }
 void MainWindow::on_draw_clicked()
 {
+    if(g->game_order[g->active_player]->has_dyn())
+    {
+        if(g->game_order[g->active_player]->resolve_dyn())
+        {
+            if(g->game_order[g->active_player]->dec_hp(3))
+            {
+                int dead = g->game_order[g->active_player]->id;
+                g->active_player = (g->active_player + 1) % g->player_alive;
+                g->killed(dead);
+            }
+        }
+        return;
+    }
+    else if(g->game_order[g->active_player]->has_jail())
+    {
+        bool res = g->game_order[g->active_player]->resolve_jail();
+        if(res)
+        {
+            PaintLayout();
+            return;
+        }
+        else
+        {
+            g->game_order[g->active_player]->turn_reset();
+            g->active_player = (g->active_player + 1) % g->player_alive;
+            PaintLayout();
+            return;
+        }
+    }
+
     g->game_order[notai]->drawed = true;
     g->game_order[notai]->draw_phase();
     PaintLayout();
@@ -384,10 +451,13 @@ void MainWindow::on_discard_clicked()
 void MainWindow::on_finish_clicked()
 {
     if(!g->game_order[g->active_player]->isai &&
-            g->game_order[g->active_player]->hand_size() <= g->game_order[g->active_player]->health)
+            g->game_order[g->active_player]->hand_size() <= g->game_order[g->active_player]->health &&
+            g->mode == "")
     {
         g->game_order[g->active_player]->turn_reset();
         g->active_player = (g->active_player + 1) % g->player_alive;
+        PaintLayout();
+        return;
     }
     int res = g->game_loop();
     PaintLayout();
@@ -404,18 +474,35 @@ void MainWindow::on_finish_clicked()
         ui->choose_d->setEnabled(false);
         ui->choose_p->setEnabled(false);
     }
-
-//    Ask b(this, this);
-//    b.setModal(true);
-//    b.exec();
 }
 void MainWindow::on_ability_clicked()
 {
+    if(g->game_order[g->active_player]->has_dyn() || g->game_order[g->active_player]->has_jail())
+    {
+        return;
+    }
+    g->game_order[notai]->set_target_id(ui->choose_p->currentText().toStdString());
+
     g->game_order[notai]->ability();
     PaintLayout();
 }
 void MainWindow::on_choose_e_activated(int index)
 {
+    if(g->mode == "Carlson")
+    {
+        Card c = g->emporio[index];
+        g->emporio.erase(g->emporio.begin() + index);
+        g->game_order[notai]->cards_hand.push_back(c);
+        if(g->emporio.size() == 1)
+        {
+            g->emporio.clear();
+            g->mode = "";
+        }
+
+        PaintLayout();
+        return;
+    }
+
     Card c = g->emporio[index];
     g->emporio.erase(g->emporio.begin() + index);
     g->game_order[g->neu_turn]->cards_hand.push_back(c);

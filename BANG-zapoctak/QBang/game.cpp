@@ -318,6 +318,14 @@ int Game::game_loop()
     }
     set_distances();
 
+    //SPECIAL CASE FOR SUZY
+    if(!game_order[active_player]->isai &&
+            game_order[active_player]->name == "suzy" &&
+            game_order[active_player]->cards_hand.size() == 0)
+    {
+        game_order[active_player]->ability();
+    }
+
     if(mode == "" && game_order[active_player]->isai)
     {
         if(!game_order[active_player]->drawed)
@@ -412,12 +420,22 @@ void Game::resolve_played_card()
         if(neu_turn == -1)
         {
             neu_turn = (active_player + 1) % player_alive;
+            if(!game_order[neu_turn]->isai)
+            {
+                return;
+            }
         }
+
+        bool vedle = false;
         if(!game_order[neu_turn]->isai)
         {
-            return;
+            vedle = false;
+            game_order[neu_turn]->barel = 0;
         }
-        bool vedle = game_order[neu_turn]->play_vedle();
+        else
+        {
+            vedle = game_order[neu_turn]->play_vedle();
+        }
         int react = neu_turn;
         neu_turn = (neu_turn + 1) % player_alive;
 
@@ -442,12 +460,21 @@ void Game::resolve_played_card()
         if(neu_turn == -1)
         {
             neu_turn = (active_player + 1) % player_alive;
+            if(!game_order[neu_turn]->isai)
+            {
+                return;
+            }
         }
+
+        bool bang = false;
         if(!game_order[neu_turn]->isai)
         {
-            return;
+            bang = false;
         }
-        bool bang = game_order[neu_turn]->play_bang();
+        else
+        {
+            bang = game_order[neu_turn]->play_bang();
+        }
         int react = neu_turn;
         neu_turn = (neu_turn + 1) % player_alive;
 
@@ -466,6 +493,61 @@ void Game::resolve_played_card()
             mode = "";
             neu_turn = -1;
         }
+    }
+    else if(mode == "Duel")
+    {
+        bool result;
+        if(duel_active_turn)
+        {
+            if(!game_order[active_player]->isai)
+            {
+                result = false;
+            }
+            else
+            {
+                result = game_order[active_player]->play_bang();
+            }
+
+            if(!result)
+            {
+                bool hp = game_order[active_player]->dec_hp(1);
+                if(!hp)
+                {
+                    active_player = (active_player + 1) % player_alive;
+                    killed(game_order[active_player]->id);
+                }
+                mode = "";
+                duel_active_turn = false;
+                return;
+            }
+        }
+        else
+        {
+            int enemy_id = game_order[active_player]->target_id;
+            int pos = id_to_pos(enemy_id);
+
+            if(!game_order[pos]->isai)
+            {
+                result = false;
+            }
+            else
+            {
+                result = game_order[pos]->play_bang();
+            }
+
+            if(!result)
+            {
+                bool hp = game_order[pos]->dec_hp(1);
+                if(!hp)
+                {
+                    killed(game_order[pos]->id);
+                }
+                mode = "";
+                duel_active_turn = false;
+                return;
+            }
+        }
+        duel_active_turn = !duel_active_turn;
     }
     else if(mode == "Hokynarstvi")
     {
@@ -490,50 +572,22 @@ void Game::resolve_played_card()
             neu_turn = -1;
         }
     }
-    else if(mode == "Duel")
-    {
-        bool result;
-        if(duel_active_turn)
-        {
-            result = game_order[active_player]->play_bang();
-
-            if(!result)
-            {
-                bool hp = game_order[active_player]->dec_hp(1);
-                if(!hp)
-                {
-                    active_player = (active_player + 1) % player_alive;
-                    killed(game_order[active_player]->id);
-                }
-                mode = "";
-                return;
-            }
-        }
-        else
-        {
-            int enemy_id = game_order[active_player]->target_id;
-            int pos = id_to_pos(enemy_id);
-            result = game_order[pos]->play_bang();
-
-            if(!result)
-            {
-                bool hp = game_order[pos]->dec_hp(1);
-                if(!hp)
-                {
-                    killed(game_order[pos]->id);
-                }
-                mode = "";
-                duel_active_turn = false;
-                return;
-            }
-        }
-        duel_active_turn = !duel_active_turn;
-    }
     else if(mode == "Bang" || mode == "Vedle")
     {
         int enemy_id = game_order[active_player]->target_id;
         int pos = id_to_pos(enemy_id);
-        bool vedle = game_order[pos]->play_vedle();
+
+        bool vedle;
+        if(!game_order[pos]->isai)
+        {
+            vedle = false;
+            game_order[pos]->barel = 0;
+        }
+        else
+        {
+            vedle = game_order[pos]->play_vedle();
+        }
+
         if(!vedle)
         {
             bool hp = game_order[pos]->dec_hp(1);
@@ -572,7 +626,18 @@ void Game::resolve_played_card()
     {
         int enemy_id = game_order[active_player]->target_id;
         int pos = id_to_pos(enemy_id);
-        bool slab_vedle = game_order[pos]->resolve_slab_bang();
+        bool slab_vedle;
+
+        if(!game_order[pos]->isai)
+        {
+            slab_vedle = false;
+            game_order[pos]->barel = 0;
+        }
+        else
+        {
+            slab_vedle = game_order[pos]->resolve_slab_bang();
+        }
+
         if(!slab_vedle)
         {
             bool hp = game_order[pos]->dec_hp(1);
@@ -805,6 +870,10 @@ void Game::ai_react()
             duel_active_turn = false;
             return;
         }
+        else
+        {
+            duel_active_turn = !duel_active_turn;
+        }
     }
     else if(mode == "Bang" || mode == "Vedle")
     {
@@ -901,18 +970,11 @@ bool Game::notai_duel_react()
         return false;
     }
 
-    if(game_order[active_player]->isai &&
-            !duel_active_turn && !game_order[id_to_pos(game_order[active_player]->target_id)]->isai)
-    {
-        return true;
-    }
-    else if(!game_order[active_player]->isai && duel_active_turn)
-    {
-        return true;
-    }
-    return false;
-}
 
+    return (game_order[active_player]->isai &&
+            !duel_active_turn && !game_order[id_to_pos(game_order[active_player]->target_id)]->isai) ||
+            (!game_order[active_player]->isai && duel_active_turn);
+}
 bool Game::can_respond_with_card(string name)
 {
     if(mode == "Duel" || mode == "Indiani")
@@ -922,19 +984,133 @@ bool Game::can_respond_with_card(string name)
     else if(mode == "Kulomet")
     {
         return name == "Vedle" || (game_order[notai]->name == "calamity" && name == "Bang") ||
-                name == "Barel";
+                (name == "Barel" && game_order[notai]->barel == 0);
     }
     else if(mode == "Bang" || mode == "Vedle")
     {
         return name == "Vedle" || (game_order[notai]->name == "calamity" && name == "Bang") ||
-                name == "Barel";
+                (name == "Barel" && game_order[notai]->barel == 0);
     }
     else if(mode == "Slab")
     {
-        return name == "Vedle" || (game_order[notai]->name == "calamity" && name == "Bang") ||
-                        name == "Barel";
+        if(name == "Vedle")
+        {
+            return true;
+        }
+        else if(game_order[notai]->barel == 0 && name == "Barel")
+        {
+            return true;
+        }
+        else if(game_order[notai]->name == "jourd" && name == "Barel" && game_order[notai]->barel < 2)
+        {
+            return true;
+        }
+        else if(game_order[notai]->name == "calamity" && name == "Bang")
+        {
+            return true;
+        }
     }
     return false;
+}
+void Game::resolve_notai_react(size_t c_index)
+{
+    Card c;
+    //barel
+    if(c_index >= game_order[notai]->cards_hand.size())
+    {
+        c = game_order[notai]->cards_desk[game_order[notai]->index(game_order[notai]->cards_desk, "Barel")];
+    }
+    else
+    {
+        c = game_order[notai]->cards_hand[c_index];
+        game_order[notai]->cards_hand.erase(game_order[notai]->cards_hand.begin() + c_index);
+        deck.push_back(c);
+    }
+
+    if(mode == "Duel")
+    {
+        duel_active_turn = !duel_active_turn;
+    }
+    else if(mode == "Kulomet")
+    {
+        if(c.name == "Barel")
+        {
+            if(game_order[notai]->resolve_barrel())
+            {
+                game_order[notai]->barel = 0;
+                neu_turn = (neu_turn + 1) % player_alive;
+
+                if(active_player == neu_turn)
+                {
+                    mode = "";
+                    neu_turn = -1;
+                }
+            }
+            else
+            {
+                game_order[notai]->barel++;
+            }
+        }
+        else
+        {
+            neu_turn = (neu_turn + 1) % player_alive;
+
+            if(active_player == neu_turn)
+            {
+                mode = "";
+                neu_turn = -1;
+            }
+        }
+    }
+    else if(mode == "Indiani")
+    {
+        neu_turn = (neu_turn + 1) % player_alive;
+
+        if(active_player == neu_turn)
+        {
+            mode = "";
+            neu_turn = -1;
+        }
+    }
+    else if(mode == "Slab")
+    {
+        if(c.name == "Barel")
+        {
+            if(game_order[notai]->resolve_barrel() && game_order[notai]->played_vedle == 1)
+            {
+                game_order[notai]->barel = 0;
+                game_order[notai]->played_vedle = 0;
+                mode == "";
+            }
+            else
+            {
+                game_order[notai]->barel++;
+            }
+        }
+        else if(game_order[notai]->played_vedle == 2)
+        {
+            mode = "";
+        }
+    }
+    else if(mode == "Vedle" || mode == "Bang")
+    {
+        if(c.name == "Barel")
+        {
+            if(game_order[notai]->resolve_barrel())
+            {
+                game_order[notai]->barel = 0;
+                mode == "";
+            }
+            else
+            {
+                game_order[notai]->barel++;
+            }
+        }
+        else
+        {
+            mode = "";
+        }
+    }
 }
 void Game::rm_enemy(int id)
 {

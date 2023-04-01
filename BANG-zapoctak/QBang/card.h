@@ -10,7 +10,7 @@ class Card {
 public:
 	Card() : id(INT_MAX), name(""), edge('.'), suit(""), rank(INT_MAX), card_type("") {}
 	Card(int id, const std::string& name, char edge, const std::string& suit, int rank, const std::string& type) : id(id), 
-		name(name), edge(edge), suit(suit), rank(rank), card_type(type) 
+        name(name), edge(edge), suit(suit), rank(rank), card_type(type), dyn_active(false)
 	{
 		if (name == "Volcanic")
 		{
@@ -41,12 +41,14 @@ public:
     QString suit_loc();
     QString rnk();
     bool need_target();
+
 	int id;
 	std::string name;
 	char edge;//Modry, Hnedy okraj
 	std::string suit;
 	int rank;
 	std::string card_type;//Agro, Def, Neut
+    bool dyn_active;
 
 	int range;//jedine v pripade, ze se jedna o zbran
 };

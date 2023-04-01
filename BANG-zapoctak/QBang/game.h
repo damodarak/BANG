@@ -45,6 +45,7 @@ public:
     void ai_react();
     bool notai_duel_react();
     bool can_respond_with_card(std::string name);
+    void resolve_notai_react(size_t c_index);
 
 	std::deque<Card> deck;//front->draw, back->discard
 	std::vector<Card> emporio;//odsud se budou brat karty po pouziti karty Hokynarstvi

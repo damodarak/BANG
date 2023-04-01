@@ -43,10 +43,12 @@ void Jesse::draw_phase()
 
 void Jesse::ability()
 {
-    if(ability_used)
+    if(target_id == -1)
     {
         return;
     }
     ability_used = true;
-
+    drawed = true;
+    cards_hand.push_back(g->game_order[g->id_to_pos(target_id)]->give_random_card_hand());
+    cards_hand.push_back(g->draw_from_deck());
 }

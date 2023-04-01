@@ -15,6 +15,10 @@ void Player::draw_phase()
     {
         enemies_id.erase(enemies_id.find(g->game_order[0]->id));
     }
+    if(role == 'O' && g->game_order.size() != 2 && enemies_id.find(g->game_order[0]->id) != enemies_id.end())
+    {
+        enemies_id.erase(enemies_id.find(g->game_order[0]->id));
+    }
 
 
 	Card c;
@@ -200,11 +204,15 @@ void Player::add_enemy_vice(int enemy_id)
 }
 bool Player::has_notai_ability()
 {
-    if(name == "jourde" || name == "ketchum" || name == "pedro" || name == "jesse" || name == "carlson")
-    {
-        return true;
-    }
-    return false;
+    return name == "jourd" || name == "ketchum" || name == "pedro" || name == "jesse" || name == "carlson";
+}
+bool Player::has_dyn()
+{
+    return index(cards_desk, "Dynamit") != -1 && cards_desk[index(cards_desk, "Dynamit")].dyn_active;
+}
+bool Player::has_jail()
+{
+    return index(cards_desk, "Vezeni") != -1;
 }
 void Player::discard_phase()
 {
@@ -299,11 +307,13 @@ bool Player::resolve_dyn()
             }
         }
 
+        cards_desk[index(cards_desk, "Dynamit")].dyn_active = true;
         g->game_order[next]->cards_desk.push_back(cards_desk[index(cards_desk, "Dynamit")]);
         cards_desk.erase(cards_desk.begin() + index(cards_desk, "Dynamit"));
     }
     else
     {
+        cards_desk[index(cards_desk, "Dynamit")].dyn_active = false;
         g->deck.push_back(cards_desk[index(cards_desk, "Dynamit")]);
         cards_desk.erase(cards_desk.begin() + index(cards_desk, "Dynamit"));
     }
@@ -786,6 +796,11 @@ void Player::turn_reset()
     drawed = false;
     target_id = -1;
     ability_used = false;
+    barel = 0;
+    if(index(cards_desk, "Dynamit") != -1)
+    {
+        cards_desk[index(cards_desk, "Dynamit")].dyn_active = true;
+    }
 }
 bool Player::discard_blue()
 {

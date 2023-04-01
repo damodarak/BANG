@@ -28,5 +28,15 @@ void Carlson::draw_phase()
 }
 void Carlson::ability()
 {
-    //dodelat pro notai hrace
+    if(g->game_order[g->active_player]->id != id)
+    {
+        return;
+    }
+    for(int i = 0; i < 3; i++)
+    {
+        g->emporio.push_back(g->draw_from_deck());
+    }
+    ability_used = true;
+    g->mode = "Carlson";
+    drawed = true;
 }

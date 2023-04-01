@@ -17,5 +17,63 @@ bool Jourd::resolve_barrel()
 //for not AI
 void Jourd::ability()
 {
+    if(g->mode == "Kulomet")
+    {
+        barel++;
+        if(resolve_barrel())
+        {
+            barel = 0;
+            g->neu_turn = (g->neu_turn + 1) % g->player_alive;
 
+            if(g->active_player == g->neu_turn)
+            {
+                g->mode = "";
+                g->neu_turn = -1;
+            }
+        }
+    }
+    else if(g->mode == "Slab")
+    {
+        barel++;
+        if(resolve_barrel())
+        {
+            barel++;
+            played_vedle++;
+        }
+        else
+        {
+            barel++;
+        }
+
+
+        if(played_vedle == 2)
+        {
+            g->mode = "";
+        }
+    }
+    else if(g->mode == "Vedle" || g->mode == "Bang")
+    {
+        barel++;
+        if(resolve_barrel())
+        {
+            barel = 0;
+            g->mode = "";
+        }
+        else
+        {
+            barel++;
+        }
+
+
+        if(played_vedle == 1)
+        {
+            g->mode = "";
+        }
+
+        if(barel == 2)
+        {
+            ability_used = true;
+        }
+
+    }
 }

@@ -39,10 +39,6 @@ void Pedro::draw_phase()
 
 void Pedro::ability()
 {
-    if(ability_used)
-    {
-        return;
-    }
     cards_hand.push_back(g->draw_from_deck());
     cards_hand.push_back(g->deck.back());
     g->deck.pop_back();

@@ -23,6 +23,7 @@ bool Lucky::resolve_dyn()
             }
         }
 
+        cards_desk[index(cards_desk, "Dynamit")].dyn_active = true;
         g->game_order[next]->cards_desk.push_back(cards_desk[index(cards_desk, "Dynamit")]);
         cards_desk.erase(cards_desk.begin() + index(cards_desk, "Dynamit"));
 
@@ -42,6 +43,7 @@ bool Lucky::resolve_dyn()
             }
         }
 
+        cards_desk[index(cards_desk, "Dynamit")].dyn_active = true;
         g->game_order[next]->cards_desk.push_back(cards_desk[index(cards_desk, "Dynamit")]);
         cards_desk.erase(cards_desk.begin() + index(cards_desk, "Dynamit"));
 
@@ -52,6 +54,7 @@ bool Lucky::resolve_dyn()
 		g->deck.push_back(c1);
 		g->deck.push_back(c2);
 
+        cards_desk[index(cards_desk, "Dynamit")].dyn_active = false;
         g->deck.push_back(cards_desk[index(cards_desk, "Dynamit")]);
         cards_desk.erase(cards_desk.begin() + index(cards_desk, "Dynamit"));
 
@@ -69,6 +72,7 @@ bool Lucky::resolve_jail()
 	Card c1 = g->draw_from_deck();
     Card c2 = g->draw_from_deck();
     g->deck.push_back(cards_desk[index(cards_desk, "Vezeni")]);
+    cards_desk.erase(cards_desk.begin() + index(cards_desk, "Vezeni"));
 	if (c1.suit == "Srdce")
 	{
 		g->deck.push_back(c2);

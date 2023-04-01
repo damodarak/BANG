@@ -7,7 +7,6 @@
 #include "game.h"
 #include <QVector>
 #include <QList>
-#include "ask.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -55,8 +54,6 @@ private:
     QLabel* rank;
     Game* g;
     int notai;
-
-    Ask* a;
 
     void SetLabel(QLabel* q, const QString& s);
     void LoadCards();
