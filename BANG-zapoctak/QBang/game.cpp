@@ -557,7 +557,7 @@ void Game::resolve_played_card()
             load_emporio();
             return;
         }
-        if(!game_order[neu_turn]->isai)
+        if(neu_turn != -1 && !game_order[neu_turn]->isai)
         {
             return;
         }

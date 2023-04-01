@@ -325,7 +325,13 @@ void MainWindow::PaintLayout()
             SetLabel(g->game_order[i]->char_l, g->game_order[i]->file_loc());
             g->game_order[i]->hp_l->setText(QString::number(g->game_order[i]->health));
             SetLabel(g->game_order[i]->role_l, g->game_order[i]->role_loc());
-            for(size_t j = 0; j < g->game_order[i]->cards_hand.size(); j++)
+
+            size_t cards = g->game_order[i]->cards_hand.size();
+            if(cards > 10)
+            {
+                cards = 10;
+            }
+            for(size_t j = 0; j < cards; j++)
             {
                 SetLabel(g->game_order[i]->cards_l[j], g->game_order[i]->cards_hand[j].file_loc());
             }
@@ -456,6 +462,11 @@ void MainWindow::on_finish_clicked()
     {
         g->game_order[g->active_player]->turn_reset();
         g->active_player = (g->active_player + 1) % g->player_alive;
+        PaintLayout();
+        return;
+    }
+    else if(!g->game_order[g->active_player]->isai && g->mode == "")
+    {
         PaintLayout();
         return;
     }

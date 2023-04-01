@@ -17,6 +17,13 @@ bool Jourd::resolve_barrel()
 //for not AI
 void Jourd::ability()
 {
+    if((g->game_order[g->active_player]->name == "slab" && barel == 2) ||
+            (g->game_order[g->active_player]->name != "slab" && barel == 1))
+    {
+        return;
+    }
+
+
     if(g->mode == "Kulomet")
     {
         barel++;
@@ -36,19 +43,16 @@ void Jourd::ability()
     {
         barel++;
         if(resolve_barrel())
-        {
-            barel++;
+        {   
             played_vedle++;
-        }
-        else
-        {
-            barel++;
         }
 
 
         if(played_vedle == 2)
         {
             g->mode = "";
+            barel = 0;
+            played_vedle = 0;
         }
     }
     else if(g->mode == "Vedle" || g->mode == "Bang")
@@ -58,22 +62,14 @@ void Jourd::ability()
         {
             barel = 0;
             g->mode = "";
+            played_vedle = 0;
         }
-        else
-        {
-            barel++;
-        }
-
 
         if(played_vedle == 1)
         {
             g->mode = "";
+            barel = 0;
+            played_vedle = 0;
         }
-
-        if(barel == 2)
-        {
-            ability_used = true;
-        }
-
     }
 }

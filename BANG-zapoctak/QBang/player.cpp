@@ -608,11 +608,11 @@ int Player::choose(const std::vector<Card>& cards)
 {
     if(index(cards, "WellsFargo") != -1)
     {
-        return index(cards, "Dostavnik");
+        return index(cards, "WellsFargo");
     }
     else if(index(cards, "Dostavnik") != -1)
     {
-        return index(cards, "WellsFargo");
+        return index(cards, "Dostavnik");
     }
     else if(health > max_health / 2)
     {
