@@ -20,7 +20,6 @@ SOURCES += \
     char_ketchum.cpp \
     char_lucky.cpp \
     char_pedro.cpp \
-    char_slab.cpp \
     char_suzy.cpp \
     game.cpp \
     main.cpp \

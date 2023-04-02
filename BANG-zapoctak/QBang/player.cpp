@@ -533,6 +533,10 @@ Card Player::give_random_card()
         Card c;
         c = cards_hand[i];
         cards_hand.erase(cards_hand.begin() + i);
+        if(c.name == "Dynamit")
+        {
+            c.dyn_active = false;
+        }
         return c;
     }
     else
@@ -540,6 +544,10 @@ Card Player::give_random_card()
         Card c;
         c = cards_desk[i - cards_hand.size()];
         cards_desk.erase(cards_desk.begin() + i - cards_hand.size());
+        if(c.name == "Dynamit")
+        {
+            c.dyn_active = false;
+        }
         return c;
     }
 }

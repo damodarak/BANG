@@ -26,7 +26,6 @@ void Jourd::ability()
 
     if(g->mode == "Kulomet")
     {
-        barel++;
         if(resolve_barrel())
         {
             barel = 0;
@@ -62,13 +61,6 @@ void Jourd::ability()
         {
             barel = 0;
             g->mode = "";
-            played_vedle = 0;
-        }
-
-        if(played_vedle == 1)
-        {
-            g->mode = "";
-            barel = 0;
             played_vedle = 0;
         }
     }

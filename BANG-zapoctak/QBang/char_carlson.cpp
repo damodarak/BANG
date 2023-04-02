@@ -32,6 +32,11 @@ void Carlson::ability()
     {
         return;
     }
+    if(drawed)
+    {
+        ability_used = true;
+        return;
+    }
     for(int i = 0; i < 3; i++)
     {
         g->emporio.push_back(g->draw_from_deck());

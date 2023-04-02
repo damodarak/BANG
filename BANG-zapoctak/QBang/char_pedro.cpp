@@ -39,6 +39,11 @@ void Pedro::draw_phase()
 
 void Pedro::ability()
 {
+    if(g->game_order[g->active_player]->isai || drawed || g->mode != "")
+    {
+        ability_used = true;
+        return;
+    }
     cards_hand.push_back(g->draw_from_deck());
     cards_hand.push_back(g->deck.back());
     g->deck.pop_back();

@@ -416,6 +416,7 @@ void MainWindow::on_draw_clicked()
                 g->killed(dead);
             }
         }
+        PaintLayout();
         return;
     }
     else if(g->game_order[g->active_player]->has_jail())
@@ -464,6 +465,19 @@ void MainWindow::on_finish_clicked()
         g->active_player = (g->active_player + 1) % g->player_alive;
         PaintLayout();
         return;
+    }
+    else if(g->finished())
+    {
+        ui->play->setEnabled(false);
+        ui->finish->setEnabled(false);
+        ui->discard->setEnabled(false);
+        ui->ability->setEnabled(false);
+        ui->draw->setEnabled(false);
+        ui->finish->setEnabled(false);
+        ui->choose_e->setEnabled(false);
+        ui->choose_c->setEnabled(false);
+        ui->choose_d->setEnabled(false);
+        ui->choose_p->setEnabled(false);
     }
     else if(!g->game_order[g->active_player]->isai && g->mode == "")
     {

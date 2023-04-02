@@ -45,7 +45,7 @@ void Ketchum::draw_phase()
 
 void Ketchum::ability()
 {
-    if(discarded >= 2 && health < max_health && !g->game_order[g->active_player]->isai)
+    if(discarded >= 2 && health < max_health && !g->game_order[g->active_player]->isai && g->mode == "")
     {
         discarded -= 2;
         health++;

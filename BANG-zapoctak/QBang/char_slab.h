@@ -8,7 +8,6 @@
 class Slab : public Player {
 public:
     Slab(Game* game) : Player(3, 4, "slab", game) {}
-    virtual int game_phase() override;
 };
 
 #endif

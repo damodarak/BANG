@@ -43,6 +43,10 @@ void Jesse::draw_phase()
 
 void Jesse::ability()
 {
+    if(g->game_order[g->active_player]->isai)
+    {
+        return;
+    }
     if(target_id == -1 || g->game_order[g->id_to_pos(target_id)]->hand_size() == 0)
     {
         return;

@@ -363,6 +363,10 @@ int Game::game_loop()
             else if(game == 1)
             {
                 mode = deck.back().name;
+                if(mode == "Bang" && game_order[active_player]->name == "slab")
+                {
+                    mode = "Slab";
+                }
             }
             //game == 2 => return 0
         }
@@ -397,7 +401,7 @@ void Game::vulture_sam(std::vector<Card>& reward)
 {
     for(size_t i = 0; i < game_order.size(); i++)
     {
-        if(game_order[i]->name == "vulture")
+        if(game_order[i]->name == "vulture" && game_order[i]->health > 0)
         {
             for(size_t j = 0; j < reward.size(); j++)
             {
@@ -438,6 +442,11 @@ void Game::resolve_played_card()
         }
         int react = neu_turn;
         neu_turn = (neu_turn + 1) % player_alive;
+        if(active_player == neu_turn)
+        {
+            mode = "";
+            neu_turn = -1;
+        }
 
         if(!vedle)
         {
@@ -447,12 +456,6 @@ void Game::resolve_played_card()
 
                 killed(game_order[react]->id);
             }
-        }
-
-        if(active_player == neu_turn)
-        {
-            mode = "";
-            neu_turn = -1;
         }
     }
     else if(mode == "Indiani")
@@ -477,6 +480,11 @@ void Game::resolve_played_card()
         }
         int react = neu_turn;
         neu_turn = (neu_turn + 1) % player_alive;
+        if(active_player == neu_turn)
+        {
+            mode = "";
+            neu_turn = -1;
+        }
 
         if(!bang)
         {
@@ -485,13 +493,6 @@ void Game::resolve_played_card()
             {
                 killed(game_order[react]->id);
             }
-        }
-
-
-        if(active_player == neu_turn)
-        {
-            mode = "";
-            neu_turn = -1;
         }
     }
     else if(mode == "Duel")
@@ -669,12 +670,17 @@ void Game::load_emporio()
 }
 void Game::killed(int id)
 {
+    duel_active_turn = false;
+
     if(!game_order[id_to_pos(id)]->isai)
     {
         notai_dead = true;
     }
 
-
+    if((mode == "Kulomet" || mode == "Indiani") && neu_turn != -1)
+    {
+        neu_turn = (neu_turn - 1 + player_alive) % player_alive;
+    }
 
     int active_id = game_order[active_player]->id;
 
@@ -923,6 +929,11 @@ void Game::ai_react()
         bool bang = game_order[neu_turn]->play_bang();
         int react = neu_turn;
         neu_turn = (neu_turn + 1) % player_alive;
+        if(active_player == neu_turn)
+        {
+            mode = "";
+            neu_turn = -1;
+        }
 
         if(!bang)
         {
@@ -932,19 +943,17 @@ void Game::ai_react()
                 killed(game_order[react]->id);
             }
         }
-
-
-        if(active_player == neu_turn)
-        {
-            mode = "";
-            neu_turn = -1;
-        }
     }
     else if(mode == "Kulomet")
     {
         bool vedle = game_order[neu_turn]->play_vedle();
         int react = neu_turn;
         neu_turn = (neu_turn + 1) % player_alive;
+        if(active_player == neu_turn)
+        {
+            mode = "";
+            neu_turn = -1;
+        }
 
         if(!vedle)
         {
@@ -954,13 +963,7 @@ void Game::ai_react()
 
                 killed(game_order[react]->id);
             }
-        }
-
-        if(active_player == neu_turn)
-        {
-            mode = "";
-            neu_turn = -1;
-        }
+        }     
     }
 }
 bool Game::notai_duel_react()
@@ -1001,7 +1004,7 @@ bool Game::can_respond_with_card(string name)
         {
             return true;
         }
-        else if(game_order[notai]->name == "jourd" && name == "Barel" && game_order[notai]->barel < 2)
+        else if(name == "Barel" && game_order[notai]->barel < 2)
         {
             return true;
         }
@@ -1023,6 +1026,10 @@ void Game::resolve_notai_react(size_t c_index)
     else
     {
         c = game_order[notai]->cards_hand[c_index];
+        if(c.name == "Barel")
+        {
+            return;
+        }
         game_order[notai]->cards_hand.erase(game_order[notai]->cards_hand.begin() + c_index);
         deck.push_back(c);
     }
@@ -1087,10 +1094,19 @@ void Game::resolve_notai_react(size_t c_index)
                 game_order[notai]->barel++;
             }
         }
-        else if(game_order[notai]->played_vedle == 2)
+        else
+        {
+            game_order[notai]->played_vedle++;
+        }
+
+
+
+
+        if(game_order[notai]->played_vedle == 2)
         {
             mode = "";
         }
+
     }
     else if(mode == "Vedle" || mode == "Bang")
     {
@@ -1099,7 +1115,7 @@ void Game::resolve_notai_react(size_t c_index)
             if(game_order[notai]->resolve_barrel())
             {
                 game_order[notai]->barel = 0;
-                mode == "";
+                mode = "";
             }
             else
             {
