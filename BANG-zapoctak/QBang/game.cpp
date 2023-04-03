@@ -319,11 +319,11 @@ int Game::game_loop()
     set_distances();
 
     //SPECIAL CASE FOR SUZY
-    if(!game_order[active_player]->isai &&
-            game_order[active_player]->name == "suzy" &&
+    if(game_order[active_player]->name == "suzy" &&
             game_order[active_player]->cards_hand.size() == 0)
     {
         game_order[active_player]->ability();
+        return 0;
     }
 
     if(mode == "" && game_order[active_player]->isai)
@@ -349,7 +349,6 @@ int Game::game_loop()
                 return 0;
             }
             game_order[active_player]->draw_phase();
-            return 0;
         }
         else
         {
@@ -424,10 +423,7 @@ void Game::resolve_played_card()
         if(neu_turn == -1)
         {
             neu_turn = (active_player + 1) % player_alive;
-            if(!game_order[neu_turn]->isai)
-            {
-                return;
-            }
+            return;
         }
 
         bool vedle = false;
@@ -453,7 +449,6 @@ void Game::resolve_played_card()
             bool hp = game_order[react]->dec_hp(1);
             if(!hp)
             {
-
                 killed(game_order[react]->id);
             }
         }
@@ -463,10 +458,7 @@ void Game::resolve_played_card()
         if(neu_turn == -1)
         {
             neu_turn = (active_player + 1) % player_alive;
-            if(!game_order[neu_turn]->isai)
-            {
-                return;
-            }
+            return;
         }
 
         bool bang = false;
@@ -514,8 +506,9 @@ void Game::resolve_played_card()
                 bool hp = game_order[active_player]->dec_hp(1);
                 if(!hp)
                 {
+                    int killed_id = game_order[active_player]->id;
                     active_player = (active_player + 1) % player_alive;
-                    killed(game_order[active_player]->id);
+                    killed(killed_id);
                 }
                 mode = "";
                 duel_active_turn = false;
@@ -672,11 +665,6 @@ void Game::killed(int id)
 {
     duel_active_turn = false;
 
-    if(!game_order[id_to_pos(id)]->isai)
-    {
-        notai_dead = true;
-    }
-
     if((mode == "Kulomet" || mode == "Indiani") && neu_turn != -1)
     {
         neu_turn = (neu_turn - 1 + player_alive) % player_alive;
@@ -687,7 +675,7 @@ void Game::killed(int id)
     int pos = id_to_pos(id);
     char role = game_order[pos]->role;
     //nekdo zabil banditu
-    if(role == 'B')
+    if(role == 'B' && deck.back().name != "Dynamit")
     {
         for(int i = 0; i < 3; i++)
         {
@@ -695,7 +683,7 @@ void Game::killed(int id)
         }
     }
     //Serif zabil sveho pomocnika
-    else if(role == 'V' && game_order[active_player]->say_role() == 'S')
+    else if(role == 'V' && game_order[active_player]->say_role() == 'S' && deck.back().name != "Dynamit")
     {
         vector<Card> shame = game_order[active_player]->give_all_cards();
         for(size_t i = 0; i < shame.size(); i++)
@@ -746,7 +734,6 @@ void Game::resolve_notai_play()
             Card c = deck.back();
             deck.pop_back();
             game_order[active_player]->cards_desk.push_back(c);
-            set_distances();
             if(c.name == "Volcanic")
             {
                 game_order[active_player]->played_bang = false;
@@ -762,7 +749,6 @@ void Game::resolve_notai_play()
             Card c = deck.back();
             deck.pop_back();
             game_order[pos]->cards_desk.push_back(c);
-            set_distances();
             game_order[pos]->enemies_id.insert(game_order[active_player]->id);
         }
     }
@@ -774,14 +760,14 @@ void Game::resolve_notai_play()
             Card c = deck.back();
             deck.pop_back();
             game_order[active_player]->cards_desk.push_back(c);
-            set_distances();
         }
     }
-    //wellsfargo/dostavnik
+    //dostavnik
     else if(deck.back().name == "Dostavnik")
     {
         game_order[active_player]->dostavnik_wells(2);
     }
+    //wellsfargo
     else if(deck.back().name == "WellsFargo")
     {
         game_order[active_player]->dostavnik_wells(3);
@@ -822,7 +808,6 @@ void Game::resolve_notai_play()
         {
             Card c = game_order[pos]->give_random_card();
             deck.push_back(c);
-            set_distances();
         }
     }
     //Panika
@@ -833,9 +818,9 @@ void Game::resolve_notai_play()
         {
             Card c = game_order[pos]->give_random_card();
             game_order[active_player]->cards_hand.push_back(c);
-            set_distances();
         }
     }
+    //bang
     else if((deck.back().name == "Bang" ||
              (deck.back().name == "Vedle" && game_order[active_player]->name == "calamity")) &&
             !game_order[active_player]->played_bang &&
@@ -856,6 +841,8 @@ void Game::resolve_notai_play()
         mode = deck.back().name;
         duel_active_turn = false;
     }
+
+    set_distances();
 }
 void Game::ai_react()
 {
@@ -1087,7 +1074,7 @@ void Game::resolve_notai_react(size_t c_index)
             {
                 game_order[notai]->barel = 0;
                 game_order[notai]->played_vedle = 0;
-                mode == "";
+                mode = "";
             }
             else
             {
@@ -1098,9 +1085,6 @@ void Game::resolve_notai_react(size_t c_index)
         {
             game_order[notai]->played_vedle++;
         }
-
-
-
 
         if(game_order[notai]->played_vedle == 2)
         {

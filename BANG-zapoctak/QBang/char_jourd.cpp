@@ -24,6 +24,7 @@ void Jourd::ability()
     }
 
 
+    barel++;
     if(g->mode == "Kulomet")
     {
         if(resolve_barrel())
@@ -40,12 +41,10 @@ void Jourd::ability()
     }
     else if(g->mode == "Slab")
     {
-        barel++;
         if(resolve_barrel())
         {   
             played_vedle++;
         }
-
 
         if(played_vedle == 2)
         {
@@ -56,7 +55,6 @@ void Jourd::ability()
     }
     else if(g->mode == "Vedle" || g->mode == "Bang")
     {
-        barel++;
         if(resolve_barrel())
         {
             barel = 0;

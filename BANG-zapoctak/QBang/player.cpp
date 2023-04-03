@@ -758,6 +758,11 @@ bool Player::play_neu(const string& name)
     }
     else
     {
+        if(g->player_alive == 2)
+        {
+            return true;
+        }
+
         switch(role)
         {
         case 'O':

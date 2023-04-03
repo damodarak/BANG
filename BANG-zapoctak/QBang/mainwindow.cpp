@@ -271,6 +271,8 @@ void MainWindow::PaintLayout()
     ui->target->setText(g->id_to_name(g->game_order[g->active_player]->target_id));
     ui->label->setText("Target:");
     ui->label_2->setText("React:");
+    ui->label_3->setText("Mode:");
+    ui->mode->setText(QString::fromStdString(g->mode));
     if(g->neu_turn != -1)
     {
         ui->neu->setText(g->id_to_name(g->game_order[g->neu_turn]->id));
