@@ -3,7 +3,7 @@
 
 #include "player.h"
 
-//uvnitr discard_phase
+//uvnitr discard_phase odhodi karty pokud mu to pomuze
 
 class Ketchum : public Player {
 public:

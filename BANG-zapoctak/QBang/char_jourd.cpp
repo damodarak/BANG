@@ -1,5 +1,7 @@
 #include "game.h"
 
+//zahraje 2x barel ma-li kartu barel, jinak obycyjny barel
+
 bool Jourd::resolve_barrel()
 {
     Card c = g->draw_from_deck();

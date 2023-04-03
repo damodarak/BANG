@@ -3,7 +3,7 @@
 
 #include "player.h"
 
-//resi hra
+//kdykoli nekdo zemre, ziska Vulture vsechny jeho karty v metode killed()
 
 class Vulture : public Player {
 public:

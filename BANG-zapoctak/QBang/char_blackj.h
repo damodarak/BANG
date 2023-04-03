@@ -3,7 +3,7 @@
 
 #include "player.h"
 
-//draw phase
+//2. karta karova nebo srdcova => lize si 3. kartu
 
 class Blackj : public Player {
 public:

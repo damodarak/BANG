@@ -4,6 +4,8 @@
 #include "player.h"
 
 //override draw_phase
+//pokud je karta na spodu balicku zajimava, tak si ji vezme
+//notai muze pouzit tuto schopnost zmacknutim Ability tlacitka
 
 class Pedro : public Player {
 public:

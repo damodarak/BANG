@@ -3,7 +3,7 @@
 
 #include "player.h"
 
-//kdykoli dostane ranu
+//kdykoli dostane ranu vezme si kartu z ruky utocnika
 
 class Cringo : public Player {
 public:

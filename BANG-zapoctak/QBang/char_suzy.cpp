@@ -1,5 +1,7 @@
 #include "game.h"
 
+//override metody zavolaji puvodni metody a nasledne zavolaji schopnost Suzy
+
 int Suzy::game_phase()
 {
     int result = Player::game_phase();

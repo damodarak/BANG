@@ -3,7 +3,8 @@
 
 #include "player.h"
 
-//override draw
+//AI-vybere si 2 karty ze 3 pomoci fce choose()
+//NOTAI-3 karty se nactou do hokynarstvi a pomoci comboboxu si hrac vybere
 
 class Carlson : public Player {
 public:

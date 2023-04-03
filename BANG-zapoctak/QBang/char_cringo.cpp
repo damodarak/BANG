@@ -23,7 +23,9 @@ bool Cringo::dec_hp(int lifes)
         }
     }
 
-    if(g->mode == "Bang" || g->mode == "Vedle" || g->mode == "Vedle" || g->mode == "Slab")
+
+    //je-li nekym zasazen, tak si od neho vezme kartu z ruky
+    if(g->mode == "Bang" || g->mode == "Vedle" || g->mode == "Slab")
     {
         cards_hand.push_back(g->game_order[g->active_player]->give_random_card_hand());
     }

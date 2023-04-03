@@ -3,7 +3,7 @@
 
 #include "player.h"
 
-//pri zahajeni hry se ji nastavi vzdalenost vsech o jedna mene
+//resi set_distance()
 
 class Rose : public Player {
 public:

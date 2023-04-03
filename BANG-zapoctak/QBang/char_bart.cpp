@@ -1,5 +1,7 @@
 #include "game.h"
 
+//lize kartu kdykoli je zasazen
+
 bool Bart::dec_hp(int lifes)
 {
     Player::dec_hp(lifes);

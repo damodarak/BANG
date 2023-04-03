@@ -57,7 +57,7 @@ private:
 
     void SetLabel(QLabel* q, const QString& s);
     void LoadCards();
-    void PaintLayout();
+    void PaintLayout();//po odehrani jakehokoliv tahu
     void ClearLabels();
     void LoadLabels();
     void AddLivePlayers();

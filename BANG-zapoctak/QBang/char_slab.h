@@ -3,7 +3,7 @@
 
 #include "player.h"
 
-//slab zmeni mode pote co zahraje bang
+//slab zmeni mode pote co zahraje bang na "Slab", specialni funkce pro handling
 
 class Slab : public Player {
 public:

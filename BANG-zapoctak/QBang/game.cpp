@@ -720,6 +720,7 @@ void Game::set_notai()
             return;
         }
     }
+    notai = 0;
 }
 void Game::resolve_notai_play()
 {

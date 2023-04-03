@@ -22,6 +22,7 @@ QString Card::suit_loc()
     return QString::fromStdString(end);
 }
 
+//prevod cisla na hodnost karty
 QString Card::rnk()
 {
     if(rank < 11)

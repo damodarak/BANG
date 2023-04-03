@@ -3,7 +3,7 @@
 
 #include "player.h"
 
-//override draw_phase
+//override draw_phase, ma-li nepratele tak si od neho vezme kartu
 
 class Jesse : public Player {
 public:

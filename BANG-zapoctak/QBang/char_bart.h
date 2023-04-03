@@ -3,7 +3,7 @@
 
 #include "player.h"
 
-//sam si lizne vzdy
+//sam si lizne vzdy, kdykoli je zasazen a jsou mu ubrany zivoty
 
 class Bart : public Player {
 public:

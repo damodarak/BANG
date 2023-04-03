@@ -3,7 +3,7 @@
 
 #include "player.h"
 
-//override resolve_jail/dyn/barrel
+//override resolve_jail/dyn/barrel lize si na tyto karty 2 krat
 
 class Lucky : public Player {
 public:

@@ -16,6 +16,7 @@ void Jesse::draw_phase()
 
     int index = -1;
     int cards = -1;
+    //najde mezi neprateli nejvetsi pocet karet v ruce a tam odebere kartu
     if(enemies_id.size() != 0)
     {
         for(size_t i = 0; i < g->game_order.size(); i++)

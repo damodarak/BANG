@@ -1,5 +1,7 @@
 #include "game.h"
 
+//vsechny tyto overridy si liznou 2 karty
+
 bool Lucky::resolve_dyn()
 {
     if(index(cards_desk, "Dynamit") == -1)

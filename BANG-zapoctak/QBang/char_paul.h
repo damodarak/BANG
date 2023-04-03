@@ -3,7 +3,7 @@
 
 #include "player.h"
 
-//pri zahajeni hry se mu nastavi vzdalenost vsech o jedna vice
+//resi set_distance
 
 class Paul : public Player {
 public:

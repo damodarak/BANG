@@ -21,25 +21,25 @@ public:
         active_player(0) {}
 	void load_characters();
     void load_card(std::vector<std::string>& v);
-	Card draw_from_deck();
+    Card draw_from_deck();//liznuti jedne karty z balicku
 	void draw_cards_start();
     void create(int players, std::string roles);
 	void create_players(int count);
-	void rotate_serif();
-	bool finished();
-	void set_initial_enemies();
-	void set_distances();
+    void rotate_serif();//serif je vzdy na pozici game_order[0]
+    bool finished();//urci konec hry
+    void set_initial_enemies();//nastavi ze zacatku nepratele pro AI
+    void set_distances();//zasadni funkce, nastavi hodnoty orientovaneho multigrafu
 	void change_distance(int id1, int change, int id2 = -1);
     void add_labels(QVector<QList<QLabel*>>& layout);
     void add_label_ai(int ai, QList<QLabel*>& labels);
-    void saloon();
-    int game_loop();//0-notai turn, 1-notai react,  3-ai play, 404-konec hry
+    void saloon();//vsem prida zivot, je-li to mozne
+    int game_loop();//0-hra pokracuje, 404-konec hry
     QString id_to_name(int id);
-    void vulture_sam(std::vector<Card>& reward);
-    void resolve_played_card();
+    void vulture_sam(std::vector<Card>& reward);//schopnost jedne postavy ziskat karty po mrtvemu hraci
+    void resolve_played_card();//mode != ""
     int id_to_pos(int id);
     void load_emporio();
-    void killed(int id);
+    void killed(int id);//odstani mrtveho hrace z game_order a zmeni hodnoty pro beh hry
     void set_notai();
     void resolve_notai_play();
     void ai_react();
@@ -52,13 +52,13 @@ public:
 	int player_count;
 	int player_alive;
     size_t notai;
-    std::vector<Hrac> game_order;
+    std::vector<Hrac> game_order;//zivi hraci
     std::vector<Hrac> dead;
-    std::string mode;//emporio,kulomet,indiani,bang,duel
-    std::map<int, std::map<int, int>> distances;
-    int neu_turn;
-    bool duel_active_turn;
-    int active_player;
+    std::string mode;//emporio,kulomet,indiani,bang,duel,...
+    std::map<int, std::map<int, int>> distances;//orientovany multigraf
+    int neu_turn;//mode == "Indiani"/"Kulomet"/"Hokynarstvi"
+    bool duel_active_turn;//mode == "Duel"
+    int active_player;//hrac, ktery je na tahu
 
     friend class MainWindow;
 private:	

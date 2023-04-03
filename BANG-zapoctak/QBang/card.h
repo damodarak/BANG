@@ -12,6 +12,7 @@ public:
 	Card(int id, const std::string& name, char edge, const std::string& suit, int rank, const std::string& type) : id(id), 
         name(name), edge(edge), suit(suit), rank(rank), card_type(type), dyn_active(false)
 	{
+        //je-li to zbran, tak ma i dosah, ostatni karty nemaji dosah
 		if (name == "Volcanic")
 		{
 			range = 1;
@@ -48,7 +49,7 @@ public:
 	std::string suit;
 	int rank;
 	std::string card_type;//Agro, Def, Neut
-    bool dyn_active;
+    bool dyn_active;//dynamit doutna, takze nemuze bouchnout
 
 	int range;//jedine v pripade, ze se jedna o zbran
 };

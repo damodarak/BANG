@@ -16,6 +16,7 @@ void Pedro::draw_phase()
     ability_used = true;
     drawed = true;
 
+    //zjistujeme jestli nas zajima dana karta nebo jestli nam nepomuze ze situace
     if(g->deck.back().name == "Dostavnik" || g->deck.back().name == "WellsFargo")
     {
         cards_hand.push_back(g->draw_from_deck());

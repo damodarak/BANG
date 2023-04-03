@@ -26,6 +26,7 @@ void Carlson::draw_phase()
     g->deck.push_front(v[0]);
     drawed = true;
 }
+//karty na vyber vlozime do emporia
 void Carlson::ability()
 {
     if(g->game_order[g->active_player]->id != id)

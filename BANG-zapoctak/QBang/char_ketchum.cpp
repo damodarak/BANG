@@ -2,13 +2,15 @@
 
 void Ketchum::discard_phase()
 {
-    if (max_health == health || (cards_hand.size() - health) == 1)
+    //nema smysl vyhazovat karty
+    if (max_health == health || cards_hand.size() < 2)
 	{
 		Player::discard_phase();
 	}
 	else
 	{
-        while ((cards_hand.size() - health) > 1 && max_health > health)
+        //vyhazujeme karty od nejmene podstatnych, coz rozhoduji zivoty hrace
+        while (cards_hand.size() > 1 && max_health > health)
 		{
             for(int i = 0; i < 2; i++)
             {
@@ -30,7 +32,7 @@ void Ketchum::discard_phase()
             health++;
 		}
 
-        if((cards_hand.size() - health) > 0)
+        if(cards_hand.size() > health)
         {
             Player::discard_phase();
         }

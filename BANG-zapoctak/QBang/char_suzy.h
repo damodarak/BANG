@@ -4,6 +4,7 @@
 #include "player.h"
 
 //po kazde vyresolvovane udalosti se hra zepta suze, zda-li ma kartu
+//v pripade notAI se to resi na zacatku game_loop()
 
 class Suzy : public Player {
 public:
