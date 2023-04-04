@@ -19,19 +19,20 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow), notai(0)
 {
     ui->setupUi(this);
+    //pro maximalizaci okna
     QTimer::singleShot(0, this, SLOT(showMaximized()));
 
     ClearLabels();
     LoadLabels();
     g = new Game();
 
+    //az PaintLayout() povoli co je treba
     ui->play->setEnabled(false);
     ui->finish->setEnabled(false);
     ui->discard->setEnabled(false);
     ui->ability->setEnabled(false);
     ui->draw->setEnabled(false);
     ui->react->setEnabled(false);
-
     ui->choose_e->setEnabled(false);
 }
 MainWindow::~MainWindow()
@@ -53,6 +54,7 @@ void MainWindow::LoadCards()
     }
     QTextStream in(&file);
     in.readLine();
+    //cteme radku po radce a vytvarime karty, ktere jsou ulozeny v g->deck
     while (!in.atEnd())
     {
         QString line = in.readLine();
@@ -87,6 +89,7 @@ void MainWindow::LoadLabels()
     suit = ui->suit;
     rank = ui->rank;
 
+    //postupne nacteni vsech lablu, ktere jsou potrebne pro hru
     QList<QLabel *> list = ui->gb1->findChildren<QLabel *>();
     layout.append(list);
     list = ui->gb2->findChildren<QLabel *>();
@@ -113,6 +116,7 @@ void MainWindow::AddLivePlayers()
     ui->choose_p->clear();
     for(size_t i = 0; i < g->game_order.size(); i++)
     {
+        //sami sebe nechceme v seznamu nepratel
         if((size_t)notai == i)
         {
             continue;
@@ -128,15 +132,15 @@ void MainWindow::Start(int players, const std::string& roles)
     g->load_characters();
     LoadCards();
     g->create(players, roles);
-    g->rotate_serif();
-    g->draw_cards_start();
+    g->rotate_serif();//serif na pozici 0 v g->game_order
+    g->draw_cards_start();//kazdy dostane tolik karet, kolik ma maximalne zivotu
     g->set_initial_enemies();
     g->set_distances();
-    g->add_labels(layout);
+    g->add_labels(layout);//prirazeni lablu k postavam v g->game_order, hra probiha proti smeru hodinovych rucicek
     notai = g->notai;
 
 
-
+    //tytyo 3 combo boxy pro vyber karet a vyber hrace jsou vzdy povoleny, protoze bez tlacitek je stejne nejde modifikovat
     ui->choose_c->setEnabled(true);
     ui->choose_d->setEnabled(true);
     ui->choose_p->setEnabled(true);
@@ -158,7 +162,7 @@ void MainWindow::SetButtons()
         ui->draw->setEnabled(false);
         ui->react->setEnabled(false);
     }
-    //Kit Carlson Ability
+    //Kit Carlson Ability...notAI
     else if(g->mode == "Carlson")
     {
         ui->choose_e->setEnabled(true);
@@ -169,7 +173,7 @@ void MainWindow::SetButtons()
         ui->draw->setEnabled(false);
         ui->react->setEnabled(false);
     }
-    //indiani, kulomet...notai reaguje
+    //indiani, kulomet...notAI reaguje
     else if(g->neu_turn != -1 && !g->game_order[g->neu_turn]->isai)
     {
         //dovolit jen bang, vedle, pivo, barel, jourd
@@ -180,7 +184,7 @@ void MainWindow::SetButtons()
         ui->discard->setEnabled(false);
         ui->finish->setEnabled(true);
     }
-    //hraje notai, lize si na DYNAMIT
+    //hraje notAI, lize si na DYNAMIT
     else if(!g->game_order[g->active_player]->isai && g->game_order[g->active_player]->has_dyn())
     {
         ui->play->setEnabled(false);
@@ -190,7 +194,7 @@ void MainWindow::SetButtons()
         ui->draw->setEnabled(true);
         ui->react->setEnabled(false);
     }
-    //hraje notai, lize si na VEZENI
+    //hraje notAI, lize si na VEZENI
     else if(!g->game_order[g->active_player]->isai && g->game_order[g->active_player]->has_jail())
     {
         ui->play->setEnabled(false);
@@ -200,7 +204,7 @@ void MainWindow::SetButtons()
         ui->draw->setEnabled(true);
         ui->react->setEnabled(false);
     }
-    //hraje notai
+    //hraje notAI
     else if(!g->game_order[g->active_player]->isai && g->mode == "")
     {
         ui->play->setEnabled(true);
@@ -210,7 +214,7 @@ void MainWindow::SetButtons()
         ui->draw->setEnabled(!g->game_order[notai]->drawed);
         ui->react->setEnabled(false);
     }
-    //hraje notai, AI bude reagovat
+    //AI bude reagovat na kartu od notAI
     else if(!g->game_order[g->active_player]->isai && g->mode != "" && !g->duel_active_turn)
     {
         ui->play->setEnabled(false);
@@ -230,7 +234,7 @@ void MainWindow::SetButtons()
         ui->discard->setEnabled(false);
         ui->finish->setEnabled(true);
     }
-    //duel, hraje notai...reaguje
+    //duel, hraje notAI...reaguje
     else if(g->notai_duel_react())
     {
         ui->play->setEnabled(true);
@@ -253,6 +257,7 @@ void MainWindow::SetButtons()
 }
 bool MainWindow::NotaiReact()
 {
+    //hraje-li notAI a ceka na reakci od AI
     return !g->game_order[g->id_to_pos(g->game_order[g->active_player]->target_id)]->isai;
 }
 void MainWindow::PaintLayout()
@@ -260,6 +265,7 @@ void MainWindow::PaintLayout()
     g->set_distances();
     AddLivePlayers();
     notai = g->notai;
+    //chceme, aby byly jenom potrebne tlacitka enabled
     SetButtons();
 
     //CENTER
@@ -343,6 +349,7 @@ void MainWindow::PaintLayout()
             }
         }
     }
+    //mrtvym hracum se jenom zobrazi postava a role, nic vic
     for(size_t i = 0; i < g->dead.size(); i++)
     {
         SetLabel(g->dead[i]->char_l, g->dead[i]->file_loc());
@@ -376,6 +383,7 @@ void MainWindow::on_actionStart_7_triggered()
 void MainWindow::on_play_clicked()
 {
     std::string name = ui->choose_c->currentText().toStdString();
+    //muzeme-li jako reakci na nejakou kartu zahrat tuto kartu
     bool can_play = g->can_respond_with_card(name);
     if(g->mode != "")
     {
@@ -392,10 +400,12 @@ void MainWindow::on_play_clicked()
     g->game_order[notai]->drawed = true;
     int i = ui->choose_c->currentIndex();
     int p = ui->choose_p->currentIndex();
+    //nemuzeme zahrat kartu, ktera je polozena pred nama na stole
     if((size_t)i >= g->game_order[notai]->cards_hand.size())
     {
         return;
     }
+    //pokud hrajeme kartu, ktera potrebuje cil
     if(i == -1 || (g->game_order[notai]->cards_hand[i].need_target() && p == -1))
     {
         return;
@@ -407,6 +417,7 @@ void MainWindow::on_play_clicked()
 }
 void MainWindow::on_draw_clicked()
 {
+    //vyreseni dynamitu, vezeni a pripadna smrt po vybuchu
     if(g->game_order[g->active_player]->has_dyn())
     {
         if(g->game_order[g->active_player]->resolve_dyn())
@@ -451,6 +462,8 @@ void MainWindow::on_discard_clicked()
         return;
     }
     g->game_order[notai]->discard_card(i);
+
+    //pokud Sir Ketchum vyhodi 2 karty muze si dobyt 1 zivot, jeho schopnost
     if(g->game_order[notai]->name == "ketchum")
     {
         g->game_order[notai]->discarded++;
@@ -459,6 +472,7 @@ void MainWindow::on_discard_clicked()
 }
 void MainWindow::on_finish_clicked()
 {
+    //nemuzeme ukoncit tah jestli mame v ruce vice karet nez zivotu
     if(!g->game_order[g->active_player]->isai &&
             g->game_order[g->active_player]->hand_size() <= g->game_order[g->active_player]->health &&
             g->mode == "")
@@ -468,6 +482,7 @@ void MainWindow::on_finish_clicked()
         PaintLayout();
         return;
     }
+    //konec hry, nic nejde zmacknout
     else if(g->finished())
     {
         ui->play->setEnabled(false);
@@ -490,6 +505,7 @@ void MainWindow::on_finish_clicked()
     PaintLayout();
     if(res == 404)
     {
+        //konec hry
         ui->play->setEnabled(false);
         ui->finish->setEnabled(false);
         ui->discard->setEnabled(false);
@@ -510,11 +526,13 @@ void MainWindow::on_ability_clicked()
     }
     g->game_order[notai]->set_target_id(ui->choose_p->currentText().toStdString());
 
+    //pouziti schopnosti, je-li to mozne
     g->game_order[notai]->ability();
     PaintLayout();
 }
 void MainWindow::on_choose_e_activated(int index)
 {
+    //schopnost Kit Carlson, vybira 2 karty ze 3, ktere lezi v g->emporio
     if(g->mode == "Carlson")
     {
         Card c = g->emporio[index];
@@ -530,6 +548,7 @@ void MainWindow::on_choose_e_activated(int index)
         return;
     }
 
+    //notAI si vybral kartu z hokynarstvi
     Card c = g->emporio[index];
     g->emporio.erase(g->emporio.begin() + index);
     g->game_order[g->neu_turn]->cards_hand.push_back(c);
@@ -545,6 +564,7 @@ void MainWindow::on_choose_e_activated(int index)
 }
 void MainWindow::on_react_clicked()
 {
+    //AI reaguje na kartu notAI
     g->ai_react();
     PaintLayout();
 }

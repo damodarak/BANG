@@ -8,6 +8,7 @@ using namespace std;
 
 void Game::load_characters()
 {
+    //nacteni vsech moznych hracu
 	Hrac pl = make_unique<Bart>(this);
 	characters.push_back(move(pl));
 	pl = make_unique<Blackj>(this);
@@ -54,6 +55,7 @@ void Game::load_card(vector<string>& v)
 
     deck.push_back(card);
 
+    //po kazde nove karte premichame balicek
 	auto rd = random_device{};
 	auto rng = default_random_engine{ rd() };
     shuffle(begin(deck), end(deck), rng);//pro nahodny vyber karet
@@ -70,6 +72,7 @@ void Game::create(int players, string roles)
     player_alive = player_count = players;
     create_players(players - 1);
 
+    //vyber postavy podle ratingu postav
     int num = (characters[players]->ranking > characters[players + 1]->ranking ? players + 1 : players);
 
     Hrac p = move(characters[num]);
@@ -131,6 +134,7 @@ void Game::draw_cards_start()
 }
 bool Game::finished()
 {
+    //pocet hrac == 1, umrel serif, nezustali bandite a odpadlik
 	if (player_alive == 1)
 	{
 		return true;
@@ -302,6 +306,7 @@ void Game::add_label_ai(int ai, QList<QLabel*>& labels)
 }
 void Game::saloon()
 {
+    //vsem +1 zivot, pokud jiz nemaji max. pocet
     for(size_t i = 0; i < game_order.size(); i++)
     {
         if(game_order[i]->max_health > game_order[i]->health)
@@ -312,6 +317,7 @@ void Game::saloon()
 }
 int Game::game_loop()
 {
+    //konec hry
     if(finished())
     {
         return 404;
@@ -326,6 +332,7 @@ int Game::game_loop()
         return 0;
     }
 
+    //hraje AI a neni zadny mod zaply
     if(mode == "" && game_order[active_player]->isai)
     {
         if(!game_order[active_player]->drawed)
@@ -374,6 +381,7 @@ int Game::game_loop()
     {
         resolve_played_card();
     }
+    //hraje notAI
     else if(!game_order[active_player]->isai)
     {
         resolve_notai_play();
@@ -398,6 +406,7 @@ QString Game::id_to_name(int id)
 }
 void Game::vulture_sam(std::vector<Card>& reward)
 {
+    //schopnost vulture_sama, pokud je nekdo vyrazen ze hry, tak ziska vsechny jeho karty
     for(size_t i = 0; i < game_order.size(); i++)
     {
         if(game_order[i]->name == "vulture" && game_order[i]->health > 0)
@@ -418,6 +427,7 @@ void Game::vulture_sam(std::vector<Card>& reward)
 }
 void Game::resolve_played_card()
 {
+    //Kulomet, Indiani...postupne kazdy musi odhodit potrebnou kartu nebo ekvivalent, jinak ztraci zivot
     if(mode == "Kulomet")
     {
         if(neu_turn == -1)
@@ -656,6 +666,7 @@ int Game::id_to_pos(int id)
 }
 void Game::load_emporio()
 {
+    //byla zahrana karta Hokynarstvi
     for(size_t i = 0; i < game_order.size(); i++)
     {
         emporio.push_back(draw_from_deck());
@@ -663,8 +674,10 @@ void Game::load_emporio()
 }
 void Game::killed(int id)
 {
+    //konec duelu
     duel_active_turn = false;
 
+    //v pripade nedohrani kulometu a indianu se musi posunou rucicka na hrace o jednu dozadu
     if((mode == "Kulomet" || mode == "Indiani") && neu_turn != -1)
     {
         neu_turn = (neu_turn - 1 + player_alive) % player_alive;
@@ -847,6 +860,7 @@ void Game::resolve_notai_play()
 }
 void Game::ai_react()
 {
+    // podminky jsou samopopisujici
     if(mode == "Duel")
     {
         int enemy_id = game_order[active_player]->target_id;
@@ -956,6 +970,8 @@ void Game::ai_react()
 }
 bool Game::notai_duel_react()
 {
+    //zda-li je na rade notAI v odehrani Bang pri duelu
+
     if(mode != "Duel")
     {
         return false;
@@ -1115,6 +1131,8 @@ void Game::resolve_notai_react(size_t c_index)
 }
 void Game::rm_enemy(int id)
 {
+    //kdykoli nekdo umre, tak nema smysl uchovavat tohoto hrace v seznamu nepratel
+
     for(size_t i = 0; i <game_order.size(); i++)
     {
         if(game_order[i]->enemies_id.find(id) != game_order[i]->enemies_id.end())

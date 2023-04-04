@@ -32,7 +32,7 @@ void Ketchum::discard_phase()
             health++;
 		}
 
-        if(cards_hand.size() > health)
+        if(cards_hand.size() > (size_t)health)
         {
             Player::discard_phase();
         }

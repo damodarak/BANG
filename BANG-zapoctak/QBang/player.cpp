@@ -22,6 +22,7 @@ void Player::draw_phase()
 
 
 	Card c;
+    //ze zacatku se lize 2 karty
 	for (size_t i = 0; i < 2; i++)
 	{
 		c = g->draw_from_deck();
@@ -57,11 +58,13 @@ int Player::game_phase()
         }
         else if(cards_hand[i].name == "Vezeni" && exist_enemy_jail() != -1)
         {
+            //musi existovat nekdo komu muzeme predat vezeni a je nas nepritel, nesmime to dat serifovi
             pass_jail(i, exist_enemy_jail());
             return 2;
         }
         else if(cards_hand[i].name == "Dynamit")
         {
+            cards_hand[i].dyn_active = true;
             cards_desk.push_back(cards_hand[i]);
             cards_hand.erase(cards_hand.begin() + i);
             return 2;
@@ -96,7 +99,7 @@ int Player::game_phase()
             return 2;
         }
 
-        //neu
+        //neutralni karty: hokynarstvi, salon, kulomet, indiani
         else if(cards_hand[i].card_type == "neu" && play_neu(cards_hand[i].name))
         {
            g->deck.push_back(cards_hand[i]);
@@ -154,6 +157,7 @@ int Player::game_phase()
             {
                 for(size_t j = 0; j < g->game_order.size(); j++)
                 {
+                    //muzeme pouzit jenom na vzdalenost mensi rovno 1
                     if(enemies_id.find(g->game_order[j]->id) != enemies_id.end() &&
                         can_play_panika(g->game_order[j]->id) && panika_balou_play(g->game_order[j]->id))
                     {
@@ -187,6 +191,7 @@ bool Player::panika_balou_play(int enemy_id)
     {
         if(g->game_order[i]->id == enemy_id)
         {
+            //musi mit nejake karty v ruce nebo na stole, jinak pouziti Paniky nebo Cat Balou nema smysl
             return g->game_order[i]->hand_size() + g->game_order[i]->cards_desk.size() > 0;
         }
     }
@@ -194,6 +199,7 @@ bool Player::panika_balou_play(int enemy_id)
 }
 void Player::add_enemy_vice(int enemy_id)
 {
+    //pokud nekdo utoci na serifa, tak i jeho pomocnici si ulozi tohoto hrace do seznamu nepratel
     for(size_t i = 0; i < g->game_order.size(); i++)
     {
         if(g->game_order[i]->role == 'V')
@@ -204,6 +210,7 @@ void Player::add_enemy_vice(int enemy_id)
 }
 bool Player::has_notai_ability()
 {
+    //jenom tito muzou pouzit schopnost jako notAI
     return name == "jourd" || name == "ketchum" || name == "pedro" || name == "jesse" || name == "carlson";
 }
 bool Player::has_dyn()
@@ -247,6 +254,8 @@ bool Player::dec_hp(int lifes)
 {
     health -= lifes;
     int beers = 0;
+
+    //pokud mam v ruce piva, tak se jeste muzu zachranit
     if(health <= 0)
     {
         for(size_t i = 0; i < cards_hand.size(); i++)
@@ -286,6 +295,7 @@ bool Player::resolve_jail()
 }
 bool Player::resolve_dyn()
 {
+    //pokud tuto kartu nemame vubec, tak muzeme se muzeme chovat jakoby dynamit nebouchl
     if(index(cards_desk, "Dynamit") == -1)
     {
         return false;
@@ -307,12 +317,14 @@ bool Player::resolve_dyn()
             }
         }
 
+        //dynamit je aktivni a pripraven bouchnout
         cards_desk[index(cards_desk, "Dynamit")].dyn_active = true;
         g->game_order[next]->cards_desk.push_back(cards_desk[index(cards_desk, "Dynamit")]);
         cards_desk.erase(cards_desk.begin() + index(cards_desk, "Dynamit"));
     }
     else
     {
+        //dynamit bude doutnat po dalsim nasazeni
         cards_desk[index(cards_desk, "Dynamit")].dyn_active = false;
         g->deck.push_back(cards_desk[index(cards_desk, "Dynamit")]);
         cards_desk.erase(cards_desk.begin() + index(cards_desk, "Dynamit"));
@@ -332,6 +344,7 @@ bool Player::resolve_barrel()
 }
 bool Player::play_bang()
 {
+    //vynuceni zahrani karty bang nebo ekvivalentu
     bool res = false;
     for(size_t i = 0; i < cards_hand.size(); i++)
     {
@@ -343,6 +356,7 @@ bool Player::play_bang()
         }
     }
 
+    //zapsani na seznam nepratel + pokud se strili na serifa tak i jeho pomocnici si zaznamenaji
     if(g->mode == "Duel" && id != g->game_order[g->active_player]->id)
     {
         enemies_id.insert(g->game_order[g->active_player]->id);
@@ -371,6 +385,7 @@ bool Player::play_vedle()
         }
     }
 
+    //zapsani na seznam nepratel + pokud se strili na serifa tak i jeho pomocnici si zaznamenaji
     if(g->mode == "Bang" || g->mode == "Vedle" || g->mode == "Slab")
     {
         enemies_id.insert(g->game_order[g->active_player]->id);
@@ -384,6 +399,8 @@ bool Player::play_vedle()
 }
 bool Player::resolve_slab_bang()
 {
+    //zde musime zahrat 2x vedle nebo ekvivalent, napr 2x barel pokud to vyjde
+
     bool barel1 = resolve_barrel();
     bool barel2 = resolve_barrel();
     int vedle = 0;
@@ -406,6 +423,7 @@ bool Player::resolve_slab_bang()
         }
     }
 
+    //zapsani na seznam nepratel + pokud se strili na serifa tak i jeho pomocnici si zaznamenaji
     enemies_id.insert(g->game_order[g->active_player]->id);
     if(role == 'S')
     {
@@ -452,6 +470,8 @@ QString Player::role_loc()
 }
 int Player::has_gun()
 {
+    //vrati -1, pokud hrac nema zbran, anebo range teto zbrane
+
     for(size_t i = 0; i < cards_desk.size(); i++)
     {
         if(cards_desk[i].range != 0)
@@ -512,6 +532,7 @@ void Player::set_enemy(int sheriff, const vector<int>& ids)
 }
 Card Player::give_random_card()
 {
+    //zapsani na seznam nepratel + pokud se strili na serifa tak i jeho pomocnici si zaznamenaji
     if(id != g->game_order[g->active_player]->id)
     {
         enemies_id.insert(g->game_order[g->active_player]->id);
@@ -523,6 +544,7 @@ Card Player::give_random_card()
 
     size_t max = cards_hand.size() + cards_desk.size() - 1;
 
+    //nadhodny generator pro vsechny karty, na stole i v ruce
     random_device dev;
     mt19937 rng(dev());
     uniform_int_distribution<std::mt19937::result_type> dist(0,max);
@@ -553,6 +575,7 @@ Card Player::give_random_card()
 }
 Card Player::give_random_card_hand()
 {
+    //zapsani na seznam nepratel + pokud se strili na serifa tak i jeho pomocnici si zaznamenaji
     if(id != g->game_order[g->active_player]->id)
     {
         enemies_id.insert(g->game_order[g->active_player]->id);
@@ -576,6 +599,7 @@ Card Player::give_random_card_hand()
 }
 bool Player::discard_card(const string& type)
 {
+    //odhozeni karty s typem type
 	for (size_t i = 0; i < cards_hand.size(); i++)
 	{
 		if (cards_hand[i].card_type == type)
@@ -603,6 +627,7 @@ void Player::discard_card(size_t index)
 }
 int Player::index(const std::vector<Card>& cards, const std::string& name_type)
 {
+    //vrati index teto karty v cards nebo -1, jestli karta neexistuje
     for(size_t i = 0; i < cards.size(); i++)
     {
         if(cards[i].name == name_type || cards[i].card_type == name_type)
@@ -614,6 +639,7 @@ int Player::index(const std::vector<Card>& cards, const std::string& name_type)
 }
 int Player::choose(const std::vector<Card>& cards)
 {
+    //pouziva se pri vyberu karet, kdyz je Hokynarstvi nebo v schopnosti Kit Carlson
     if(index(cards, "WellsFargo") != -1)
     {
         return index(cards, "WellsFargo");
@@ -671,6 +697,7 @@ bool Player::has_blue(const std::string &name)
 }
 int Player::exist_enemy_jail()
 {
+    //nalezeni nepritele, ktereho bychom mohli posadit do vezenis
     for(auto p : enemies_id)
     {
         if(p != g->game_order[0]->id)
@@ -702,6 +729,7 @@ void Player::pass_jail(int c_index, int enemy_id)
 }
 int Player::best_gun_hand()
 {
+    //nalezeni nejlepsi zbrane v ruce, napr kdyz chceme si vylepsit docasnou zbran, kterou mame
     int best = 0;
     int index = -1;
     for(size_t i = 0; i < cards_hand.size(); i++)
@@ -716,6 +744,7 @@ int Player::best_gun_hand()
 }
 bool Player::play_neu(const string& name)
 {
+    //ma-li AI zahrat neutralni kartu?
     int s = 0;
     int o = 0;
     int b = 0;
@@ -758,6 +787,7 @@ bool Player::play_neu(const string& name)
     }
     else
     {
+        //utocne karty vzdy zahrajeme
         if(g->player_alive == 2)
         {
             return true;
@@ -781,12 +811,14 @@ bool Player::play_neu(const string& name)
 }
 bool Player::can_play_panika(int enemy_id)
 {
+    //vzdalenost v multigrafu musi byt mensi rovno 1
     int gun = has_gun();
     gun = (gun == -1 ? 0 : gun - 1);
     return g->distances.find(id)->second[enemy_id] + gun <= 1;
 }
 std::vector<Card> Player::give_all_cards()
 {
+    //odevzdani vsech karet ze stolu a z ruky, napr kdyz umrel nebo serif zabil Vice
     vector<Card> v;
     while(cards_hand.size() > 0)
     {
@@ -803,6 +835,7 @@ std::vector<Card> Player::give_all_cards()
 }
 void Player::turn_reset()
 {
+    //defaultni reset vsech hodnot aktivniho hrace
     played_bang = false;
     played_vedle = 0;
     discarded = 0;
@@ -817,6 +850,7 @@ void Player::turn_reset()
 }
 bool Player::discard_blue()
 {
+    //vyhozeni jakekoli modre karty z ruky
 	for (size_t i = 0; i < cards_hand.size(); i++)
 	{
 		if (cards_hand[i].edge == 'M')
