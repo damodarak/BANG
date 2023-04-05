@@ -445,12 +445,11 @@ int Player::card_count()
 {
     return cards_hand.size();
 }
-QString Player::file_loc()
+string Player::file_loc()
 {
-    string end = ":/char_img/char_img/" + name + ".png";
-    return QString::fromStdString(end);
+    return ":/char_img/char_img/" + name + ".png";
 }
-QString Player::role_loc()
+string Player::role_loc()
 {
     bool end = g->finished();
     switch(role)
@@ -481,22 +480,9 @@ int Player::has_gun()
     }
     return -1;
 }
-void Player::set_role(char r)
-{
-	role = r;
-	if (role == 'S')
-	{
-        max_health++;
-		health++;
-	}
-}
 char Player::say_role()
 {
 	return (role == 'S' ? 'S' : '?');
-}
-void Player::take_card(Card& c)
-{
-	cards_hand.push_back(c);
 }
 void Player::set_enemy(int sheriff, const vector<int>& ids)
 {

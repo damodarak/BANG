@@ -19,7 +19,4 @@ public:
     virtual std::vector<Card> give_all_cards();
 };
 
-
-
-
 #endif

@@ -4,9 +4,10 @@
 #include <QMainWindow>
 #include <QLabel>
 #include <QString>
-#include "game.h"
 #include <QVector>
 #include <QList>
+
+#include "game.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -48,12 +49,7 @@ private:
     Ui::MainWindow *ui;
     QVector<QList<QLabel*>> layout;
     QList<QLabel*> emporio;
-    QLabel* discarded;
-    QLabel* deck;
-    QLabel* suit;
-    QLabel* rank;
     Game* g;
-    int notai;
 
     void SetLabel(QLabel* q, const QString& s);
     void LoadCards();
@@ -64,5 +60,6 @@ private:
     void Start(int players, const std::string& roles);
     void SetButtons();
     bool NotaiReact();
+    void FalseLabels();
 };
 #endif // MAINWINDOW_H

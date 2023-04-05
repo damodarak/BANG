@@ -11,5 +11,4 @@ public:
     Willy(Game* game) : Player(1, 4, "willy", game) {}
 };
 
-
 #endif

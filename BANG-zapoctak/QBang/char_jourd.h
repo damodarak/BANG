@@ -13,7 +13,4 @@ public:
     virtual void ability() override;
 };
 
-
-
-
 #endif

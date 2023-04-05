@@ -51,7 +51,7 @@ void Game::load_characters()
 }
 void Game::load_card(vector<string>& v)
 {
-    Card card(stoi(v[4]), v[0], v[3][0], v[1], stoi(v[2]), v[5]);
+    Card card(stoi(v[4]), v[0], v[3][0], v[1], stoi(v[2]), v[5], stoi(v[6]));
 
     deck.push_back(card);
 
@@ -89,7 +89,12 @@ void Game::create(int players, string roles)
 
     for (int i = 0; i < players; i++)
     {
-        game_order[i]->set_role(roles[i]);
+        game_order[i]->role = roles[i];
+        if(roles[i] == 'S')
+        {
+            game_order[i]->health++;
+            game_order[i]->max_health++;
+        }
     }
 
 }
@@ -128,7 +133,7 @@ void Game::draw_cards_start()
         for (size_t j = 0; j < (size_t)game_order[i]->max_health; j++)
 		{
 			c = draw_from_deck();
-			game_order[i]->take_card(c);
+            game_order[i]->cards_hand.push_back(c);
 		}	
 	}
 }
@@ -265,7 +270,7 @@ void Game::change_distance(int id1, int change, int id2)//zmena hrany v orientov
 		distances.find(id1)->second[id2] += change;
 	}
 }
-void Game::add_labels(QVector<QList<QLabel*>>& layout)
+void Game::add_label_indexes()
 {
     size_t count = game_order.size();
     for(; notai < count; notai++)
@@ -275,33 +280,12 @@ void Game::add_labels(QVector<QList<QLabel*>>& layout)
             break;
         }
     }
-    game_order[notai]->char_l = layout[6][0];
-    game_order[notai]->hp_l = layout[6][1];
-    game_order[notai]->role_l = layout[6][2];
-    for(int i = 3; i < 9; i++)
-    {
-        game_order[notai]->m_l.append(layout[6][i]);
-    }
-    for(int i = 9; i < 19; i++)
-    {
-        game_order[notai]->cards_l.append(layout[6][i]);
-    }
+    game_order[notai]->layout_index = 6;
 
-    for(size_t i = 1; i <count; i++)
+
+    for(size_t i = 1; i < count; i++)
     {
-        add_label_ai((notai - i + count) % count, layout[i - 1]);
-    }
-}
-void Game::add_label_ai(int ai, QList<QLabel*>& labels)
-{
-    game_order[ai]->char_l = labels[0];
-    game_order[ai]->hp_l = labels[1];
-    game_order[ai]->card_l = labels[2];
-    game_order[ai]->count_l = labels[3];
-    game_order[ai]->role_l = labels[4];
-    for(int i = 5; i < 11; i++)
-    {
-        game_order[ai]->m_l.append(labels[i]);
+        game_order[(notai - i + count) % count]->layout_index = i - 1;
     }
 }
 void Game::saloon()
@@ -389,7 +373,7 @@ int Game::game_loop()
 
     return 0;
 }
-QString Game::id_to_name(int id)
+string Game::id_to_name(int id)
 {
     if(id == -1)
     {
@@ -399,7 +383,7 @@ QString Game::id_to_name(int id)
     {
         if(game_order[i]->id == id)
         {
-            return QString::fromStdString(game_order[i]->name);
+            return game_order[i]->name;
         }
     }
     return "";

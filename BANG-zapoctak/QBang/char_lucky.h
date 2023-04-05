@@ -13,5 +13,4 @@ public:
 	virtual bool resolve_barrel() override;
 };
 
-
 #endif

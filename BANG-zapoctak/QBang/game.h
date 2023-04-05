@@ -7,7 +7,6 @@
 #include <iostream>
 #include <memory>
 #include <string>
-#include <QVector>
 #include <random>
 
 #include "player.h"
@@ -30,11 +29,10 @@ public:
     void set_initial_enemies();//nastavi ze zacatku nepratele pro AI
     void set_distances();//zasadni funkce, nastavi hodnoty orientovaneho multigrafu
 	void change_distance(int id1, int change, int id2 = -1);
-    void add_labels(QVector<QList<QLabel*>>& layout);
-    void add_label_ai(int ai, QList<QLabel*>& labels);
+    void add_label_indexes();
     void saloon();//vsem prida zivot, je-li to mozne
     int game_loop();//0-hra pokracuje, 404-konec hry
-    QString id_to_name(int id);
+    std::string id_to_name(int id);
     void vulture_sam(std::vector<Card>& reward);//schopnost jedne postavy ziskat karty po mrtvemu hraci
     void resolve_played_card();//mode != ""
     int id_to_pos(int id);

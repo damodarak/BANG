@@ -10,7 +10,4 @@ public:
     Rose(Game* game) : Player(13, 4, "rose", game) {}
 };
 
-
-
-
 #endif

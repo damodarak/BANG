@@ -4,9 +4,6 @@
 #include <string>
 #include <vector>
 #include <set>
-#include <QLabel>
-#include <QList>
-#include <QString>
 
 #include "card.h"
 
@@ -16,7 +13,7 @@ static int next_player_id = 0;
 
 class Player {
 public:
-    Player(int rank, int max_hp, const std::string& char_name, Game* game) : isai(true),
+    Player(int rank, int max_hp, const std::string& char_name, Game* game) : layout_index(0), isai(true),
         ranking(rank), id(++next_player_id), health(max_hp), max_health(max_hp), discarded(0), played_bang(false),
         drawed(false), ability_used(false), barel(0), played_vedle(0), name(char_name), role('?'), g(game), target_id(-1) {}
     virtual void draw_phase();
@@ -28,8 +25,6 @@ public:
     virtual void discard_phase();//odhozeni karet, aby platilo cards <= health
     virtual bool dec_hp(int lifes);//decresase health
 	char say_role();
-	void set_role(char r);
-	void take_card(Card& c);
 	void set_enemy(int sheriff, const std::vector<int>& ids);
     virtual Card give_random_card();
     virtual Card give_random_card_hand();
@@ -40,8 +35,8 @@ public:
     virtual bool play_vedle();
     virtual bool resolve_slab_bang();//schopnost Slaba the Killera
     int card_count();
-    QString file_loc();
-    QString role_loc();
+    std::string file_loc();
+    std::string role_loc();
     int has_gun();//vrati -1 pokud hrac nema zbran nebo range zbrane
     void dostavnik_wells(int count);
     int hand_size();
@@ -51,6 +46,7 @@ public:
     bool has_dyn();
     bool has_jail();
 
+    int layout_index;//index of QVector<Qlist<QLabel*>> with labels for blue cards, role,
 	bool isai;
 	int ranking;//for AI to choose beter character
 
@@ -75,14 +71,6 @@ protected:
 	std::set<int> enemies_id;
 	Game* g;
     int target_id;
-
-    QList<QLabel *> m_l;
-    QList<QLabel *> cards_l;
-    QLabel* card_l;
-    QLabel* char_l;
-    QLabel* role_l;
-    QLabel* hp_l;
-    QLabel* count_l;
 
     bool discard_blue();//vyhazovani karet
 	bool discard_card(const std::string& type);

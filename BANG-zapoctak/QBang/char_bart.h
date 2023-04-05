@@ -11,5 +11,4 @@ public:
     virtual bool dec_hp(int lifes) override;
 };
 
-
 #endif

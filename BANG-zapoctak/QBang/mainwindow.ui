@@ -2577,7 +2577,7 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>850</x>
@@ -2590,7 +2590,7 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_17">
        <item>
-        <widget class="QLabel" name="label">
+        <widget class="QLabel" name="label_target">
          <property name="text">
           <string>Target:</string>
          </property>
@@ -2608,7 +2608,7 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_18">
        <item>
-        <widget class="QLabel" name="label_2">
+        <widget class="QLabel" name="label_react">
          <property name="text">
           <string>React:</string>
          </property>
@@ -2626,7 +2626,7 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_19">
        <item>
-        <widget class="QLabel" name="label_3">
+        <widget class="QLabel" name="label_mode">
          <property name="text">
           <string>Mode:</string>
          </property>

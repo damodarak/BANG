@@ -4,7 +4,7 @@
 
 using namespace std;
 
-QString Card::file_loc()
+string Card::file_loc()
 {
     string cname = name;
     for(auto&& c : cname)
@@ -12,26 +12,24 @@ QString Card::file_loc()
         c = tolower(c);
     }
 
-    string end = ":/cards/cards/" + cname + ".png";
-    return QString::fromStdString(end);
+    return ":/cards/cards/" + cname + ".png";
 }
 
-QString Card::suit_loc()
+string Card::suit_loc()
 {
-    string end = ":/suits/suits/" + suit + ".png";
-    return QString::fromStdString(end);
+    return ":/suits/suits/" + suit + ".png";
 }
 
 //prevod cisla na hodnost karty
-QString Card::rnk()
+string Card::rnk()
 {
     if(rank < 11)
     {
-        return QString::number(rank);
+        return to_string(rank);
     }
     else
     {
-        QString end;
+        string end;
         switch(rank)
         {
         case 11:
