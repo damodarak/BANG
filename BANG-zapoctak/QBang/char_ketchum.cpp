@@ -1,4 +1,5 @@
 #include "game.h"
+#include "ai.h"
 
 void Ketchum::discard_phase()
 {
@@ -16,17 +17,17 @@ void Ketchum::discard_phase()
             {
                 if (health > max_health / 2)
                 {
-                    bool result = (discard_card("neu") ? true : false);
-                    result = (result ? true : discard_card("def"));
-                    result = (result ? true : discard_blue());
-                    result = (result ? true : discard_card("agr"));
+                    bool result = (Ai::discard_card(g, cards_hand, "neu") ? true : false);
+                    result = (result ? true : Ai::discard_card(g, cards_hand, "def"));
+                    result = (result ? true : Ai::discard_blue(g, cards_hand));
+                    result = (result ? true : Ai::discard_card(g, cards_hand, "agr"));
                 }
                 else
                 {
-                    bool result = (discard_card("neu") ? true : false);
-                    result = (result ? true : discard_blue());
-                    result = (result ? true : discard_card("agr"));
-                    result = (result ? true : discard_card("def"));
+                    bool result = (Ai::discard_card(g, cards_hand, "neu") ? true : false);
+                    result = (result ? true : Ai::discard_blue(g, cards_hand));
+                    result = (result ? true : Ai::discard_card(g, cards_hand, "agr"));
+                    result = (result ? true : Ai::discard_card(g, cards_hand, "def"));
                 }
             }
             health++;

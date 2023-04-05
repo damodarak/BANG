@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1480</width>
-    <height>773</height>
+    <width>1424</width>
+    <height>781</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -2437,62 +2437,60 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>1073</x>
-      <y>520</y>
-      <width>397</width>
+      <x>1070</x>
+      <y>510</y>
+      <width>329</width>
       <height>201</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout_3">
+    <layout class="QVBoxLayout" name="buttons">
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_6">
        <item>
-        <widget class="QComboBox" name="choose_c">
-         <property name="currentText">
-          <string/>
-         </property>
-         <property name="placeholderText">
-          <string>Choose Card:</string>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="horizontalLayout_22">
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_9">
+           <item>
+            <widget class="QComboBox" name="choose_c">
+             <property name="currentText">
+              <string/>
+             </property>
+             <property name="placeholderText">
+              <string>Choose Card:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="choose_p">
+             <property name="currentText">
+              <string/>
+             </property>
+             <property name="placeholderText">
+              <string>Choose Player:</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </item>
        <item>
-        <widget class="QComboBox" name="choose_p">
-         <property name="currentText">
-          <string/>
-         </property>
-         <property name="placeholderText">
-          <string>Choose Player:</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="play">
-         <property name="text">
-          <string>Play</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_8">
-       <item>
-        <widget class="QComboBox" name="choose_d">
-         <property name="currentText">
-          <string/>
-         </property>
-         <property name="placeholderText">
-          <string>Choose Card:</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="discard">
-         <property name="text">
-          <string>Discard</string>
-         </property>
-        </widget>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QPushButton" name="play">
+           <property name="text">
+            <string>Play</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="discard">
+           <property name="text">
+            <string>Discard</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </item>
@@ -2512,6 +2510,10 @@
          </property>
         </widget>
        </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_20">
        <item>
         <widget class="QPushButton" name="react">
          <property name="text">
@@ -2643,13 +2645,24 @@
      </item>
     </layout>
    </widget>
+   <widget class="QWidget" name="layoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>2</width>
+      <height>2</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_21"/>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1480</width>
+     <width>1424</width>
      <height>26</height>
     </rect>
    </property>

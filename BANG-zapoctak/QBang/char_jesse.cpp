@@ -22,9 +22,9 @@ void Jesse::draw_phase()
         for(size_t i = 0; i < g->game_order.size(); i++)
         {
             if(enemies_id.find(g->game_order[i]->id) != enemies_id.end() &&
-                    g->game_order[i]->hand_size() > cards)
+                    g->game_order[i]->cards_hand.size() > cards)
             {
-                cards = g->game_order[i]->hand_size();
+                cards = g->game_order[i]->cards_hand.size();
                 index = i;
             }
         }
@@ -48,7 +48,7 @@ void Jesse::ability()
     {
         return;
     }
-    if(target_id == -1 || g->game_order[g->id_to_pos(target_id)]->hand_size() == 0)
+    if(target_id == -1 || g->game_order[g->id_to_pos(target_id)]->cards_hand.size() == 0)
     {
         return;
     }

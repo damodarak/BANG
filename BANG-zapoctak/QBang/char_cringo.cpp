@@ -1,4 +1,5 @@
 #include "game.h"
+#include "ai.h"
 
 bool Cringo::dec_hp(int lifes)
 {
@@ -17,7 +18,7 @@ bool Cringo::dec_hp(int lifes)
         {
             while(health <= 0)
             {
-                discard_card(index(cards_hand, "Pivo"));
+                Ai::discard_card(g, cards_hand, cards_desk, Ai::index(cards_hand, "Pivo"));
                 health++;
             }
         }

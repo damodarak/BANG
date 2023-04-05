@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "ai.h"
 
 #include <QPixmap>
 #include <QString>
@@ -10,7 +11,6 @@
 #include <QMessageBox>
 #include <QGroupBox>
 #include <QWidget>
-#include <QTimer>
 
 using namespace std;
 
@@ -19,8 +19,6 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    //pro maximalizaci okna
-    QTimer::singleShot(0, this, SLOT(showMaximized()));
 
     ClearLabels();
     LoadLabels();
@@ -133,7 +131,6 @@ void MainWindow::Start(int players, const std::string& roles)
 
     //tytyo 3 combo boxy pro vyber karet a vyber hrace jsou vzdy povoleny, protoze bez tlacitek je stejne nejde modifikovat
     ui->choose_c->setEnabled(true);
-    ui->choose_d->setEnabled(true);
     ui->choose_p->setEnabled(true);
 
     PaintLayout();
@@ -262,8 +259,16 @@ void MainWindow::FalseLabels()
     ui->finish->setEnabled(false);
     ui->choose_e->setEnabled(false);
     ui->choose_c->setEnabled(false);
-    ui->choose_d->setEnabled(false);
     ui->choose_p->setEnabled(false);
+}
+void MainWindow::CheckFinished()
+{
+    //konec hry, nic nejde zmacknout
+    if(g->finished())
+    {
+        FalseLabels();
+        return;
+    }
 }
 void MainWindow::PaintLayout()
 {
@@ -299,8 +304,6 @@ void MainWindow::PaintLayout()
 
     //clear cards, discard
     ui->choose_c->clear();
-    ui->choose_d->clear();
-
 
     for(size_t i = 0; i < g->game_order.size(); i++)
     {
@@ -326,12 +329,10 @@ void MainWindow::PaintLayout()
             for(size_t j = 0; j < g->game_order[i]->cards_hand.size(); j++)
             {
                 ui->choose_c->addItem(QIcon(QString::fromStdString(g->game_order[i]->cards_hand[j].file_loc())), QString::fromStdString(g->game_order[i]->cards_hand[j].name));
-                ui->choose_d->addItem(QIcon(QString::fromStdString(g->game_order[i]->cards_hand[j].file_loc())), QString::fromStdString(g->game_order[i]->cards_hand[j].name));
             }
             for(size_t j = 0; j < g->game_order[i]->cards_desk.size(); j++)
             {
                 ui->choose_c->addItem(QIcon(QString::fromStdString(g->game_order[i]->cards_desk[j].file_loc())), QString::fromStdString(g->game_order[i]->cards_desk[j].name));
-                ui->choose_d->addItem(QIcon(QString::fromStdString(g->game_order[i]->cards_desk[j].file_loc())), QString::fromStdString(g->game_order[i]->cards_desk[j].name));
             }
 
             //REAL PERSON
@@ -370,6 +371,8 @@ void MainWindow::PaintLayout()
             SetLabel(layout[g->dead[i]->layout_index][2], QString::fromStdString(g->dead[i]->role_loc()));
         }
     }
+
+    CheckFinished();
 }
 void MainWindow::on_actionStart_4_triggered()
 {
@@ -417,7 +420,7 @@ void MainWindow::on_play_clicked()
     {
         return;
     }
-    g->game_order[g->notai]->discard_card(i);
+    Ai::discard_card(g, g->game_order[g->notai]->cards_hand, g->game_order[g->notai]->cards_desk, i);
     g->game_order[g->notai]->set_target_id(ui->choose_p->currentText().toStdString());
     g->game_loop();
     PaintLayout();
@@ -463,12 +466,12 @@ void MainWindow::on_draw_clicked()
 void MainWindow::on_discard_clicked()
 {
     g->game_order[g->notai]->drawed = true;
-    int i = ui->choose_d->currentIndex();
+    int i = ui->choose_c->currentIndex();
     if(i == -1)
     {
         return;
     }
-    g->game_order[g->notai]->discard_card(i);
+    Ai::discard_card(g, g->game_order[g->notai]->cards_hand, g->game_order[g->notai]->cards_desk, i);
 
     //pokud Sir Ketchum vyhodi 2 karty muze si dobyt 1 zivot, jeho schopnost
     g->game_order[g->notai]->discarded++;
@@ -476,15 +479,9 @@ void MainWindow::on_discard_clicked()
 }
 void MainWindow::on_finish_clicked()
 {
-    //konec hry, nic nejde zmacknout
-    if(g->finished())
-    {
-        FalseLabels();
-        return;
-    }
     //nemuzeme ukoncit tah jestli mame v ruce vice karet nez zivotu
-    else if(!g->game_order[g->active_player]->isai &&
-            g->game_order[g->active_player]->hand_size() <= g->game_order[g->active_player]->health &&
+    if(!g->game_order[g->active_player]->isai &&
+        g->game_order[g->active_player]->cards_hand.size() <= (size_t)g->game_order[g->active_player]->health &&
             g->mode == "")
     {
         g->game_order[g->active_player]->turn_reset();
@@ -497,13 +494,8 @@ void MainWindow::on_finish_clicked()
         PaintLayout();
         return;
     }
-    int res = g->game_loop();
+    g->game_loop();
     PaintLayout();
-    if(res == 404)
-    {
-        //konec hry
-        FalseLabels();
-    }
 }
 void MainWindow::on_ability_clicked()
 {
@@ -550,7 +542,7 @@ void MainWindow::on_choose_e_activated(int index)
     PaintLayout();
 }
 void MainWindow::on_react_clicked()
-{
+{    
     //AI reaguje na kartu notAI
     g->ai_react();
     PaintLayout();

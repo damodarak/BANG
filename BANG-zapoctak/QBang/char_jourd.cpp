@@ -1,4 +1,5 @@
 #include "game.h"
+#include "ai.h"
 
 //zahraje 2x barel ma-li kartu barel, jinak obycyjny barel
 
@@ -9,7 +10,7 @@ bool Jourd::resolve_barrel()
     g->deck.push_back(c);
 
     bool result2 = false;
-    if(!result1 && index(cards_desk, "Barel") != -1)
+    if(!result1 && Ai::index(cards_desk, "Barel") != -1)
     {
         result2 = Player::resolve_barrel();
     }

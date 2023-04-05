@@ -1,9 +1,10 @@
 #include "game.h"
+#include "ai.h"
 
 int Calamity::game_phase()
 {
     int result = Player::game_phase();
-    if(!played_bang && index(cards_hand, "Vedle") != -1 && result == 0)
+    if(!played_bang && Ai::index(cards_hand, "Vedle") != -1 && result == 0)
     {
         for(size_t i = 0; i < g->game_order.size(); i++)
         {
@@ -11,8 +12,8 @@ int Calamity::game_phase()
                 g->distances.find(id)->second[g->game_order[i]->id] <= 1)
             {
                 target_id = g->game_order[i]->id;
-                g->deck.push_back(cards_hand[index(cards_hand, "Vedle")]);
-                cards_hand.erase(cards_hand.begin() + index(cards_hand, "Vedle"));
+                g->deck.push_back(cards_hand[Ai::index(cards_hand, "Vedle")]);
+                cards_hand.erase(cards_hand.begin() + Ai::index(cards_hand, "Vedle"));
                 played_bang = true;
                 return 1;
             }
@@ -27,10 +28,10 @@ bool Calamity::play_bang()
 
     if(!res)
     {
-        if(index(cards_hand, "Vedle") != -1)
+        if(Ai::index(cards_hand, "Vedle") != -1)
         {
             res = true;
-            discard_card(index(cards_hand, "Vedle"));
+            Ai::discard_card(g, cards_hand, cards_desk, Ai::index(cards_hand, "Vedle"));
         }
     }
 
@@ -43,10 +44,10 @@ bool Calamity::play_vedle()
 
     if(!res)
     {
-        if(index(cards_hand, "Bang") != -1)
+        if(Ai::index(cards_hand, "Bang") != -1)
         {
             res = true;
-            discard_card(index(cards_hand, "Bang"));
+            Ai::discard_card(g, cards_hand, cards_desk, Ai::index(cards_hand, "Bang"));
         }
     }
 
@@ -91,13 +92,13 @@ bool Calamity::resolve_slab_bang()
     {
         while(vedle < 2)
         {
-            if(index(cards_hand, "Vedle") != -1)
+            if(Ai::index(cards_hand, "Vedle") != -1)
             {
-                discard_card(index(cards_hand, "Vedle"));
+                Ai::discard_card(g, cards_hand, cards_desk, Ai::index(cards_hand, "Vedle"));
             }
             else
             {
-                discard_card(index(cards_hand, "Bang"));
+                Ai::discard_card(g, cards_hand, cards_desk, Ai::index(cards_hand, "Bang"));
             }
             vedle++;
         }

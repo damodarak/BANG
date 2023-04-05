@@ -3,6 +3,7 @@
 #include <string>
 
 #include "game.h"
+#include "ai.h"
 
 using namespace std;
 
@@ -118,7 +119,7 @@ void Game::create_players(int count)
 }
 void Game::rotate_serif()
 {
-	while (game_order[0]->say_role() != 'S')
+    while (game_order[0]->role != 'S')
 	{
 		rotate(game_order.begin(), game_order.begin() + 1, game_order.end());
 	}
@@ -144,7 +145,7 @@ bool Game::finished()
 	{
 		return true;
 	}
-    else if(game_order[0]->say_role() != 'S')
+    else if(game_order[0]->role != 'S')
     {
         return true;
     }
@@ -171,7 +172,7 @@ void Game::set_initial_enemies()
 
 	for (size_t i = 0; i < game_order.size(); i++)
 	{
-		if (game_order[i]->say_role() == 'S')
+        if (game_order[i]->role == 'S')
 		{
 			sheriff_id = game_order[i]->id;
 		}
@@ -224,23 +225,23 @@ void Game::set_distances()
     //ZBRANE
     for(size_t i = 0; i < game_order.size(); i++)
     {
-        if(game_order[i]->has_gun() != -1)
+        if(Ai::has_gun(game_order[i]->cards_desk) != -1)
         {
-            change_distance(game_order[i]->id, -(game_order[i]->has_gun() - 1));
+            change_distance(game_order[i]->id, -(Ai::has_gun(game_order[i]->cards_desk) - 1));
         }
     }
 
     //KONE
     for(size_t i = 0; i < game_order.size(); i++)
     {
-        if(game_order[i]->index(game_order[i]->cards_desk, "Appaloosa") != -1)
+        if(Ai::index(game_order[i]->cards_desk, "Appaloosa") != -1)
         {
             change_distance(game_order[i]->id, -1);
         }
     }
     for(size_t i = 0; i < game_order.size(); i++)
     {
-        if(game_order[i]->index(game_order[i]->cards_desk, "Mustang") != -1)
+        if(Ai::index(game_order[i]->cards_desk, "Mustang") != -1)
         {
             int id = game_order[i]->id;
 
@@ -597,7 +598,7 @@ void Game::resolve_played_card()
     {
         int enemy_id = game_order[active_player]->target_id;
 
-        if(game_order[active_player]->can_play_panika(enemy_id))
+        if(Ai::can_play_panika(this, game_order[active_player]->id, enemy_id))
         {
             int pos = id_to_pos(enemy_id);
             Card c = game_order[pos]->give_random_card();
@@ -680,7 +681,7 @@ void Game::killed(int id)
         }
     }
     //Serif zabil sveho pomocnika
-    else if(role == 'V' && game_order[active_player]->say_role() == 'S' && deck.back().name != "Dynamit")
+    else if(role == 'V' && game_order[active_player]->role == 'S' && deck.back().name != "Dynamit")
     {
         vector<Card> shame = game_order[active_player]->give_all_cards();
         for(size_t i = 0; i < shame.size(); i++)
@@ -727,7 +728,7 @@ void Game::resolve_notai_play()
     //zbran
     if(deck.back().range != 0)
     {
-        if(game_order[active_player]->has_gun() == -1)
+        if(Ai::has_gun(game_order[active_player]->cards_desk) == -1)
         {
             Card c = deck.back();
             deck.pop_back();
@@ -741,8 +742,8 @@ void Game::resolve_notai_play()
     //vezeni
     else if(deck.back().name == "Vezeni")
     {
-        if(pos != -1 && game_order[pos]->say_role() != 'S'
-                && game_order[pos]->index(game_order[pos]->cards_desk, "Vezeni") == -1)
+        if(pos != -1 && game_order[pos]->role != 'S'
+                && Ai::index(game_order[pos]->cards_desk, "Vezeni") == -1)
         {
             Card c = deck.back();
             deck.pop_back();
@@ -753,7 +754,7 @@ void Game::resolve_notai_play()
     //ostatni modre karty
     else if(deck.back().edge == 'M')
     {
-        if(game_order[active_player]->index(game_order[active_player]->cards_desk, deck.back().name) == -1)
+        if(Ai::index(game_order[active_player]->cards_desk, deck.back().name) == -1)
         {
             Card c = deck.back();
             deck.pop_back();
@@ -812,7 +813,7 @@ void Game::resolve_notai_play()
     else if(deck.back().name == "Panika")
     {
         if(pos != -1 && game_order[pos]->panika_balou_play(enemy) &&
-                game_order[active_player]->can_play_panika(enemy))
+            Ai::can_play_panika(this, game_order[active_player]->id, enemy))
         {
             Card c = game_order[pos]->give_random_card();
             game_order[active_player]->cards_hand.push_back(c);
@@ -824,7 +825,7 @@ void Game::resolve_notai_play()
             !game_order[active_player]->played_bang &&
             distances.find(game_order[active_player]->id)->second[enemy] <= 1)
     {
-        if(game_order[active_player]->name == "willy" || game_order[active_player]->has_gun() == 1)
+        if(game_order[active_player]->name == "willy" || Ai::has_gun(game_order[active_player]->cards_desk) == 1)
         {
             game_order[active_player]->played_bang = false;
         }
@@ -1009,7 +1010,7 @@ void Game::resolve_notai_react(size_t c_index)
     //barel
     if(c_index >= game_order[notai]->cards_hand.size())
     {
-        c = game_order[notai]->cards_desk[game_order[notai]->index(game_order[notai]->cards_desk, "Barel")];
+        c = game_order[notai]->cards_desk[Ai::index(game_order[notai]->cards_desk, "Barel")];
     }
     else
     {

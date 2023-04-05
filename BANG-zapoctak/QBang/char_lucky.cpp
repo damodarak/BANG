@@ -1,10 +1,11 @@
 #include "game.h"
+#include "ai.h"
 
 //vsechny tyto overridy si liznou 2 karty
 
 bool Lucky::resolve_dyn()
 {
-    if(index(cards_desk, "Dynamit") == -1)
+    if(Ai::index(cards_desk, "Dynamit") == -1)
     {
         return false;
     }
@@ -25,9 +26,9 @@ bool Lucky::resolve_dyn()
             }
         }
 
-        cards_desk[index(cards_desk, "Dynamit")].dyn_active = true;
-        g->game_order[next]->cards_desk.push_back(cards_desk[index(cards_desk, "Dynamit")]);
-        cards_desk.erase(cards_desk.begin() + index(cards_desk, "Dynamit"));
+        cards_desk[Ai::index(cards_desk, "Dynamit")].dyn_active = true;
+        g->game_order[next]->cards_desk.push_back(cards_desk[Ai::index(cards_desk, "Dynamit")]);
+        cards_desk.erase(cards_desk.begin() + Ai::index(cards_desk, "Dynamit"));
 
 		return false;
 	}
@@ -45,9 +46,9 @@ bool Lucky::resolve_dyn()
             }
         }
 
-        cards_desk[index(cards_desk, "Dynamit")].dyn_active = true;
-        g->game_order[next]->cards_desk.push_back(cards_desk[index(cards_desk, "Dynamit")]);
-        cards_desk.erase(cards_desk.begin() + index(cards_desk, "Dynamit"));
+        cards_desk[Ai::index(cards_desk, "Dynamit")].dyn_active = true;
+        g->game_order[next]->cards_desk.push_back(cards_desk[Ai::index(cards_desk, "Dynamit")]);
+        cards_desk.erase(cards_desk.begin() + Ai::index(cards_desk, "Dynamit"));
 
         return false;
 	}
@@ -56,16 +57,16 @@ bool Lucky::resolve_dyn()
 		g->deck.push_back(c1);
 		g->deck.push_back(c2);
 
-        cards_desk[index(cards_desk, "Dynamit")].dyn_active = false;
-        g->deck.push_back(cards_desk[index(cards_desk, "Dynamit")]);
-        cards_desk.erase(cards_desk.begin() + index(cards_desk, "Dynamit"));
+        cards_desk[Ai::index(cards_desk, "Dynamit")].dyn_active = false;
+        g->deck.push_back(cards_desk[Ai::index(cards_desk, "Dynamit")]);
+        cards_desk.erase(cards_desk.begin() + Ai::index(cards_desk, "Dynamit"));
 
 		return true;
 	}
 }
 bool Lucky::resolve_jail()
 {
-    if(index(cards_desk, "Vezeni") == -1)
+    if(Ai::index(cards_desk, "Vezeni") == -1)
     {
         return true;
     }
@@ -73,8 +74,8 @@ bool Lucky::resolve_jail()
 
 	Card c1 = g->draw_from_deck();
     Card c2 = g->draw_from_deck();
-    g->deck.push_back(cards_desk[index(cards_desk, "Vezeni")]);
-    cards_desk.erase(cards_desk.begin() + index(cards_desk, "Vezeni"));
+    g->deck.push_back(cards_desk[Ai::index(cards_desk, "Vezeni")]);
+    cards_desk.erase(cards_desk.begin() + Ai::index(cards_desk, "Vezeni"));
 	if (c1.suit == "Srdce")
 	{
 		g->deck.push_back(c2);
@@ -96,7 +97,7 @@ bool Lucky::resolve_jail()
 }
 bool Lucky::resolve_barrel()
 {
-    if(index(cards_desk, "Barel") == -1)
+    if(Ai::index(cards_desk, "Barel") == -1)
     {
         return false;
     }
