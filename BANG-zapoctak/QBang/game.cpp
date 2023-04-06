@@ -7,60 +7,6 @@
 
 using namespace std;
 
-void Game::load_characters()
-{
-    //nacteni vsech moznych hracu
-	Hrac pl = make_unique<Bart>(this);
-	characters.push_back(move(pl));
-	pl = make_unique<Blackj>(this);
-	characters.push_back(move(pl));
-	pl = make_unique<Calamity>(this);
-	characters.push_back(move(pl));
-	pl = make_unique<Carlson>(this);
-	characters.push_back(move(pl));
-	pl = make_unique<Cringo>(this);
-	characters.push_back(move(pl));
-	pl = make_unique<Jesse>(this);
-	characters.push_back(move(pl));
-    pl = make_unique<Jourd>(this);
-    characters.push_back(move(pl));
-    pl = make_unique<Ketchum>(this);
-    characters.push_back(move(pl));
-    pl = make_unique<Lucky>(this);
-    characters.push_back(move(pl));
-	pl = make_unique<Paul>(this);
-	characters.push_back(move(pl));
-	pl = make_unique<Pedro>(this);
-	characters.push_back(move(pl));
-	pl = make_unique<Rose>(this);
-	characters.push_back(move(pl));
-	pl = make_unique<Slab>(this);
-	characters.push_back(move(pl));
-	pl = make_unique<Suzy>(this);
-	characters.push_back(move(pl));
-	pl = make_unique<Vulture>(this);
-	characters.push_back(move(pl));
-	pl = make_unique<Willy>(this);
-	characters.push_back(move(pl));
-
-	auto rd = random_device{};
-	auto rng = default_random_engine{ rd() };
-	for (size_t i = 0; i < 20; i++)
-	{
-		shuffle(begin(characters), end(characters), rng);//pro nahodny vyber postav
-	}
-}
-void Game::load_card(vector<string>& v)
-{
-    Card card(stoi(v[4]), v[0], v[3][0], v[1], stoi(v[2]), v[5], stoi(v[6]));
-
-    deck.push_back(card);
-
-    //po kazde nove karte premichame balicek
-	auto rd = random_device{};
-	auto rng = default_random_engine{ rd() };
-    shuffle(begin(deck), end(deck), rng);//pro nahodny vyber karet
-}
 Card Game::draw_from_deck()
 {
 	Card c;
@@ -116,15 +62,6 @@ void Game::create_players(int count)
 			game_order.push_back(move(p));
 		}
 	}
-}
-void Game::rotate_serif()
-{
-    while (game_order[0]->role != 'S')
-	{
-		rotate(game_order.begin(), game_order.begin() + 1, game_order.end());
-	}
-
-    active_player = 0;
 }
 void Game::draw_cards_start()
 {
@@ -270,17 +207,6 @@ void Game::change_distance(int id1, int change, int id2)//zmena hrany v orientov
 	{
 		distances.find(id1)->second[id2] += change;
 	}
-}
-void Game::saloon()
-{
-    //vsem +1 zivot, pokud jiz nemaji max. pocet
-    for(size_t i = 0; i < game_order.size(); i++)
-    {
-        if(game_order[i]->max_health > game_order[i]->health)
-        {
-            game_order[i]->health++;
-        }
-    }
 }
 void Game::game_loop()
 {
@@ -518,7 +444,7 @@ void Game::resolve_played_card()
         if(neu_turn == -1)
         {
             neu_turn = active_player;
-            load_emporio();
+            GameTools::load_emporio(this);
             return;
         }
         if(neu_turn != -1 && !game_order[neu_turn]->isai)
@@ -583,7 +509,7 @@ void Game::resolve_played_card()
     }
     else if(mode == "Salon")
     {
-        saloon();
+        GameTools::saloon(this);
         mode = "";
     }
     else if(mode == "Slab")
@@ -624,14 +550,6 @@ int Game::id_to_pos(int id)
     }
     return -1;
 }
-void Game::load_emporio()
-{
-    //byla zahrana karta Hokynarstvi
-    for(size_t i = 0; i < game_order.size(); i++)
-    {
-        emporio.push_back(draw_from_deck());
-    }
-}
 void Game::killed(int id)
 {
     //konec duelu
@@ -666,14 +584,14 @@ void Game::killed(int id)
     }
     vector<Card> reward = game_order[pos]->give_all_cards();
 
-    rm_enemy(id);
+    GameTools::rm_enemy(this, id);
     dead.push_back(move(game_order[pos]));
     game_order.erase(game_order.begin() + pos);
     player_alive--;
 
     vulture_sam(reward);
     set_distances();
-    set_notai();
+    GameTools::set_notai(this);
 
     for(size_t i = 0; i < game_order.size(); i++)
     {
@@ -682,18 +600,6 @@ void Game::killed(int id)
             active_player = i;
         }
     }
-}
-void Game::set_notai()
-{
-    for(size_t i = 0; i < game_order.size(); i++)
-    {
-        if(!game_order[i]->isai)
-        {
-            notai = i;
-            return;
-        }
-    }
-    notai = 0;
 }
 void Game::resolve_notai_play()
 {
@@ -759,7 +665,7 @@ void Game::resolve_notai_play()
     {
         if(deck.back().name == "Salon")
         {
-            saloon();
+            GameTools::saloon(this);
         }
         else
         {
@@ -767,7 +673,7 @@ void Game::resolve_notai_play()
             if(mode == "Hokynarstvi")
             {
                 neu_turn = active_player;
-                load_emporio();
+                GameTools::load_emporio(this);
             }
             else
             {
@@ -820,6 +726,8 @@ void Game::resolve_notai_play()
 }
 void Game::ai_react()
 {
+    //resolve_played_card();
+
     // podminky jsou samopopisujici
     if(mode == "Duel")
     {
@@ -925,22 +833,8 @@ void Game::ai_react()
 
                 killed(game_order[react]->id);
             }
-        }     
+        }
     }
-}
-bool Game::notai_duel_react()
-{
-    //zda-li je na rade notAI v odehrani Bang pri duelu
-
-    if(mode != "Duel")
-    {
-        return false;
-    }
-
-
-    return (game_order[active_player]->isai &&
-            !duel_active_turn && !game_order[id_to_pos(game_order[active_player]->target_id)]->isai) ||
-            (!game_order[active_player]->isai && duel_active_turn);
 }
 bool Game::can_respond_with_card(string name)
 {
@@ -1086,18 +980,6 @@ void Game::resolve_notai_react(size_t c_index)
         else
         {
             mode = "";
-        }
-    }
-}
-void Game::rm_enemy(int id)
-{
-    //kdykoli nekdo umre, tak nema smysl uchovavat tohoto hrace v seznamu nepratel
-
-    for(size_t i = 0; i <game_order.size(); i++)
-    {
-        if(game_order[i]->enemies_id.find(id) != game_order[i]->enemies_id.end())
-        {
-            game_order[i]->enemies_id.erase(id);
         }
     }
 }

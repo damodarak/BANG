@@ -63,5 +63,6 @@ private:
     void FalseLabels();
     void CheckFinished();
     void AddLayoutIndexes();
+    bool NotAiDuelReact();
 };
 #endif // MAINWINDOW_H

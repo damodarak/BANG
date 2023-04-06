@@ -107,7 +107,7 @@ int Player::game_phase()
            cards_hand.erase(cards_hand.begin() + i);
            if(g->deck.back().name == "Salon")
            {
-               g->saloon();
+               GameTools::saloon(g);
                return 2;
            }
            return 1;

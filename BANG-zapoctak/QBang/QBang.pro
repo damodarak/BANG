@@ -23,6 +23,7 @@ SOURCES += \
     char_pedro.cpp \
     char_suzy.cpp \
     game.cpp \
+    gametools.cpp \
     main.cpp \
     mainwindow.cpp \
     player.cpp
@@ -48,6 +49,7 @@ HEADERS += \
     char_willy.h \
     characters.h \
     game.h \
+    gametools.h \
     mainwindow.h \
     player.h
 

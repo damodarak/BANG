@@ -55,7 +55,7 @@ void MainWindow::LoadCards()
         foreach( QString str, list) {
           vec.push_back(str.toStdString());
         }
-        g->load_card(vec);
+        GameTools::load_card(g, vec);
     }
     file.close();
 }
@@ -120,10 +120,10 @@ void MainWindow::Start(int players, const std::string& roles)
     delete g;
     g = new Game();
 
-    g->load_characters();
+    GameTools::load_characters(g, g->characters);
     LoadCards();
     g->create(players, roles);
-    g->rotate_serif();//serif na pozici 0 v g->game_order
+    GameTools::rotate_serif(g);//serif na pozici 0 v g->game_order
     g->draw_cards_start();//kazdy dostane tolik karet, kolik ma maximalne zivotu
     g->set_initial_enemies();
     g->set_distances();
@@ -223,7 +223,7 @@ void MainWindow::SetButtons()
         ui->finish->setEnabled(true);
     }
     //duel, hraje notAI...reaguje
-    else if(g->notai_duel_react())
+    else if(NotAiDuelReact())
     {
         ui->play->setEnabled(true);
         ui->ability->setEnabled(false);
@@ -270,7 +270,6 @@ void MainWindow::CheckFinished()
         return;
     }
 }
-
 void MainWindow::AddLayoutIndexes()
 {
     size_t count = g->game_order.size();
@@ -288,6 +287,20 @@ void MainWindow::AddLayoutIndexes()
     {
         g->game_order[(g->notai - i + count) % count]->layout_index = i - 1;
     }
+}
+bool MainWindow::NotAiDuelReact()
+{
+    //zda-li je na rade notAI v odehrani Bang pri duelu
+
+    if(g->mode != "Duel")
+    {
+        return false;
+    }
+
+
+    return (g->game_order[g->active_player]->isai &&
+            !g->duel_active_turn && !g->game_order[g->id_to_pos(g->game_order[g->active_player]->target_id)]->isai) ||
+            (!g->game_order[g->active_player]->isai && g->duel_active_turn);
 }
 void MainWindow::PaintLayout()
 {
