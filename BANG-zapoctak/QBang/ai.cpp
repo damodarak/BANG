@@ -172,3 +172,28 @@ int Ai::has_gun(std::vector<Card> &cards)
     }
     return -1;
 }
+
+void Ai::vice_add_enemy(Game* g, int enemy_id)
+{
+    //pokud nekdo utoci na serifa, tak i jeho pomocnici si ulozi tohoto hrace do seznamu nepratel
+    for(size_t i = 0; i < g->game_order.size(); i++)
+    {
+        if(g->game_order[i]->role == 'V')
+        {
+            g->game_order[i]->enemies_id.insert(enemy_id);
+        }
+    }
+}
+
+bool Ai::panika_balou_play(Game *g, int enemy_id)
+{
+    for(size_t i = 0; i < g->game_order.size(); i++)
+    {
+        if(g->game_order[i]->id == enemy_id)
+        {
+            //musi mit nejake karty v ruce nebo na stole, jinak pouziti Paniky nebo Cat Balou nema smysl
+            return g->game_order[i]->cards_hand.size() + g->game_order[i]->cards_desk.size() > 0;
+        }
+    }
+    return false;
+}

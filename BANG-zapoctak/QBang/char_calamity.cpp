@@ -61,7 +61,7 @@ bool Calamity::resolve_slab_bang()
         enemies_id.insert(g->game_order[g->active_player]->id);
         if(role == 'S')
         {
-            add_enemy_vice(g->game_order[g->active_player]->id);
+            Ai::vice_add_enemy(g, g->game_order[g->active_player]->id);
         }
     }
 

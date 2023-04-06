@@ -37,8 +37,6 @@ public:
     std::string file_loc();
     std::string role_loc();
     void dostavnik_wells(int count);
-    bool panika_balou_play(int enemy_id);
-    void add_enemy_vice(int enemy_id);//pokud nekdo zautoci na serifa tak i jeho pomocnici to zaznamenaji
     bool has_notai_ability();
     bool has_dyn();
     bool has_jail();

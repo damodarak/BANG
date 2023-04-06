@@ -17,6 +17,8 @@ public:
     static bool play_neu(Game* g, const std::string& name);//zda-li ai ma hrat neu kartu
     static int best_gun(std::vector<Card>& cards);//vrati -1 pokud hrac nema zbran nebo index v cards
     static int has_gun(std::vector<Card>& cards);//vrati -1 pokud hrac nema zbran nebo range zbrane
+    static void vice_add_enemy(Game* g, int enemy_id);//pokud nekdo zautoci na serifa tak i jeho pomocnici to zaznamenaji
+    static bool panika_balou_play(Game* g, int enemy_id);
 
 private:
     //staticka trida

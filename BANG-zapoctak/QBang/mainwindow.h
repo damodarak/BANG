@@ -62,5 +62,6 @@ private:
     bool NotaiReact();
     void FalseLabels();
     void CheckFinished();
+    void AddLayoutIndexes();
 };
 #endif // MAINWINDOW_H

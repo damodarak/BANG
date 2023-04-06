@@ -22,7 +22,7 @@ void Jesse::draw_phase()
         for(size_t i = 0; i < g->game_order.size(); i++)
         {
             if(enemies_id.find(g->game_order[i]->id) != enemies_id.end() &&
-                    g->game_order[i]->cards_hand.size() > cards)
+                    g->game_order[i]->cards_hand.size() > (size_t)cards)
             {
                 cards = g->game_order[i]->cards_hand.size();
                 index = i;

@@ -127,7 +127,7 @@ void MainWindow::Start(int players, const std::string& roles)
     g->draw_cards_start();//kazdy dostane tolik karet, kolik ma maximalne zivotu
     g->set_initial_enemies();
     g->set_distances();
-    g->add_label_indexes();//prirazeni lablu k postavam v g->game_order, hra probiha proti smeru hodinovych rucicek
+    AddLayoutIndexes();//prirazeni lablu k postavam v g->game_order, hra probiha proti smeru hodinovych rucicek
 
     //tytyo 3 combo boxy pro vyber karet a vyber hrace jsou vzdy povoleny, protoze bez tlacitek je stejne nejde modifikovat
     ui->choose_c->setEnabled(true);
@@ -268,6 +268,25 @@ void MainWindow::CheckFinished()
     {
         FalseLabels();
         return;
+    }
+}
+
+void MainWindow::AddLayoutIndexes()
+{
+    size_t count = g->game_order.size();
+    for(; g->notai < count; g->notai++)
+    {
+        if(!g->game_order[g->notai]->isai)
+        {
+            break;
+        }
+    }
+    g->game_order[g->notai]->layout_index = 6;
+
+
+    for(size_t i = 1; i < count; i++)
+    {
+        g->game_order[(g->notai - i + count) % count]->layout_index = i - 1;
     }
 }
 void MainWindow::PaintLayout()

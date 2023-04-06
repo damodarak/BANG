@@ -271,24 +271,6 @@ void Game::change_distance(int id1, int change, int id2)//zmena hrany v orientov
 		distances.find(id1)->second[id2] += change;
 	}
 }
-void Game::add_label_indexes()
-{
-    size_t count = game_order.size();
-    for(; notai < count; notai++)
-    {
-        if(!game_order[notai]->isai)
-        {
-            break;
-        }
-    }
-    game_order[notai]->layout_index = 6;
-
-
-    for(size_t i = 1; i < count; i++)
-    {
-        game_order[(notai - i + count) % count]->layout_index = i - 1;
-    }
-}
 void Game::saloon()
 {
     //vsem +1 zivot, pokud jiz nemaji max. pocet
@@ -300,13 +282,8 @@ void Game::saloon()
         }
     }
 }
-int Game::game_loop()
+void Game::game_loop()
 {
-    //konec hry
-    if(finished())
-    {
-        return 404;
-    }
     set_distances();
 
     //SPECIAL CASE FOR SUZY
@@ -314,7 +291,7 @@ int Game::game_loop()
             game_order[active_player]->cards_hand.size() == 0)
     {
         game_order[active_player]->ability();
-        return 0;
+        return;
     }
 
     //hraje AI a neni zadny mod zaply
@@ -331,14 +308,14 @@ int Game::game_loop()
                     active_player = (active_player + 1) % player_alive;
                     killed(dead);
 
-                    return 0;
+                    return;
                 }
             }
             if(!game_order[active_player]->resolve_jail())
             {
                 game_order[active_player]->turn_reset();
                 active_player = (active_player + 1) % player_alive;
-                return 0;
+                return;
             }
             game_order[active_player]->draw_phase();
         }
@@ -359,7 +336,7 @@ int Game::game_loop()
                     mode = "Slab";
                 }
             }
-            //game == 2 => return 0
+            //game == 2 => return
         }
     }
     else if(mode != "")
@@ -371,8 +348,6 @@ int Game::game_loop()
     {
         resolve_notai_play();
     }
-
-    return 0;
 }
 string Game::id_to_name(int id)
 {
@@ -803,7 +778,7 @@ void Game::resolve_notai_play()
     //Cat Balou
     else if(deck.back().name == "CatBalou")
     {
-        if(pos != -1 && game_order[pos]->panika_balou_play(enemy))
+        if(pos != -1 && Ai::panika_balou_play(this, enemy))
         {
             Card c = game_order[pos]->give_random_card();
             deck.push_back(c);
@@ -812,7 +787,7 @@ void Game::resolve_notai_play()
     //Panika
     else if(deck.back().name == "Panika")
     {
-        if(pos != -1 && game_order[pos]->panika_balou_play(enemy) &&
+        if(pos != -1 && Ai::panika_balou_play(this, enemy) &&
             Ai::can_play_panika(this, game_order[active_player]->id, enemy))
         {
             Card c = game_order[pos]->give_random_card();

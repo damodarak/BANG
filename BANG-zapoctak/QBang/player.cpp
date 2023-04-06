@@ -129,7 +129,7 @@ int Player::game_phase()
             {
                 for(auto p : enemies_id)
                 {
-                    if(panika_balou_play(p))
+                    if(Ai::panika_balou_play(g, p))
                     {
                         target_id = p;
                         g->deck.push_back(cards_hand[i]);
@@ -160,7 +160,7 @@ int Player::game_phase()
                 {
                     //muzeme pouzit jenom na vzdalenost mensi rovno 1
                     if(enemies_id.find(g->game_order[j]->id) != enemies_id.end() &&
-                        Ai::can_play_panika(g, id, g->game_order[j]->id) && panika_balou_play(g->game_order[j]->id))
+                        Ai::can_play_panika(g, id, g->game_order[j]->id) && Ai::panika_balou_play(g, g->game_order[j]->id))
                     {
                         target_id = g->game_order[j]->id;
                         g->deck.push_back(cards_hand[i]);
@@ -285,7 +285,7 @@ bool Player::play_bang()
         enemies_id.insert(g->game_order[g->active_player]->id);
         if(role == 'S')
         {
-            add_enemy_vice(g->game_order[g->active_player]->id);
+            Ai::vice_add_enemy(g, g->game_order[g->active_player]->id);
         }
     }
 
@@ -314,7 +314,7 @@ bool Player::play_vedle()
         enemies_id.insert(g->game_order[g->active_player]->id);
         if(role == 'S')
         {
-            add_enemy_vice(g->game_order[g->active_player]->id);
+            Ai::vice_add_enemy(g, g->game_order[g->active_player]->id);
         }
     }
 
@@ -350,7 +350,7 @@ bool Player::resolve_slab_bang()
     enemies_id.insert(g->game_order[g->active_player]->id);
     if(role == 'S')
     {
-        add_enemy_vice(g->game_order[g->active_player]->id);
+        Ai::vice_add_enemy(g, g->game_order[g->active_player]->id);
     }
 
     if(vedle + hand_vedle >= 2)
@@ -371,29 +371,6 @@ void Player::dostavnik_wells(int count)
     {
         c = g->draw_from_deck();
         cards_hand.push_back(c);
-    }
-}
-bool Player::panika_balou_play(int enemy_id)
-{
-    for(size_t i = 0; i < g->game_order.size(); i++)
-    {
-        if(g->game_order[i]->id == enemy_id)
-        {
-            //musi mit nejake karty v ruce nebo na stole, jinak pouziti Paniky nebo Cat Balou nema smysl
-            return g->game_order[i]->cards_hand.size() + g->game_order[i]->cards_desk.size() > 0;
-        }
-    }
-    return false;
-}
-void Player::add_enemy_vice(int enemy_id)
-{
-    //pokud nekdo utoci na serifa, tak i jeho pomocnici si ulozi tohoto hrace do seznamu nepratel
-    for(size_t i = 0; i < g->game_order.size(); i++)
-    {
-        if(g->game_order[i]->role == 'V')
-        {
-            g->game_order[i]->enemies_id.insert(enemy_id);
-        }
     }
 }
 bool Player::has_notai_ability()
@@ -500,7 +477,7 @@ Card Player::give_random_card()
         enemies_id.insert(g->game_order[g->active_player]->id);
         if(role == 'S')
         {
-            add_enemy_vice(g->game_order[g->active_player]->id);
+            Ai::vice_add_enemy(g, g->game_order[g->active_player]->id);
         }
     }
 
@@ -543,7 +520,7 @@ Card Player::give_random_card_hand()
         enemies_id.insert(g->game_order[g->active_player]->id);
         if(role == 'S')
         {
-            add_enemy_vice(g->game_order[g->active_player]->id);
+            Ai::vice_add_enemy(g, g->game_order[g->active_player]->id);
         }
     }
 
