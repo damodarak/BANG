@@ -212,14 +212,6 @@ void Game::game_loop()
 {
     set_distances();
 
-    //SPECIAL CASE FOR SUZY
-    if(game_order[active_player]->name == "suzy" &&
-            game_order[active_player]->cards_hand.size() == 0)
-    {
-        game_order[active_player]->ability();
-        return;
-    }
-
     //hraje AI a neni zadny mod zaply
     if(mode == "" && game_order[active_player]->isai)
     {
@@ -414,7 +406,7 @@ void Game::resolve_played_card()
         else
         {
             int enemy_id = game_order[active_player]->target_id;
-            int pos = id_to_pos(enemy_id);
+            int pos = GameTools::id_to_pos(this, enemy_id);
 
             if(!game_order[pos]->isai)
             {
@@ -465,7 +457,7 @@ void Game::resolve_played_card()
     else if(mode == "Bang" || mode == "Vedle")
     {
         int enemy_id = game_order[active_player]->target_id;
-        int pos = id_to_pos(enemy_id);
+        int pos = GameTools::id_to_pos(this, enemy_id);
 
         bool vedle;
         if(!game_order[pos]->isai)
@@ -490,7 +482,7 @@ void Game::resolve_played_card()
     }
     else if(mode == "CatBalou")
     {
-        int pos = id_to_pos(game_order[active_player]->target_id);
+        int pos = GameTools::id_to_pos(this, game_order[active_player]->target_id);
         Card c = game_order[pos]->give_random_card();
         deck.push_back(c);
         mode = "";
@@ -501,7 +493,7 @@ void Game::resolve_played_card()
 
         if(Ai::can_play_panika(this, game_order[active_player]->id, enemy_id))
         {
-            int pos = id_to_pos(enemy_id);
+            int pos = GameTools::id_to_pos(this, enemy_id);
             Card c = game_order[pos]->give_random_card();
             game_order[active_player]->cards_hand.push_back(c);
         }
@@ -515,7 +507,7 @@ void Game::resolve_played_card()
     else if(mode == "Slab")
     {
         int enemy_id = game_order[active_player]->target_id;
-        int pos = id_to_pos(enemy_id);
+        int pos = GameTools::id_to_pos(this, enemy_id);
         bool slab_vedle;
 
         if(!game_order[pos]->isai)
@@ -539,17 +531,6 @@ void Game::resolve_played_card()
         mode = "";
     }
 }
-int Game::id_to_pos(int id)
-{
-    for(size_t i = 0; i < game_order.size(); i++)
-    {
-        if(game_order[i]->id == id)
-        {
-            return static_cast<int>(i);
-        }
-    }
-    return -1;
-}
 void Game::killed(int id)
 {
     //konec duelu
@@ -563,12 +544,13 @@ void Game::killed(int id)
 
     int active_id = game_order[active_player]->id;
 
-    int pos = id_to_pos(id);
+    int pos = GameTools::id_to_pos(this, id);
     char role = game_order[pos]->role;
     //nekdo zabil banditu
     if(role == 'B' && deck.back().name != "Dynamit")
     {
-        for(int i = 0; i < 3; i++)
+        int bounty = 3;
+        for(int i = 0; i < bounty; i++)
         {
             game_order[active_player]->cards_hand.push_back(draw_from_deck());
         }
@@ -603,7 +585,7 @@ void Game::killed(int id)
 }
 void Game::resolve_notai_play()
 {
-    int pos = id_to_pos(game_order[active_player]->target_id);
+    int pos = GameTools::id_to_pos(this, game_order[active_player]->target_id);
     int enemy = game_order[active_player]->target_id;
 
     //zbran
@@ -732,7 +714,7 @@ void Game::ai_react()
     if(mode == "Duel")
     {
         int enemy_id = game_order[active_player]->target_id;
-        int pos = id_to_pos(enemy_id);
+        int pos = GameTools::id_to_pos(this, enemy_id);
         bool result = game_order[pos]->play_bang();
 
         if(!result)
@@ -754,7 +736,7 @@ void Game::ai_react()
     else if(mode == "Bang" || mode == "Vedle")
     {
         int enemy_id = game_order[active_player]->target_id;
-        int pos = id_to_pos(enemy_id);
+        int pos = GameTools::id_to_pos(this, enemy_id);
         bool vedle = game_order[pos]->play_vedle();
         if(!vedle)
         {
@@ -769,7 +751,7 @@ void Game::ai_react()
     else if(mode == "Slab")
     {
         int enemy_id = game_order[active_player]->target_id;
-        int pos = id_to_pos(enemy_id);
+        int pos = GameTools::id_to_pos(this, enemy_id);
         bool slab_vedle = game_order[pos]->resolve_slab_bang();
         if(!slab_vedle)
         {

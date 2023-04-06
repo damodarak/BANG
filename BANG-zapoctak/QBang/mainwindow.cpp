@@ -246,7 +246,7 @@ void MainWindow::SetButtons()
 bool MainWindow::NotaiReact()
 {
     //hraje-li notAI a ceka na reakci od AI
-    return !g->game_order[g->id_to_pos(g->game_order[g->active_player]->target_id)]->isai;
+    return !g->game_order[GameTools::id_to_pos(g, g->game_order[g->active_player]->target_id)]->isai;
 }
 void MainWindow::FalseLabels()
 {
@@ -299,7 +299,7 @@ bool MainWindow::NotAiDuelReact()
 
 
     return (g->game_order[g->active_player]->isai &&
-            !g->duel_active_turn && !g->game_order[g->id_to_pos(g->game_order[g->active_player]->target_id)]->isai) ||
+            !g->duel_active_turn && !g->game_order[GameTools::id_to_pos(g, g->game_order[g->active_player]->target_id)]->isai) ||
             (!g->game_order[g->active_player]->isai && g->duel_active_turn);
 }
 void MainWindow::PaintLayout()
@@ -350,9 +350,11 @@ void MainWindow::PaintLayout()
             SetLabel(layout[g->game_order[i]->layout_index][2], ":/cards/cards/back-playing.png");
             layout[g->game_order[i]->layout_index][3]->setText(QString::number(g->game_order[i]->cards_hand.size()));
             SetLabel(layout[g->game_order[i]->layout_index][4], QString::fromStdString(g->game_order[i]->role_loc()));
+
+            int start_index = 5;
             for(size_t j = 0; j < g->game_order[i]->cards_desk.size(); j++)
             {
-                SetLabel(layout[g->game_order[i]->layout_index][j + 5], QString::fromStdString(g->game_order[i]->cards_desk[j].file_loc()));
+                SetLabel(layout[g->game_order[i]->layout_index][j + start_index], QString::fromStdString(g->game_order[i]->cards_desk[j].file_loc()));
             }
         }
         else
@@ -377,17 +379,21 @@ void MainWindow::PaintLayout()
             {
                 cards = 10;
             }
+
+            int start_index = 9;
             for(size_t j = 0; j < cards; j++)
             {
-                SetLabel(layout[g->game_order[i]->layout_index][j + 9], QString::fromStdString(g->game_order[i]->cards_hand[j].file_loc()));
+                SetLabel(layout[g->game_order[i]->layout_index][j + start_index], QString::fromStdString(g->game_order[i]->cards_hand[j].file_loc()));
             }
+
+            start_index = 3;
             for(size_t j = 0; j < g->game_order[i]->cards_desk.size(); j++)
             {
-                SetLabel(layout[g->game_order[i]->layout_index][j + 3], QString::fromStdString(g->game_order[i]->cards_desk[j].file_loc()));
+                SetLabel(layout[g->game_order[i]->layout_index][j + start_index], QString::fromStdString(g->game_order[i]->cards_desk[j].file_loc()));
             }
         }
     }
-    //mrtvym hracum se jenom zobrazi postava a role, nic vic
+    //mrtvym hracum se jenom zobrazi postava, role v pripade AI oznameni, ze jsou mrtvi
     for(size_t i = 0; i < g->dead.size(); i++)
     {
         if(g->dead[i]->isai)

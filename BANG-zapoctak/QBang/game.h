@@ -31,7 +31,6 @@ public:
     std::string id_to_name(int id);
     void vulture_sam(std::vector<Card>& reward);//schopnost jedne postavy ziskat karty po mrtvemu hraci
     void resolve_played_card();//mode != ""
-    int id_to_pos(int id);
     void killed(int id);//odstani mrtveho hrace z game_order a zmeni hodnoty pro beh hry
     void resolve_notai_play();
     void ai_react();

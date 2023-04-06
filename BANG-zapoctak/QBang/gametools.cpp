@@ -42,7 +42,9 @@ void GameTools::load_characters(Game* g, std::vector<Hrac>& characters)
 
     auto rd = random_device{};
     auto rng = default_random_engine{ rd() };
-    for (size_t i = 0; i < 20; i++)
+
+    size_t shuffle_count = 20;
+    for (size_t i = 0; i < shuffle_count; i++)
     {
         shuffle(begin(characters), end(characters), rng);//pro nahodny vyber postav
     }
@@ -50,7 +52,15 @@ void GameTools::load_characters(Game* g, std::vector<Hrac>& characters)
 
 void GameTools::load_card(Game *g, std::vector<std::string> &v)
 {
-    Card card(stoi(v[4]), v[0], v[3][0], v[1], stoi(v[2]), v[5], stoi(v[6]));
+    string name = v[0];
+    string suit = v[1];
+    int rank = stoi(v[2]);
+    char edge = v[3][0];
+    int id = stoi(v[4]);
+    string card_type = v[5];
+    int range = stoi(v[6]);
+
+    Card card(id, name, edge, suit, rank, card_type, range);
 
     g->deck.push_back(card);
 
@@ -115,4 +125,16 @@ void GameTools::load_emporio(Game *g)
     {
         g->emporio.push_back(g->draw_from_deck());
     }
+}
+
+int GameTools::id_to_pos(Game *g, int id)
+{
+    for(size_t i = 0; i < g->game_order.size(); i++)
+    {
+        if(g->game_order[i]->id == id)
+        {
+            return static_cast<int>(i);
+        }
+    }
+    return -1;
 }

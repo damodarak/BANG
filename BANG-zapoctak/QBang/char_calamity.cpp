@@ -88,6 +88,7 @@ bool Calamity::resolve_slab_bang()
         }
     }
 
+    //potrebujeme odhodit 2x vedle
     if(vedle + hand_vedle_bang >= 2)
     {
         while(vedle < 2)

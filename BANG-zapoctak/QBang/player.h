@@ -58,11 +58,12 @@ public:
 	std::vector<Card> cards_desk;//modre karty, ktere jsou na stole
 
     friend class MainWindow;
-    friend class Game;
-    friend class Cringo;
-    friend class Jesse;
     friend class Ai;
     friend class GameTools;
+    friend class Game;
+
+    friend class Cringo;
+    friend class Jesse; 
 protected:
 	char role;
 	std::vector<Card> cards_hand;

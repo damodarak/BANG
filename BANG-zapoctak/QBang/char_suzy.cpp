@@ -43,7 +43,6 @@ bool Suzy::resolve_slab_bang()
 }
 void Suzy::ability()
 {
-    ability_used = false;
     if(0 == cards_hand.size())
     {
         cards_hand.push_back(g->draw_from_deck());

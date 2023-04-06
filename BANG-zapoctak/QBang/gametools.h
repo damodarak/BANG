@@ -21,6 +21,7 @@ public:
     static void saloon(Game* g);//vsem prida zivot, je-li to mozne
     static void set_notai(Game* g);
     static void load_emporio(Game* g);
+    static int id_to_pos(Game*g, int id);
 
 private:
     //staticka trida

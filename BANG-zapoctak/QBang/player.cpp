@@ -38,14 +38,14 @@ int Player::game_phase()
         //Dostavnik, WellsFargo, Pivo, Vezeni, Dynamit
         if(cards_hand[i].name == "Dostavnik")
         {
-            dostavnik_wells(2);
+            dostavnik_wells(2);//lize si 2 karty
             g->deck.push_back(cards_hand[i]);
             cards_hand.erase(cards_hand.begin() + i);
             return 2;
         }
         else if(cards_hand[i].name == "WellsFargo")
         {
-            dostavnik_wells(3);
+            dostavnik_wells(3);//lize si 3 karty
             g->deck.push_back(cards_hand[i]);
             cards_hand.erase(cards_hand.begin() + i);
             return 2;
@@ -186,6 +186,7 @@ void Player::discard_phase()
 
     while (cards_hand.size() > (size_t)health)
     {
+        //jsme agresivni
         if (health > max_health / 2)
         {
             bool result = (Ai::discard_card(g, cards_hand, "neu") ? true : false);
@@ -193,6 +194,7 @@ void Player::discard_phase()
             result = (result ? true : Ai::discard_blue(g, cards_hand));
             result = (result ? true : Ai::discard_card(g, cards_hand, "agr"));
         }
+        //jsme defensivni
         else
         {
             bool result = (Ai::discard_card(g, cards_hand, "neu") ? true : false);
@@ -353,6 +355,7 @@ bool Player::resolve_slab_bang()
         Ai::vice_add_enemy(g, g->game_order[g->active_player]->id);
     }
 
+    //musime odhodit 2 karty vedle nebo jejich ekvivalent, jinak ztracime zivot
     if(vedle + hand_vedle >= 2)
     {
         while(vedle < 2)
@@ -410,9 +413,6 @@ bool Player::dec_hp(int lifes)
             }
         }
     }
-
-
-
     return health > 0;
 }
 string Player::file_loc()
@@ -454,6 +454,7 @@ void Player::set_enemy(int sheriff, const vector<int>& ids)
 		enemies_id.insert(sheriff);
 		break;
 	case 'V':
+        //pokud je pocet hracu roven 5 nebo 6, tak vime jiste kdo jsou nasi nepratele
         if (g->player_count == 5 || g->player_count == 6)
 		{
 			for (auto&& pl : ids)
@@ -597,7 +598,7 @@ int Player::exist_enemy_jail()
     {
         if(p != g->game_order[0]->id)
         {
-            int pos = g->id_to_pos(p);
+            int pos = GameTools::id_to_pos(g, p);
             if(Ai::index(g->game_order[pos]->cards_desk, "Vezeni") == -1)
             {
                 return p;

@@ -26,7 +26,6 @@ void Jourd::ability()
         return;
     }
 
-
     barel++;
     if(g->mode == "Kulomet")
     {

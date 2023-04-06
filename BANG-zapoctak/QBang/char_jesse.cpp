@@ -48,12 +48,12 @@ void Jesse::ability()
     {
         return;
     }
-    if(target_id == -1 || g->game_order[g->id_to_pos(target_id)]->cards_hand.size() == 0)
+    if(target_id == -1 || g->game_order[GameTools::id_to_pos(g, target_id)]->cards_hand.size() == 0)
     {
         return;
     }
     ability_used = true;
     drawed = true;
-    cards_hand.push_back(g->game_order[g->id_to_pos(target_id)]->give_random_card_hand());
+    cards_hand.push_back(g->game_order[GameTools::id_to_pos(g, target_id)]->give_random_card_hand());
     cards_hand.push_back(g->draw_from_deck());
 }
