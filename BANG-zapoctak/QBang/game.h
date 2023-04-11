@@ -17,7 +17,7 @@ typedef std::unique_ptr<Player> Hrac;
 
 class Game {
 public:
-    Game() : player_count(0), player_alive(0), notai(0), mode(""), neu_turn(-1), duel_active_turn(false),
+    Game() : player_count(0), player_alive(0), notai(0), mode(NONE), neu_turn(-1), duel_active_turn(false),
         active_player(0) {}
     Card draw_from_deck();//liznuti jedne karty z balicku
 	void draw_cards_start();
@@ -44,7 +44,7 @@ public:
     size_t notai;
     std::vector<Hrac> game_order;//zivi hraci
     std::vector<Hrac> dead;
-    std::string mode;//emporio,kulomet,indiani,bang,duel,...
+    Modes mode;//emporio,kulomet,indiani,bang,duel,...
     std::map<int, std::map<int, int>> distances;//orientovany multigraf
     int neu_turn;//mode == "Indiani"/"Kulomet"/"Hokynarstvi".....pokud zrovna neni zadny mode, tak neu_turn == -1
     bool duel_active_turn;//mode == "Duel"

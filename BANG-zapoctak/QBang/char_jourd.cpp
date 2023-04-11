@@ -27,7 +27,7 @@ void Jourd::ability()
     }
 
     barel++;
-    if(g->mode == "Kulomet")
+    if(g->mode == KULOMET)
     {
         if(resolve_barrel())
         {
@@ -36,12 +36,12 @@ void Jourd::ability()
 
             if(g->active_player == g->neu_turn)
             {
-                g->mode = "";
+                g->mode = NONE;
                 g->neu_turn = -1;
             }
         }
     }
-    else if(g->mode == "Slab")
+    else if(g->mode == SLAB)
     {
         if(resolve_barrel())
         {   
@@ -50,17 +50,17 @@ void Jourd::ability()
 
         if(played_vedle == 2)
         {
-            g->mode = "";
+            g->mode = NONE;
             barel = 0;
             played_vedle = 0;
         }
     }
-    else if(g->mode == "Vedle" || g->mode == "Bang")
+    else if(g->mode == VEDLE || g->mode == BANG)
     {
         if(resolve_barrel())
         {
             barel = 0;
-            g->mode = "";
+            g->mode = NONE;
             played_vedle = 0;
         }
     }

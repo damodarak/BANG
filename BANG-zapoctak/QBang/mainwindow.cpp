@@ -140,7 +140,7 @@ void MainWindow::SetButtons()
     ui->choose_e->setEnabled(false);
 
     //emporio
-    if(g->mode == "Hokynarstvi" && g->neu_turn != -1 && !g->game_order[g->neu_turn]->isai)
+    if(g->mode == EMPORIO && g->neu_turn != -1 && !g->game_order[g->neu_turn]->isai)
     {
         ui->choose_e->setEnabled(true);
         ui->play->setEnabled(false);
@@ -151,7 +151,7 @@ void MainWindow::SetButtons()
         ui->react->setEnabled(false);
     }
     //Kit Carlson Ability...notAI
-    else if(g->mode == "Carlson")
+    else if(g->mode == CARLSON)
     {
         ui->choose_e->setEnabled(true);
         ui->play->setEnabled(false);
@@ -193,7 +193,7 @@ void MainWindow::SetButtons()
         ui->react->setEnabled(false);
     }
     //hraje notAI
-    else if(!g->game_order[g->active_player]->isai && g->mode == "")
+    else if(!g->game_order[g->active_player]->isai && g->mode == NONE)
     {
         ui->play->setEnabled(true);
         ui->finish->setEnabled(true);
@@ -203,7 +203,7 @@ void MainWindow::SetButtons()
         ui->react->setEnabled(false);
     }
     //AI bude reagovat na kartu od notAI
-    else if(!g->game_order[g->active_player]->isai && g->mode != "" && !g->duel_active_turn)
+    else if(!g->game_order[g->active_player]->isai && g->mode != NONE && !g->duel_active_turn)
     {
         ui->play->setEnabled(false);
         ui->finish->setEnabled(false);
@@ -213,7 +213,7 @@ void MainWindow::SetButtons()
         ui->react->setEnabled(true);
     }
     //bang, vedle, Slab...hraje AI
-    else if((g->mode == "Bang" || g->mode == "Vedle" || g->mode == "Slab") && NotaiReact())
+    else if((g->mode == BANG || g->mode == VEDLE || g->mode == SLAB) && NotaiReact())
     {
         ui->play->setEnabled(true);
         ui->ability->setEnabled(g->game_order[g->notai]->has_notai_ability() && !g->game_order[g->notai]->ability_used);
@@ -292,7 +292,7 @@ bool MainWindow::NotAiDuelReact()
 {
     //zda-li je na rade notAI v odehrani Bang pri duelu
 
-    if(g->mode != "Duel")
+    if(g->mode != DUEL)
     {
         return false;
     }
@@ -300,7 +300,33 @@ bool MainWindow::NotAiDuelReact()
 
     return (g->game_order[g->active_player]->isai &&
             !g->duel_active_turn && !g->game_order[GameTools::id_to_pos(g, g->game_order[g->active_player]->target_id)]->isai) ||
-            (!g->game_order[g->active_player]->isai && g->duel_active_turn);
+           (!g->game_order[g->active_player]->isai && g->duel_active_turn);
+}
+QString MainWindow::ModeToText(Modes m)
+{
+    switch(m)
+    {
+    case BANG:
+        return "Bang";
+    case VEDLE:
+        return "Bang";
+    case EMPORIO:
+        return "Hokynarstvi";
+    case PANIKA:
+        return "Panika";
+    case BALOU:
+        return "Cat Balou";
+    case INDIANI:
+        return "Indiani";
+    case SALON:
+        return "Salon";
+    case KULOMET:
+        return "Kulomet";
+    case DUEL:
+        return "Duel";
+    default:
+        return "";
+    }
 }
 void MainWindow::PaintLayout()
 {
@@ -319,7 +345,7 @@ void MainWindow::PaintLayout()
     ui->label_target->setText("Target:");
     ui->label_react->setText("React:");
     ui->label_mode->setText("Mode:");
-    ui->mode->setText(QString::fromStdString(g->mode));
+    ui->mode->setText(ModeToText(g->mode));
     if(g->neu_turn != -1)
     {
         ui->neu->setText(QString::fromStdString(g->id_to_name(g->game_order[g->neu_turn]->id)));
@@ -433,7 +459,7 @@ void MainWindow::on_play_clicked()
     std::string name = ui->choose_c->currentText().toStdString();
     //muzeme-li jako reakci na nejakou kartu zahrat tuto kartu
     bool can_play = g->can_respond_with_card(name);
-    if(g->mode != "")
+    if(g->mode != NONE)
     {
         if(can_play)
         {
@@ -520,14 +546,14 @@ void MainWindow::on_finish_clicked()
     //nemuzeme ukoncit tah jestli mame v ruce vice karet nez zivotu
     if(!g->game_order[g->active_player]->isai &&
         g->game_order[g->active_player]->cards_hand.size() <= (size_t)g->game_order[g->active_player]->health &&
-            g->mode == "")
+            g->mode == NONE)
     {
         g->game_order[g->active_player]->turn_reset();
         g->active_player = (g->active_player + 1) % g->player_alive;
         PaintLayout();
         return;
     }
-    else if(!g->game_order[g->active_player]->isai && g->mode == "")
+    else if(!g->game_order[g->active_player]->isai && g->mode == NONE)
     {
         PaintLayout();
         return;
@@ -550,7 +576,7 @@ void MainWindow::on_ability_clicked()
 void MainWindow::on_choose_e_activated(int index)
 {
     //schopnost Kit Carlson, vybira 2 karty ze 3, ktere lezi v g->emporio
-    if(g->mode == "Carlson")
+    if(g->mode == CARLSON)
     {
         Card c = g->emporio[index];
         g->emporio.erase(g->emporio.begin() + index);
@@ -558,7 +584,7 @@ void MainWindow::on_choose_e_activated(int index)
         if(g->emporio.size() == 1)
         {
             g->emporio.clear();
-            g->mode = "";
+            g->mode = NONE;
         }
 
         PaintLayout();
@@ -573,7 +599,7 @@ void MainWindow::on_choose_e_activated(int index)
     g->neu_turn = (g->neu_turn + 1) % g->player_alive;
     if(g->active_player == g->neu_turn)
     {
-        g->mode = "";
+        g->mode = NONE;
         g->neu_turn = -1;
     }
 

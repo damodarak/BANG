@@ -282,7 +282,7 @@ bool Player::play_bang()
     }
 
     //zapsani na seznam nepratel + pokud se strili na serifa tak i jeho pomocnici si zaznamenaji
-    if(g->mode == "Duel" && id != g->game_order[g->active_player]->id)
+    if(g->mode == DUEL && id != g->game_order[g->active_player]->id)
     {
         enemies_id.insert(g->game_order[g->active_player]->id);
         if(role == 'S')
@@ -311,7 +311,7 @@ bool Player::play_vedle()
     }
 
     //zapsani na seznam nepratel + pokud se strili na serifa tak i jeho pomocnici si zaznamenaji
-    if(g->mode == "Bang" || g->mode == "Vedle" || g->mode == "Slab")
+    if(g->mode == BANG || g->mode == VEDLE || g->mode == SLAB)
     {
         enemies_id.insert(g->game_order[g->active_player]->id);
         if(role == 'S')

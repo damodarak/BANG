@@ -26,7 +26,7 @@ bool Cringo::dec_hp(int lifes)
 
 
     //je-li nekym zasazen, tak si od neho vezme kartu z ruky
-    if(g->mode == "Bang" || g->mode == "Vedle" || g->mode == "Slab")
+    if(g->mode == BANG || g->mode == VEDLE || g->mode == SLAB)
     {
         Ai::cringo_abil(g);
     }

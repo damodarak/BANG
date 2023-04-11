@@ -63,5 +63,6 @@ private:
     void CheckFinished();
     void AddLayoutIndexes();
     bool NotAiDuelReact();
+    QString ModeToText(Modes m);
 };
 #endif // MAINWINDOW_H

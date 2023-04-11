@@ -40,7 +40,7 @@ void Pedro::draw_phase()
 
 void Pedro::ability()
 {
-    if(g->game_order[g->active_player]->isai || drawed || g->mode != "")
+    if(g->game_order[g->active_player]->isai || drawed || g->mode != NONE)
     {
         ability_used = true;
         return;
