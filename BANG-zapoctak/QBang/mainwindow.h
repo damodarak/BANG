@@ -40,7 +40,6 @@ private slots:
 
     void on_actionStart_6_triggered();
 
-    friend class Ask;
     void on_choose_e_activated(int index);
 
     void on_react_clicked();

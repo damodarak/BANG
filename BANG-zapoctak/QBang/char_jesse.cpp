@@ -1,4 +1,5 @@
 #include "game.h"
+#include "ai.h"
 
 void Jesse::draw_phase()
 {
@@ -13,32 +14,12 @@ void Jesse::draw_phase()
         enemies_id.erase(enemies_id.find(g->game_order[0]->id));
     }
 
-
-    int index = -1;
-    int cards = -1;
-    //najde mezi neprateli nejvetsi pocet karet v ruce a tam odebere kartu
-    if(enemies_id.size() != 0)
+    if(g->game_order[g->active_player]->isai)
     {
-        for(size_t i = 0; i < g->game_order.size(); i++)
+        if(!Ai::jesse_abil(g))
         {
-            if(enemies_id.find(g->game_order[i]->id) != enemies_id.end() &&
-                    g->game_order[i]->cards_hand.size() > (size_t)cards)
-            {
-                cards = g->game_order[i]->cards_hand.size();
-                index = i;
-            }
+            Player::draw_phase();
         }
-    }
-
-    if(cards == -1 || cards == 0)
-    {
-        Player::draw_phase();
-    }
-    else
-    {
-        ability_used = true;
-        cards_hand.push_back(g->game_order[index]->give_random_card_hand());
-        cards_hand.push_back(g->draw_from_deck());
     }
 }
 
@@ -48,7 +29,7 @@ void Jesse::ability()
     {
         return;
     }
-    if(target_id == -1 || g->game_order[GameTools::id_to_pos(g, target_id)]->cards_hand.size() == 0)
+    if(target_id == -1 || GameTools::hand_size(g, target_id) == 0)
     {
         return;
     }
@@ -57,3 +38,4 @@ void Jesse::ability()
     cards_hand.push_back(g->game_order[GameTools::id_to_pos(g, target_id)]->give_random_card_hand());
     cards_hand.push_back(g->draw_from_deck());
 }
+

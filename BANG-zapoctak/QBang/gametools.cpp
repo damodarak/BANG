@@ -59,8 +59,9 @@ void GameTools::load_card(Game *g, std::vector<std::string> &v)
     int id = stoi(v[4]);
     string card_type = v[5];
     int range = stoi(v[6]);
+    int mode = stoi(v[7]);
 
-    Card card(id, name, edge, suit, rank, card_type, range);
+    Card card(id, name, edge, suit, rank, card_type, range, mode);
 
     g->deck.push_back(card);
 
@@ -137,4 +138,30 @@ int GameTools::id_to_pos(Game *g, int id)
         }
     }
     return -1;
+}
+
+void GameTools::suzy_abil(Game *g)
+{
+    int suzy_ranking = 14;
+
+    for(size_t i = 0; i < g->game_order.size(); i++)
+    {
+        if(g->game_order[i]->ranking == suzy_ranking)
+        {
+            g->game_order[i]->ability();
+            return;
+        }
+    }
+}
+
+size_t GameTools::hand_size(Game *g, int id)
+{
+    for(size_t i = 0; i < g->game_order.size(); i++)
+    {
+        if(g->game_order[i]->id == id)
+        {
+            return g->game_order[i]->cards_hand.size();
+        }
+    }
+    return 0;
 }

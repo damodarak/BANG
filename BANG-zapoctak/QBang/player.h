@@ -61,9 +61,6 @@ public:
     friend class Ai;
     friend class GameTools;
     friend class Game;
-
-    friend class Cringo;
-    friend class Jesse; 
 protected:
 	char role;
 	std::vector<Card> cards_hand;

@@ -22,6 +22,8 @@ public:
     static void set_notai(Game* g);
     static void load_emporio(Game* g);
     static int id_to_pos(Game*g, int id);
+    static void suzy_abil(Game*g);
+    static size_t hand_size(Game* g, int id);
 
 private:
     //staticka trida

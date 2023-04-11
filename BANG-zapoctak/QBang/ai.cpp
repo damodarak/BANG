@@ -197,3 +197,55 @@ bool Ai::panika_balou_play(Game *g, int enemy_id)
     }
     return false;
 }
+
+void Ai::cringo_abil(Game *g)
+{
+    int cringo_pos = -1;
+    int cringo_ranking = 16;
+
+    for(size_t i = 0; i < g->game_order.size(); i++)
+    {
+        if(g->game_order[i]->ranking == cringo_ranking)
+        {
+            cringo_pos = i;
+            break;
+        }
+    }
+
+    if(g->game_order[g->active_player]->cards_hand.size() > 0)
+    {
+        g->game_order[cringo_pos]->cards_hand.push_back(g->game_order[g->active_player]->give_random_card_hand());
+    }
+}
+
+bool Ai::jesse_abil(Game *g)
+{
+    int index = -1;
+    int cards = -1;
+    //najde mezi neprateli nejvetsi pocet karet v ruce a tam odebere kartu
+    if(g->game_order[g->active_player]->enemies_id.size() != 0)
+    {
+        for(size_t i = 0; i < g->game_order.size(); i++)
+        {
+            if(g->game_order[g->active_player]->enemies_id.find(g->game_order[i]->id) != g->game_order[g->active_player]->enemies_id.end() &&
+                g->game_order[i]->cards_hand.size() > (size_t)cards)
+            {
+                cards = g->game_order[i]->cards_hand.size();
+                index = i;
+            }
+        }
+    }
+
+    if(cards == -1 || cards == 0)
+    {
+        return false;
+    }
+    else
+    {
+        g->game_order[g->active_player]->ability_used = true;
+        g->game_order[g->active_player]->cards_hand.push_back(g->game_order[index]->give_random_card_hand());
+        g->game_order[g->active_player]->cards_hand.push_back(g->draw_from_deck());
+
+        return true;
+    }
+}

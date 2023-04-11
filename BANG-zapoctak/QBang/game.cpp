@@ -211,6 +211,7 @@ void Game::change_distance(int id1, int change, int id2)//zmena hrany v orientov
 void Game::game_loop()
 {
     set_distances();
+    GameTools::suzy_abil(this);
 
     //hraje AI a neni zadny mod zaply
     if(mode == "" && game_order[active_player]->isai)

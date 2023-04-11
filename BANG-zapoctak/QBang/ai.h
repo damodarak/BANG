@@ -19,6 +19,8 @@ public:
     static int has_gun(std::vector<Card>& cards);//vrati -1 pokud hrac nema zbran nebo range zbrane
     static void vice_add_enemy(Game* g, int enemy_id);//pokud nekdo zautoci na serifa tak i jeho pomocnici to zaznamenaji
     static bool panika_balou_play(Game* g, int enemy_id);
+    static void cringo_abil(Game* g);
+    static bool jesse_abil(Game* g);
 
 private:
     //staticka trida
