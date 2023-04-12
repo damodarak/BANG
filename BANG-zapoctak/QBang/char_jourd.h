@@ -8,7 +8,7 @@
 
 class Jourd : public Player {
 public:
-    Jourd(Game* game) : Player(4, 4, "jourd", game) {}
+    Jourd(Game* game) : Player(3, 4, game) {}
     virtual bool resolve_barrel() override;
     virtual void ability() override;
 };

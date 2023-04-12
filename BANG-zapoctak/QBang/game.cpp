@@ -29,7 +29,9 @@ void Game::create(int players, string roles)
 
     auto rd = random_device{};
     auto rng = default_random_engine{ rd() };
-    for (int i = 0; i < 20; i++)
+
+    int shuffle_count = 20;
+    for (int i = 0; i < shuffle_count; i++)
     {
         shuffle(begin(roles), end(roles), rng);//pro nahodny vyber roli
     }
@@ -48,30 +50,19 @@ void Game::create(int players, string roles)
 void Game::create_players(int count)
 {
     for (size_t i = 0; i < (size_t)count; i++)
-	{
-		if (characters[i]->ranking < characters[i + 1]->ranking)
-		{
-			Hrac p = move(characters[i]);
-			characters.erase(characters.begin() + i);
-			game_order.push_back(move(p));
-		}
-		else
-		{
-			Hrac p = move(characters[i + 1]);
-			characters.erase(characters.begin() + i + 1);
-			game_order.push_back(move(p));
-		}
+    {
+        Hrac p = move(characters[i + (characters[i]->ranking < characters[i + 1]->ranking ? 0 : 1)]);
+        characters.erase(characters.begin() + i);
+        game_order.push_back(move(p));
 	}
 }
 void Game::draw_cards_start()
 {
-	Card c;
 	for (size_t i = 0; i < game_order.size(); i++)
 	{
         for (size_t j = 0; j < (size_t)game_order[i]->max_health; j++)
 		{
-			c = draw_from_deck();
-            game_order[i]->cards_hand.push_back(c);
+            game_order[i]->cards_hand.push_back(draw_from_deck());
 		}	
 	}
 }
@@ -144,11 +135,11 @@ void Game::set_distances()
     //SCHOPNOSTI POSTAV
 	for (size_t i = 0; i < game_order.size(); i++)
 	{
-        if (game_order[i]->name == "rose")
+        if ((Chars)game_order[i]->ranking == ROSE)
 		{
 			change_distance(game_order[i]->id, -1);
 		}
-        else if (game_order[i]->name == "paul")
+        else if ((Chars)game_order[i]->ranking == PAUL)
 		{
 			int paul_id = game_order[i]->id;
 
@@ -171,14 +162,14 @@ void Game::set_distances()
     //KONE
     for(size_t i = 0; i < game_order.size(); i++)
     {
-        if(Ai::index(game_order[i]->cards_desk, "Appaloosa") != -1)
+        if(Ai::index_name(game_order[i]->cards_desk, APPALOOSA) != -1)
         {
             change_distance(game_order[i]->id, -1);
         }
     }
     for(size_t i = 0; i < game_order.size(); i++)
     {
-        if(Ai::index(game_order[i]->cards_desk, "Mustang") != -1)
+        if(Ai::index_name(game_order[i]->cards_desk, MUSTANG) != -1)
         {
             int id = game_order[i]->id;
 
@@ -250,9 +241,9 @@ void Game::game_loop()
             else if(game == 1)
             {
                 mode = (Modes)deck.back().mode;
-                if(mode == BANG && game_order[active_player]->name == "slab")
+                if(mode == BANG && (Chars)game_order[active_player]->ranking == SLAB)
                 {
-                    mode = SLAB;
+                    mode = SLAB_BANG;
                 }
             }
             //game == 2 => return
@@ -273,7 +264,7 @@ void Game::vulture_sam(std::vector<Card>& reward)
     //schopnost vulture_sama, pokud je nekdo vyrazen ze hry, tak ziska vsechny jeho karty
     for(size_t i = 0; i < game_order.size(); i++)
     {
-        if(game_order[i]->name == "vulture" && game_order[i]->health > 0)
+        if((Chars)game_order[i]->ranking == VULTURE && game_order[i]->health > 0)
         {
             for(size_t j = 0; j < reward.size(); j++)
             {
@@ -417,7 +408,7 @@ void Game::resolve_played_card()
         }
         duel_active_turn = !duel_active_turn;
     }
-    else if(mode == EMPORIO)
+    else if(mode == HOKYNARSTVI)
     {
         if(neu_turn == -1)
         {
@@ -494,7 +485,7 @@ void Game::resolve_played_card()
         GameTools::saloon(this);
         mode = NONE;
     }
-    else if(mode == SLAB)
+    else if(mode == SLAB_BANG)
     {
         int enemy_id = game_order[active_player]->target_id;
         int pos = GameTools::id_to_pos(this, enemy_id);
@@ -619,7 +610,7 @@ void Game::resolve_notai_play()
     else if(deck.back().name == "Vezeni")
     {
         if(pos != -1 && game_order[pos]->role != 'S'
-                && Ai::index(game_order[pos]->cards_desk, "Vezeni") == -1)
+                && Ai::index_name(game_order[pos]->cards_desk, VEZENI) == -1)
         {
             Card c = deck.back();
             deck.pop_back();
@@ -630,7 +621,7 @@ void Game::resolve_notai_play()
     //ostatni modre karty
     else if(deck.back().edge == 'M')
     {
-        if(Ai::index(game_order[active_player]->cards_desk, deck.back().name) == -1)
+        if(Ai::index_name(game_order[active_player]->cards_desk, deck.back().mode) == -1)
         {
             Card c = deck.back();
             deck.pop_back();
@@ -656,7 +647,7 @@ void Game::resolve_notai_play()
         }
     }
     //neu
-    else if(deck.back().card_type == "neu")
+    else if(deck.back().card_type == NEU)
     {
         if(deck.back().name == "Salon")
         {
@@ -665,7 +656,7 @@ void Game::resolve_notai_play()
         else
         {
             mode = (Modes)deck.back().mode;
-            if(mode == EMPORIO)
+            if(mode == HOKYNARSTVI)
             {
                 neu_turn = active_player;
                 GameTools::load_emporio(this);
@@ -696,12 +687,12 @@ void Game::resolve_notai_play()
         }
     }
     //bang
-    else if((deck.back().name == "Bang" ||
-             (deck.back().name == "Vedle" && game_order[active_player]->name == "calamity")) &&
+    else if(((Modes)deck.back().mode == BANG ||
+              ((Modes)deck.back().mode == VEDLE && (Chars)game_order[active_player]->ranking == CALAMITY)) &&
             !game_order[active_player]->played_bang &&
             distances.find(game_order[active_player]->id)->second[enemy] <= 1)
     {
-        if(game_order[active_player]->name == "willy" || Ai::has_gun(game_order[active_player]->cards_desk) == 1)
+        if((Chars)game_order[active_player]->ranking == WILLY || Ai::has_gun(game_order[active_player]->cards_desk) == 1)
         {
             game_order[active_player]->played_bang = false;
         }
@@ -709,9 +700,9 @@ void Game::resolve_notai_play()
         {
             game_order[active_player]->played_bang = true;
         }
-        mode = (game_order[active_player]->name == "slab") ? SLAB : BANG;
+        mode = ((Chars)game_order[active_player]->ranking == SLAB) ? SLAB_BANG : BANG;
     }
-    else if(deck.back().name == "Duel")
+    else if((Modes)deck.back().mode == DUEL)
     {
         mode = (Modes)deck.back().mode;
         duel_active_turn = false;
@@ -723,19 +714,19 @@ bool Game::can_respond_with_card(string name)
 {
     if(mode == DUEL || mode == INDIANI)
     {
-        return name == "Bang" || (game_order[notai]->name == "calamity" && name == "Vedle");
+        return name == "Bang" || ((Chars)game_order[notai]->ranking == CALAMITY && name == "Vedle");
     }
     else if(mode == KULOMET)
     {
-        return name == "Vedle" || (game_order[notai]->name == "calamity" && name == "Bang") ||
+        return name == "Vedle" || ((Chars)game_order[notai]->ranking == CALAMITY && name == "Bang") ||
                 (name == "Barel" && game_order[notai]->barel == 0);
     }
     else if(mode == BANG || mode == VEDLE)
     {
-        return name == "Vedle" || (game_order[notai]->name == "calamity" && name == "Bang") ||
+        return name == "Vedle" || ((Chars)game_order[notai]->ranking == CALAMITY && name == "Bang") ||
                 (name == "Barel" && game_order[notai]->barel == 0);
     }
-    else if(mode == SLAB)
+    else if(mode == SLAB_BANG)
     {
         if(name == "Vedle")
         {
@@ -749,7 +740,7 @@ bool Game::can_respond_with_card(string name)
         {
             return true;
         }
-        else if(game_order[notai]->name == "calamity" && name == "Bang")
+        else if((Chars)game_order[notai]->ranking == CALAMITY && name == "Bang")
         {
             return true;
         }
@@ -762,12 +753,12 @@ void Game::resolve_notai_react(size_t c_index)
     //barel
     if(c_index >= game_order[notai]->cards_hand.size())
     {
-        c = game_order[notai]->cards_desk[Ai::index(game_order[notai]->cards_desk, "Barel")];
+        c = game_order[notai]->cards_desk[Ai::index_name(game_order[notai]->cards_desk, BAREL)];
     }
     else
     {
         c = game_order[notai]->cards_hand[c_index];
-        if(c.name == "Barel")
+        if((Modes)c.mode == BAREL)
         {
             return;
         }
@@ -781,7 +772,7 @@ void Game::resolve_notai_react(size_t c_index)
     }
     else if(mode == KULOMET)
     {
-        if(c.name == "Barel")
+        if((Modes)c.mode == BAREL)
         {
             if(game_order[notai]->resolve_barrel())
             {
@@ -820,9 +811,9 @@ void Game::resolve_notai_react(size_t c_index)
             neu_turn = -1;
         }
     }
-    else if(mode == SLAB)
+    else if(mode == SLAB_BANG)
     {
-        if(c.name == "Barel")
+        if((Modes)c.mode == BAREL)
         {
             if(game_order[notai]->resolve_barrel() && game_order[notai]->played_vedle == 1)
             {
@@ -848,7 +839,7 @@ void Game::resolve_notai_react(size_t c_index)
     }
     else if(mode == VEDLE || mode == BANG)
     {
-        if(c.name == "Barel")
+        if((Modes)c.mode == BAREL)
         {
             if(game_order[notai]->resolve_barrel())
             {

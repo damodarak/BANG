@@ -7,7 +7,7 @@
 
 class Slab : public Player {
 public:
-    Slab(Game* game) : Player(3, 4, "slab", game) {}
+    Slab(Game* game) : Player(2, 4, game) {}
 };
 
 #endif

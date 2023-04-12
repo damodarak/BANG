@@ -18,7 +18,7 @@ bool Cringo::dec_hp(int lifes)
         {
             while(health <= 0)
             {
-                Ai::discard_card(g, cards_hand, cards_desk, Ai::index(cards_hand, "Pivo"));
+                Ai::discard_card(g, cards_hand, cards_desk, Ai::index_name(cards_hand, PIVO));
                 health++;
             }
         }
@@ -26,7 +26,7 @@ bool Cringo::dec_hp(int lifes)
 
 
     //je-li nekym zasazen, tak si od neho vezme kartu z ruky
-    if(g->mode == BANG || g->mode == VEDLE || g->mode == SLAB)
+    if(g->mode == BANG || g->mode == VEDLE || g->mode == SLAB_BANG)
     {
         Ai::cringo_abil(g);
     }

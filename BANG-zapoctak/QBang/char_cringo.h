@@ -7,7 +7,7 @@
 
 class Cringo : public Player {
 public:
-    Cringo(Game* game) : Player(16, 3, "gringo", game) {}
+    Cringo(Game* game) : Player(15, 3, game) {}
     virtual bool dec_hp(int lifes) override;
 };
 

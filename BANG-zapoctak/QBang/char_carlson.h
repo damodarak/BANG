@@ -8,7 +8,7 @@
 
 class Carlson : public Player {
 public:
-    Carlson(Game* game) : Player(8, 4, "carlson", game) {}
+    Carlson(Game* game) : Player(7, 4, game) {}
     virtual void draw_phase() override;
     virtual void ability() override;
 };

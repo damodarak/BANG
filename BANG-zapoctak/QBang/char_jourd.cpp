@@ -10,7 +10,7 @@ bool Jourd::resolve_barrel()
     g->deck.push_back(c);
 
     bool result2 = false;
-    if(!result1 && Ai::index(cards_desk, "Barel") != -1)
+    if(!result1 && Ai::index_name(cards_desk, BAREL) != -1)
     {
         result2 = Player::resolve_barrel();
     }
@@ -20,8 +20,7 @@ bool Jourd::resolve_barrel()
 //for not AI
 void Jourd::ability()
 {
-    if((g->game_order[g->active_player]->name == "slab" && barel == 2) ||
-            (g->game_order[g->active_player]->name != "slab" && barel == 1))
+    if(Ai::no_jourd_abil(g, barel))
     {
         return;
     }
@@ -41,7 +40,7 @@ void Jourd::ability()
             }
         }
     }
-    else if(g->mode == SLAB)
+    else if(g->mode == SLAB_BANG)
     {
         if(resolve_barrel())
         {   

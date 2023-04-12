@@ -8,7 +8,7 @@
 
 class Willy : public Player {
 public:
-    Willy(Game* game) : Player(1, 4, "willy", game) {}
+    Willy(Game* game) : Player(0, 4, game) {}
 };
 
 #endif

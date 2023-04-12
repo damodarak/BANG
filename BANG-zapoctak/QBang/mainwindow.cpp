@@ -112,7 +112,7 @@ void MainWindow::AddLivePlayers()
             continue;
         }
         ui->choose_p->addItem(QIcon(QString::fromStdString(g->game_order[i]->file_loc())),
-                              QString::fromStdString(g->game_order[i]->name));
+                              QString::fromStdString(Names[g->game_order[i]->ranking]));
     }
 }
 void MainWindow::Start(int players, const std::string& roles)
@@ -140,7 +140,7 @@ void MainWindow::SetButtons()
     ui->choose_e->setEnabled(false);
 
     //emporio
-    if(g->mode == EMPORIO && g->neu_turn != -1 && !g->game_order[g->neu_turn]->isai)
+    if(g->mode == HOKYNARSTVI && g->neu_turn != -1 && !g->game_order[g->neu_turn]->isai)
     {
         ui->choose_e->setEnabled(true);
         ui->play->setEnabled(false);
@@ -151,7 +151,7 @@ void MainWindow::SetButtons()
         ui->react->setEnabled(false);
     }
     //Kit Carlson Ability...notAI
-    else if(g->mode == CARLSON)
+    else if(g->mode == CARLSON_DRAW)
     {
         ui->choose_e->setEnabled(true);
         ui->play->setEnabled(false);
@@ -213,7 +213,7 @@ void MainWindow::SetButtons()
         ui->react->setEnabled(true);
     }
     //bang, vedle, Slab...hraje AI
-    else if((g->mode == BANG || g->mode == VEDLE || g->mode == SLAB) && NotaiReact())
+    else if((g->mode == BANG || g->mode == VEDLE || g->mode == SLAB_BANG) && NotaiReact())
     {
         ui->play->setEnabled(true);
         ui->ability->setEnabled(g->game_order[g->notai]->has_notai_ability() && !g->game_order[g->notai]->ability_used);
@@ -302,32 +302,6 @@ bool MainWindow::NotAiDuelReact()
             !g->duel_active_turn && !g->game_order[GameTools::id_to_pos(g, g->game_order[g->active_player]->target_id)]->isai) ||
            (!g->game_order[g->active_player]->isai && g->duel_active_turn);
 }
-QString MainWindow::ModeToText(Modes m)
-{
-    switch(m)
-    {
-    case BANG:
-        return "Bang";
-    case VEDLE:
-        return "Bang";
-    case EMPORIO:
-        return "Hokynarstvi";
-    case PANIKA:
-        return "Panika";
-    case BALOU:
-        return "Cat Balou";
-    case INDIANI:
-        return "Indiani";
-    case SALON:
-        return "Salon";
-    case KULOMET:
-        return "Kulomet";
-    case DUEL:
-        return "Duel";
-    default:
-        return "";
-    }
-}
 void MainWindow::PaintLayout()
 {
     g->set_distances();
@@ -345,7 +319,7 @@ void MainWindow::PaintLayout()
     ui->label_target->setText("Target:");
     ui->label_react->setText("React:");
     ui->label_mode->setText("Mode:");
-    ui->mode->setText(ModeToText(g->mode));
+    ui->mode->setText(QString::fromStdString(Card_names[g->mode]));
     if(g->neu_turn != -1)
     {
         ui->neu->setText(QString::fromStdString(GameTools::id_to_name(g, g->game_order[g->neu_turn]->id)));
@@ -576,7 +550,7 @@ void MainWindow::on_ability_clicked()
 void MainWindow::on_choose_e_activated(int index)
 {
     //schopnost Kit Carlson, vybira 2 karty ze 3, ktere lezi v g->emporio
-    if(g->mode == CARLSON)
+    if(g->mode == CARLSON_DRAW)
     {
         Card c = g->emporio[index];
         g->emporio.erase(g->emporio.begin() + index);

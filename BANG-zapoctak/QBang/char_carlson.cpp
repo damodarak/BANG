@@ -43,6 +43,6 @@ void Carlson::ability()
         g->emporio.push_back(g->draw_from_deck());
     }
     ability_used = true;
-    g->mode = CARLSON;
+    g->mode = CARLSON_DRAW;
     drawed = true;
 }

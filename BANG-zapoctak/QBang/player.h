@@ -11,11 +11,17 @@ class Game;
 
 static int next_player_id = 0;
 
+enum Chars {WILLY, CALAMITY, SLAB, JOURD, BLACKJ, KETCHUM,
+             CARLSON, LUCKY, VULTURE, PEDRO, JESSE, BART, ROSE, SUZY, PAUL, GRINGO};
+static std::string Names[] {"willy", "calamity", "slab", "jourd", "blackj", "ketchum",
+                    "carlson", "lucky", "vulture", "pedro", "jesse", "bart",
+                    "rose", "suzy", "paul", "gringo"};
+
 class Player {
 public:
-    Player(int rank, int max_hp, const std::string& char_name, Game* game) : layout_index(0), isai(true),
-        ranking(rank), id(++next_player_id), health(max_hp), max_health(max_hp), discarded(0), played_bang(false),
-        drawed(false), ability_used(false), barel(0), played_vedle(0), name(char_name), role('?'), g(game), target_id(-1) {}
+    Player(int rank, int max_hp, Game* game) : id(++next_player_id), layout_index(0), isai(true),
+        ranking(rank), health(max_hp), max_health(max_hp), discarded(0), played_bang(false),
+        drawed(false), ability_used(false), barel(0), played_vedle(0), role('?'), g(game), target_id(-1) {}
 
     virtual void draw_phase();
     virtual int game_phase();//0-koncim, 1-chci pokracovat po vyreseni odehrane karty, 2-chci hrat hned
@@ -41,20 +47,7 @@ public:
     bool has_dyn();
     bool has_jail();
 
-    int layout_index;//index of QVector<Qlist<QLabel*>> with labels for blue cards, role,
-	bool isai;
-	int ranking;//for AI to choose beter character
-
-	int id;
-	int health;
-    int max_health;
-    int discarded;
-	bool played_bang;//po kazdem bangu se rovnou podivame, jestli mame Volcanic a pripadne zmenime tuto hodnotu
-    bool drawed;
-    bool ability_used;
-    int barel;
-    int played_vedle;
-    std::string name;
+    int id;
 	std::vector<Card> cards_desk;//modre karty, ktere jsou na stole
 
     friend class MainWindow;
@@ -62,6 +55,19 @@ public:
     friend class GameTools;
     friend class Game;
 protected:
+    int layout_index;//index of QVector<Qlist<QLabel*>> with labels for blue cards, role,
+    bool isai;
+    int ranking;//for AI to choose beter character
+
+    int health;
+    int max_health;
+    int discarded;
+    bool played_bang;//po kazdem bangu se rovnou podivame, jestli mame Volcanic a pripadne zmenime tuto hodnotu
+    bool drawed;
+    bool ability_used;
+    int barel;
+    int played_vedle;
+
 	char role;
 	std::vector<Card> cards_hand;
 	std::set<int> enemies_id;

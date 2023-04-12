@@ -7,7 +7,7 @@
 
 class Paul : public Player {
 public:
-    Paul(Game* game) : Player(15, 3, "paul", game) {}
+    Paul(Game* game) : Player(14, 3, game) {}
 };
 
 #endif

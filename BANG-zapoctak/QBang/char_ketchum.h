@@ -7,7 +7,7 @@
 
 class Ketchum : public Player {
 public:
-    Ketchum(Game* game) : Player(6, 4, "ketchum", game) {}
+    Ketchum(Game* game) : Player(5, 4, game) {}
 	virtual void discard_phase() override;
     virtual void draw_phase() override;
     virtual void ability() override;

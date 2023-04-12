@@ -9,7 +9,7 @@
 
 class Pedro : public Player {
 public:
-    Pedro(Game* game) : Player(10, 4, "pedro", game) {}
+    Pedro(Game* game) : Player(9, 4, game) {}
     virtual void draw_phase() override;
     virtual void ability() override;
 };

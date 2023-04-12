@@ -57,7 +57,7 @@ void GameTools::load_card(Game *g, std::vector<std::string> &v)
     int rank = stoi(v[2]);
     char edge = v[3][0];
     int id = stoi(v[4]);
-    string card_type = v[5];
+    int card_type = stoi(v[5]);
     int range = stoi(v[6]);
     int mode = stoi(v[7]);
 
@@ -176,7 +176,7 @@ string GameTools::id_to_name(Game *g, int id)
     {
         if(g->game_order[i]->id == id)
         {
-            return g->game_order[i]->name;
+            return Names[g->game_order[i]->ranking];
         }
     }
     return "";

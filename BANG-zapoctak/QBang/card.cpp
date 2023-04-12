@@ -51,7 +51,7 @@ string Card::rnk()
 
 bool Card::need_target()
 {
-    if(name == "Vezeni")
+    if((Modes)mode == VEZENI)
     {
         return true;
     }
@@ -59,7 +59,7 @@ bool Card::need_target()
     {
         return false;
     }
-    else if(card_type == "agr")
+    else if((Types)card_type == AGR)
     {
         return true;
     }

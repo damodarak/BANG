@@ -10,9 +10,10 @@ class Card;
 class Ai {
 public:
     static bool discard_blue(Game* g, std::vector<Card>& cards);
-    static bool discard_card(Game* g, std::vector<Card>& cards, const std::string& type);
+    static bool discard_card(Game* g, std::vector<Card>& cards, int type);
     static void discard_card(Game* g, std::vector<Card>& c_hand, std::vector<Card>& c_desk, size_t index);
-    static int index(const std::vector<Card>& cards, const std::string& name_type);//nalezeni karty ve vectoru karet
+    static int index_name(const std::vector<Card>& cards, int name);//nalezeni karty ve vectoru karet
+    static int index_type(const std::vector<Card>& cards, int type);
     static bool can_play_panika(Game* g, int id, int enemy_id);
     static bool play_neu(Game* g, const std::string& name);//zda-li ai ma hrat neu kartu
     static int best_gun(std::vector<Card>& cards);//vrati -1 pokud hrac nema zbran nebo index v cards
@@ -21,6 +22,8 @@ public:
     static bool panika_balou_play(Game* g, int enemy_id);
     static void cringo_abil(Game* g);
     static bool jesse_abil(Game* g);
+    static bool no_pedro_abil(Game* g, int id);
+    static bool no_jourd_abil(Game* g, int barel);
 
 private:
     //staticka trida

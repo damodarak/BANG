@@ -5,7 +5,7 @@
 
 bool Lucky::resolve_dyn()
 {
-    if(Ai::index(cards_desk, "Dynamit") == -1)
+    if(Ai::index_name(cards_desk, DYNAMIT) == -1)
     {
         return false;
     }
@@ -26,9 +26,9 @@ bool Lucky::resolve_dyn()
             }
         }
 
-        cards_desk[Ai::index(cards_desk, "Dynamit")].dyn_active = true;
-        g->game_order[next]->cards_desk.push_back(cards_desk[Ai::index(cards_desk, "Dynamit")]);
-        cards_desk.erase(cards_desk.begin() + Ai::index(cards_desk, "Dynamit"));
+        cards_desk[Ai::index_name(cards_desk, DYNAMIT)].dyn_active = true;
+        g->game_order[next]->cards_desk.push_back(cards_desk[Ai::index_name(cards_desk, DYNAMIT)]);
+        cards_desk.erase(cards_desk.begin() + Ai::index_name(cards_desk, DYNAMIT));
 
 		return false;
 	}
@@ -46,9 +46,9 @@ bool Lucky::resolve_dyn()
             }
         }
 
-        cards_desk[Ai::index(cards_desk, "Dynamit")].dyn_active = true;
-        g->game_order[next]->cards_desk.push_back(cards_desk[Ai::index(cards_desk, "Dynamit")]);
-        cards_desk.erase(cards_desk.begin() + Ai::index(cards_desk, "Dynamit"));
+        cards_desk[Ai::index_name(cards_desk, DYNAMIT)].dyn_active = true;
+        g->game_order[next]->cards_desk.push_back(cards_desk[Ai::index_name(cards_desk, DYNAMIT)]);
+        cards_desk.erase(cards_desk.begin() + Ai::index_name(cards_desk, DYNAMIT));
 
         return false;
 	}
@@ -57,16 +57,16 @@ bool Lucky::resolve_dyn()
 		g->deck.push_back(c1);
 		g->deck.push_back(c2);
 
-        cards_desk[Ai::index(cards_desk, "Dynamit")].dyn_active = false;
-        g->deck.push_back(cards_desk[Ai::index(cards_desk, "Dynamit")]);
-        cards_desk.erase(cards_desk.begin() + Ai::index(cards_desk, "Dynamit"));
+        cards_desk[Ai::index_name(cards_desk, DYNAMIT)].dyn_active = false;
+        g->deck.push_back(cards_desk[Ai::index_name(cards_desk, DYNAMIT)]);
+        cards_desk.erase(cards_desk.begin() + Ai::index_name(cards_desk, DYNAMIT));
 
 		return true;
 	}
 }
 bool Lucky::resolve_jail()
 {
-    if(Ai::index(cards_desk, "Vezeni") == -1)
+    if(Ai::index_name(cards_desk, VEZENI) == -1)
     {
         return true;
     }
@@ -74,8 +74,8 @@ bool Lucky::resolve_jail()
 
 	Card c1 = g->draw_from_deck();
     Card c2 = g->draw_from_deck();
-    g->deck.push_back(cards_desk[Ai::index(cards_desk, "Vezeni")]);
-    cards_desk.erase(cards_desk.begin() + Ai::index(cards_desk, "Vezeni"));
+    g->deck.push_back(cards_desk[Ai::index_name(cards_desk, VEZENI)]);
+    cards_desk.erase(cards_desk.begin() + Ai::index_name(cards_desk, VEZENI));
 	if (c1.suit == "Srdce")
 	{
 		g->deck.push_back(c2);
@@ -97,7 +97,7 @@ bool Lucky::resolve_jail()
 }
 bool Lucky::resolve_barrel()
 {
-    if(Ai::index(cards_desk, "Barel") == -1)
+    if(Ai::index_name(cards_desk, BAREL) == -1)
     {
         return false;
     }

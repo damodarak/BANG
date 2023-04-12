@@ -14,18 +14,22 @@ void Jesse::draw_phase()
         enemies_id.erase(enemies_id.find(g->game_order[0]->id));
     }
 
-    if(g->game_order[g->active_player]->isai)
+    if(isai)
     {
         if(!Ai::jesse_abil(g))
         {
             Player::draw_phase();
         }
     }
+    else
+    {
+        Player::draw_phase();
+    }
 }
 
 void Jesse::ability()
 {
-    if(g->game_order[g->active_player]->isai)
+    if(isai)
     {
         return;
     }

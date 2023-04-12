@@ -1,4 +1,5 @@
 #include "game.h"
+#include "ai.h"
 
 void Pedro::draw_phase()
 {
@@ -24,8 +25,8 @@ void Pedro::draw_phase()
         g->deck.pop_back();
         return;
     }
-    else if((health > max_health / 2 && g->deck.back().card_type == "agr") ||
-            (health <= max_health / 2 && g->deck.back().card_type == "def"))
+    else if((health > max_health / 2 && g->deck.back().card_type == AGR) ||
+            (health <= max_health / 2 && g->deck.back().card_type == DEF))
     {
         cards_hand.push_back(g->draw_from_deck());
         cards_hand.push_back(g->deck.back());
@@ -40,7 +41,7 @@ void Pedro::draw_phase()
 
 void Pedro::ability()
 {
-    if(g->game_order[g->active_player]->isai || drawed || g->mode != NONE)
+    if(Ai::no_pedro_abil(g, id))
     {
         return;
     }

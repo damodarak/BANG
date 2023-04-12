@@ -16,7 +16,7 @@ bool Ai::discard_blue(Game *g, std::vector<Card> &cards)
     return false;
 }
 
-bool Ai::discard_card(Game *g, std::vector<Card> &cards, const std::string &type)
+bool Ai::discard_card(Game *g, std::vector<Card> &cards, int type)
 {
     //odhozeni karty s typem type
     for (size_t i = 0; i < cards.size(); i++)
@@ -46,12 +46,24 @@ void Ai::discard_card(Game* g, std::vector<Card>& c_hand, std::vector<Card>& c_d
     }
 }
 
-int Ai::index(const std::vector<Card> &cards, const std::string &name_type)
+int Ai::index_type(const std::vector<Card> &cards, int type)
+{
+    for(size_t i = 0; i < cards.size(); i++)
+    {
+        if(cards[i].card_type == type)
+        {
+            return static_cast<int>(i);
+        }
+    }
+    return -1;
+}
+
+int Ai::index_name(const std::vector<Card> &cards, int name)
 {
     //vrati index teto karty v cards nebo -1, jestli karta neexistuje
     for(size_t i = 0; i < cards.size(); i++)
     {
-        if(cards[i].name == name_type || cards[i].card_type == name_type)
+        if(cards[i].mode == name)
         {
             return static_cast<int>(i);
         }
@@ -248,4 +260,25 @@ bool Ai::jesse_abil(Game *g)
 
         return true;
     }
+}
+
+bool Ai::no_pedro_abil(Game *g, int id)
+{
+    size_t pedro_pos = 0;
+    for(size_t i = 0; i < g->game_order.size(); i++)
+    {
+        if(g->game_order[i]->id == id)
+        {
+            pedro_pos = i;
+            break;
+        }
+    }
+
+    return g->game_order[g->active_player]->isai || g->game_order[pedro_pos]->drawed || g->mode != NONE;
+}
+
+bool Ai::no_jourd_abil(Game *g, int barel)
+{
+    return ((Chars)g->game_order[g->active_player]->ranking == SLAB && barel == 2) ||
+           ((Chars)g->game_order[g->active_player]->ranking != SLAB && barel == 1);
 }

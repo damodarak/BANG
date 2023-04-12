@@ -17,17 +17,17 @@ void Ketchum::discard_phase()
             {
                 if (health > max_health / 2)
                 {
-                    bool result = (Ai::discard_card(g, cards_hand, "neu") ? true : false);
-                    result = (result ? true : Ai::discard_card(g, cards_hand, "def"));
+                    bool result = (Ai::discard_card(g, cards_hand, NEU) ? true : false);
+                    result = (result ? true : Ai::discard_card(g, cards_hand, DEF));
                     result = (result ? true : Ai::discard_blue(g, cards_hand));
-                    result = (result ? true : Ai::discard_card(g, cards_hand, "agr"));
+                    result = (result ? true : Ai::discard_card(g, cards_hand, AGR));
                 }
                 else
                 {
-                    bool result = (Ai::discard_card(g, cards_hand, "neu") ? true : false);
+                    bool result = (Ai::discard_card(g, cards_hand, NEU) ? true : false);
                     result = (result ? true : Ai::discard_blue(g, cards_hand));
-                    result = (result ? true : Ai::discard_card(g, cards_hand, "agr"));
-                    result = (result ? true : Ai::discard_card(g, cards_hand, "def"));
+                    result = (result ? true : Ai::discard_card(g, cards_hand, AGR));
+                    result = (result ? true : Ai::discard_card(g, cards_hand, DEF));
                 }
             }
             health++;
@@ -48,7 +48,7 @@ void Ketchum::draw_phase()
 
 void Ketchum::ability()
 {
-    if(discarded >= 2 && health < max_health && !g->game_order[g->active_player]->isai && g->mode == NONE)
+    if(discarded >= 2 && health < max_health && !isai && g->mode == NONE)
     {
         discarded -= 2;
         health++;
