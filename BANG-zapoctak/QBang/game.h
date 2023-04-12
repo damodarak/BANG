@@ -28,7 +28,6 @@ public:
     void set_distances();//zasadni funkce, nastavi hodnoty orientovaneho multigrafu
 	void change_distance(int id1, int change, int id2 = -1);
     void game_loop();//0-hra pokracuje, 404-konec hry
-    std::string id_to_name(int id);
     void vulture_sam(std::vector<Card>& reward);//schopnost jedne postavy ziskat karty po mrtvemu hraci
     void resolve_played_card();//mode != ""
     void killed(int id);//odstani mrtveho hrace z game_order a zmeni hodnoty pro beh hry

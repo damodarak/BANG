@@ -165,3 +165,19 @@ size_t GameTools::hand_size(Game *g, int id)
     }
     return 0;
 }
+
+string GameTools::id_to_name(Game *g, int id)
+{
+    if(id == -1)
+    {
+        return "";
+    }
+    for(size_t i = 0; i < g->game_order.size(); i++)
+    {
+        if(g->game_order[i]->id == id)
+        {
+            return g->game_order[i]->name;
+        }
+    }
+    return "";
+}

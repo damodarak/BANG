@@ -268,21 +268,6 @@ void Game::game_loop()
         resolve_notai_play();
     }
 }
-string Game::id_to_name(int id)
-{
-    if(id == -1)
-    {
-        return "";
-    }
-    for(size_t i = 0; i < game_order.size(); i++)
-    {
-        if(game_order[i]->id == id)
-        {
-            return game_order[i]->name;
-        }
-    }
-    return "";
-}
 void Game::vulture_sam(std::vector<Card>& reward)
 {
     //schopnost vulture_sama, pokud je nekdo vyrazen ze hry, tak ziska vsechny jeho karty

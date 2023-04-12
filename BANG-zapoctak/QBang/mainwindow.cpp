@@ -341,14 +341,14 @@ void MainWindow::PaintLayout()
     SetLabel(ui->discarded, QString::fromStdString(g->deck.back().file_loc()));
     SetLabel(ui->suit, QString::fromStdString(g->deck.back().suit_loc()));
     ui->rank->setText(QString::fromStdString(g->deck.back().rnk()));
-    ui->target->setText(QString::fromStdString(g->id_to_name(g->game_order[g->active_player]->target_id)));
+    ui->target->setText(QString::fromStdString(GameTools::id_to_name(g, g->game_order[g->active_player]->target_id)));
     ui->label_target->setText("Target:");
     ui->label_react->setText("React:");
     ui->label_mode->setText("Mode:");
     ui->mode->setText(ModeToText(g->mode));
     if(g->neu_turn != -1)
     {
-        ui->neu->setText(QString::fromStdString(g->id_to_name(g->game_order[g->neu_turn]->id)));
+        ui->neu->setText(QString::fromStdString(GameTools::id_to_name(g, g->game_order[g->active_player]->target_id)));
     }
 
     //EMPORIO
