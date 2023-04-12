@@ -523,10 +523,7 @@ void Game::resolve_played_card()
     }
 }
 void Game::killed(int id)
-{
-    //konec duelu
-    duel_active_turn = false;
-
+{    
     //v pripade nedohrani kulometu a indianu se musi posunou rucicka na hrace o jednu dozadu
     if((mode == KULOMET || mode == INDIANI) && neu_turn != -1)
     {
@@ -537,13 +534,35 @@ void Game::killed(int id)
 
     int pos = GameTools::id_to_pos(this, id);
     char role = game_order[pos]->role;
+
     //nekdo zabil banditu
-    if(role == 'B' && deck.back().name != "Dynamit")
+    if(role == 'B' && deck.back().name != "Dynamit" && mode != DUEL)
     {
         int bounty = 3;
         for(int i = 0; i < bounty; i++)
         {
             game_order[active_player]->cards_hand.push_back(draw_from_deck());
+        }
+    }
+    //zabit pri duelu
+    else if(role == 'B' && mode == DUEL)
+    {
+        int bounty = 3;
+        if(duel_active_turn)
+        {
+            for(int i = 0; i < bounty; i++)
+            {
+                int killed_by = game_order[pos]->target_id;
+                int duel_killer = GameTools::id_to_pos(this, killed_by);
+                game_order[duel_killer]->cards_hand.push_back(draw_from_deck());
+            }
+        }
+        else
+        {
+            for(int i = 0; i < bounty; i++)
+            {
+                game_order[active_player]->cards_hand.push_back(draw_from_deck());
+            }
         }
     }
     //Serif zabil sveho pomocnika
@@ -573,6 +592,9 @@ void Game::killed(int id)
             active_player = i;
         }
     }
+
+    //konec duelu
+    duel_active_turn = false;
 }
 void Game::resolve_notai_play()
 {
