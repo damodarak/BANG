@@ -348,7 +348,7 @@ void MainWindow::PaintLayout()
     ui->mode->setText(ModeToText(g->mode));
     if(g->neu_turn != -1)
     {
-        ui->neu->setText(QString::fromStdString(GameTools::id_to_name(g, g->game_order[g->active_player]->target_id)));
+        ui->neu->setText(QString::fromStdString(GameTools::id_to_name(g, g->game_order[g->neu_turn]->id)));
     }
 
     //EMPORIO
@@ -608,6 +608,6 @@ void MainWindow::on_choose_e_activated(int index)
 void MainWindow::on_react_clicked()
 {    
     //AI reaguje na kartu notAI
-    g->ai_react();
+    g->resolve_played_card();
     PaintLayout();
 }

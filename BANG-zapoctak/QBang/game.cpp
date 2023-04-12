@@ -422,7 +422,10 @@ void Game::resolve_played_card()
         if(neu_turn == -1)
         {
             neu_turn = active_player;
-            GameTools::load_emporio(this);
+            if(emporio.size() == 0)
+            {
+                GameTools::load_emporio(this);
+            }
             return;
         }
         if(neu_turn != -1 && !game_order[neu_turn]->isai)
@@ -450,6 +453,7 @@ void Game::resolve_played_card()
         {
             vedle = false;
             game_order[pos]->barel = 0;
+            game_order[pos]->played_vedle = 0;
         }
         else
         {
@@ -500,6 +504,7 @@ void Game::resolve_played_card()
         {
             slab_vedle = false;
             game_order[pos]->barel = 0;
+            game_order[pos]->played_vedle = 0;
         }
         else
         {
@@ -691,118 +696,6 @@ void Game::resolve_notai_play()
     }
 
     set_distances();
-}
-void Game::ai_react()
-{
-    //resolve_played_card();
-
-    // podminky jsou samopopisujici
-    if(mode == DUEL)
-    {
-        int enemy_id = game_order[active_player]->target_id;
-        int pos = GameTools::id_to_pos(this, enemy_id);
-        bool result = game_order[pos]->play_bang();
-
-        if(!result)
-        {
-            bool hp = game_order[pos]->dec_hp(1);
-            if(!hp)
-            {
-                killed(game_order[pos]->id);
-            }
-            mode = NONE;
-            duel_active_turn = false;
-            return;
-        }
-        else
-        {
-            duel_active_turn = !duel_active_turn;
-        }
-    }
-    else if(mode == BANG || mode == VEDLE)
-    {
-        int enemy_id = game_order[active_player]->target_id;
-        int pos = GameTools::id_to_pos(this, enemy_id);
-        bool vedle = game_order[pos]->play_vedle();
-        if(!vedle)
-        {
-            bool hp = game_order[pos]->dec_hp(1);
-            if(!hp)
-            {
-                killed(enemy_id);
-            }
-        }
-        mode = NONE;
-    }
-    else if(mode == SLAB)
-    {
-        int enemy_id = game_order[active_player]->target_id;
-        int pos = GameTools::id_to_pos(this, enemy_id);
-        bool slab_vedle = game_order[pos]->resolve_slab_bang();
-        if(!slab_vedle)
-        {
-            bool hp = game_order[pos]->dec_hp(1);
-            if(!hp)
-            {
-                killed(enemy_id);
-            }
-        }
-        mode = NONE;
-    }
-    else if(mode == EMPORIO)
-    {
-        int choice = game_order[neu_turn]->choose(emporio);
-        game_order[neu_turn]->cards_hand.push_back(emporio[choice]);
-        emporio.erase(emporio.begin() + choice);
-
-        neu_turn = (neu_turn + 1) % player_alive;
-        if(active_player == neu_turn)
-        {
-            mode = NONE;
-            neu_turn = -1;
-        }
-    }
-    else if(mode == INDIANI)
-    {
-        bool bang = game_order[neu_turn]->play_bang();
-        int react = neu_turn;
-        neu_turn = (neu_turn + 1) % player_alive;
-        if(active_player == neu_turn)
-        {
-            mode = NONE;
-            neu_turn = -1;
-        }
-
-        if(!bang)
-        {
-            bool hp = game_order[react]->dec_hp(1);
-            if(!hp)
-            {
-                killed(game_order[react]->id);
-            }
-        }
-    }
-    else if(mode == KULOMET)
-    {
-        bool vedle = game_order[neu_turn]->play_vedle();
-        int react = neu_turn;
-        neu_turn = (neu_turn + 1) % player_alive;
-        if(active_player == neu_turn)
-        {
-            mode = NONE;
-            neu_turn = -1;
-        }
-
-        if(!vedle)
-        {
-            bool hp = game_order[react]->dec_hp(1);
-            if(!hp)
-            {
-
-                killed(game_order[react]->id);
-            }
-        }
-    }
 }
 bool Game::can_respond_with_card(string name)
 {

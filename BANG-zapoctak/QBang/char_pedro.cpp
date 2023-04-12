@@ -42,7 +42,6 @@ void Pedro::ability()
 {
     if(g->game_order[g->active_player]->isai || drawed || g->mode != NONE)
     {
-        ability_used = true;
         return;
     }
     cards_hand.push_back(g->draw_from_deck());

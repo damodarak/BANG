@@ -32,7 +32,6 @@ public:
     void resolve_played_card();//mode != ""
     void killed(int id);//odstani mrtveho hrace z game_order a zmeni hodnoty pro beh hry
     void resolve_notai_play();
-    void ai_react();
     bool can_respond_with_card(std::string name);
     void resolve_notai_react(size_t c_index);
 
