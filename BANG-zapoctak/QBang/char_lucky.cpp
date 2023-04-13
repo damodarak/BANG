@@ -12,7 +12,7 @@ bool Lucky::resolve_dyn()
 
 	Card c1 = g->draw_from_deck();
 	Card c2 = g->draw_from_deck();
-	if (!(c1.rank >= 2 && c1.rank <= 9 && c1.suit == "Piky"))
+    if (!(c1.rank >= 2 && c1.rank <= 9 && c1.suit == PIKY))
 	{
 		g->deck.push_back(c2);
 		g->deck.push_back(c1);	
@@ -32,7 +32,7 @@ bool Lucky::resolve_dyn()
 
 		return false;
 	}
-	else if (!(c2.rank >= 2 && c2.rank <= 9 && c2.suit == "Piky"))
+    else if (!(c2.rank >= 2 && c2.rank <= 9 && c2.suit == PIKY))
 	{
         g->deck.push_back(c1);
         g->deck.push_back(c2);
@@ -76,13 +76,13 @@ bool Lucky::resolve_jail()
     Card c2 = g->draw_from_deck();
     g->deck.push_back(cards_desk[Ai::index_name(cards_desk, VEZENI)]);
     cards_desk.erase(cards_desk.begin() + Ai::index_name(cards_desk, VEZENI));
-	if (c1.suit == "Srdce")
+    if (c1.suit == SRDCE)
 	{
 		g->deck.push_back(c2);
 		g->deck.push_back(c1);	
 		return true;
 	}
-	else if (c2.suit == "Srdce")
+    else if (c2.suit == SRDCE)
 	{
 		g->deck.push_back(c1);
         g->deck.push_back(c2);
@@ -105,13 +105,13 @@ bool Lucky::resolve_barrel()
 
     Card c1 = g->draw_from_deck();
     Card c2 = g->draw_from_deck();
-    if (c1.suit == "Srdce")
+    if (c1.suit == SRDCE)
     {
         g->deck.push_back(c2);
         g->deck.push_back(c1);
         return true;
     }
-    else if (c2.suit == "Srdce")
+    else if (c2.suit == SRDCE)
     {
         g->deck.push_back(c1);
         g->deck.push_back(c2);

@@ -9,7 +9,7 @@ bool Cringo::dec_hp(int lifes)
     {
         for(size_t i = 0; i < cards_hand.size(); i++)
         {
-            if(cards_hand[i].name == "Pivo")
+            if(cards_hand[i].mode == PIVO)
             {
                 beers++;
             }

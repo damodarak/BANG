@@ -88,7 +88,7 @@ bool Ai::can_play_panika(Game* g, int id, int enemy_id)
     return g->distances.find(id)->second[enemy_id] + gun <= 1;
 }
 
-bool Ai::play_neu(Game *g, const std::string &name)
+bool Ai::play_neu(Game *g, int name)
 {
     //ma-li AI zahrat neutralni kartu?
     int s = 0;
@@ -115,7 +115,7 @@ bool Ai::play_neu(Game *g, const std::string &name)
         }
     }
 
-    if(name == "Hokynarstvi" || name == "Salon")
+    if(name == HOKYNARSTVI || name == SALON)
     {
         switch(g->game_order[g->active_player]->role)
         {
@@ -213,7 +213,7 @@ bool Ai::panika_balou_play(Game *g, int enemy_id)
 void Ai::cringo_abil(Game *g)
 {
     int cringo_pos = -1;
-    int cringo_ranking = 16;
+    int cringo_ranking = 15;
 
     for(size_t i = 0; i < g->game_order.size(); i++)
     {

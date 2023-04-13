@@ -86,7 +86,7 @@ int Player::game_phase()
             //nasadit novou
             cards_desk.push_back(cards_hand[i]);
             cards_hand.erase(cards_hand.begin() + i);
-            if(cards_desk.back().name == "Volcanic")
+            if(cards_desk.back().mode == VOLCANIC)
             {
                 played_bang = false;
             }
@@ -101,11 +101,11 @@ int Player::game_phase()
         }
 
         //neutralni karty: hokynarstvi, salon, kulomet, indiani
-        else if(cards_hand[i].card_type == NEU && Ai::play_neu(g, cards_hand[i].name))
+        else if(cards_hand[i].card_type == NEU && Ai::play_neu(g, cards_hand[i].mode))
         {
            g->deck.push_back(cards_hand[i]);
            cards_hand.erase(cards_hand.begin() + i);
-           if(g->deck.back().name == "Salon")
+           if(g->deck.back().mode == SALON)
            {
                GameTools::saloon(g);
                return 2;
@@ -116,8 +116,8 @@ int Player::game_phase()
         //agro
         else if(cards_hand[i].card_type == AGR && cards_hand[i].edge != 'M' && enemies_id.size() != 0)
         {
-            string name = cards_hand[i].name;
-            if(name == "Duel")
+            int name = cards_hand[i].mode;
+            if(name == DUEL)
             {
                 target_id = *enemies_id.begin();
                 g->deck.push_back(cards_hand[i]);
@@ -125,7 +125,7 @@ int Player::game_phase()
                 g->duel_active_turn = false;
                 return 1;
             }
-            if(name == "CatBalou")
+            if(name == BALOU)
             {
                 for(auto p : enemies_id)
                 {
@@ -138,7 +138,7 @@ int Player::game_phase()
                     }
                 }
             }
-            if(name == "Bang" && !played_bang)
+            if(name == BANG && !played_bang)
             {
                 for(size_t j = 0; j < g->game_order.size(); j++)
                 {
@@ -154,7 +154,7 @@ int Player::game_phase()
                     }
                 }
             }
-            if(name == "Panika")
+            if(name == PANIKA)
             {
                 for(size_t j = 0; j < g->game_order.size(); j++)
                 {
@@ -212,7 +212,7 @@ bool Player::resolve_jail()
     }
 
     Card c = g->draw_from_deck();
-    bool result = (c.suit == "Srdce" ? true : false);
+    bool result = (c.suit == SRDCE ? true : false);
     g->deck.push_back(c);
     g->deck.push_back(cards_desk[Ai::index_name(cards_desk, VEZENI)]);
     cards_desk.erase(cards_desk.begin() + Ai::index_name(cards_desk, VEZENI));
@@ -227,7 +227,7 @@ bool Player::resolve_dyn()
     }
 
     Card c = g->draw_from_deck();
-    bool result = (c.rank >= 2 && c.rank <= 9 && c.suit == "Piky" ? true : false);
+    bool result = (c.rank >= 2 && c.rank <= 9 && c.suit == PIKY ? true : false);
     g->deck.push_back(c);
 
 
@@ -263,7 +263,7 @@ bool Player::resolve_barrel()
         return false;
     }
     Card c = g->draw_from_deck();
-    bool result = (c.suit == "Srdce" ? true : false);
+    bool result = (c.suit == SRDCE ? true : false);
     g->deck.push_back(c);
     return result;
 }
@@ -342,7 +342,7 @@ bool Player::resolve_slab_bang()
     int hand_vedle = 0;
     for(size_t i = 0; i < cards_hand.size(); i++)
     {
-        if(cards_hand[i].name == "Vedle")
+        if(cards_hand[i].mode == VEDLE)
         {
             hand_vedle++;
         }
@@ -400,7 +400,7 @@ bool Player::dec_hp(int lifes)
     {
         for(size_t i = 0; i < cards_hand.size(); i++)
         {
-            if(cards_hand[i].name == "Pivo")
+            if(cards_hand[i].mode == PIVO)
             {
                 beers++;
             }
@@ -418,7 +418,8 @@ bool Player::dec_hp(int lifes)
 }
 string Player::file_loc()
 {
-    return ":/char_img/char_img/" + Names[ranking] + ".png";
+    string name = Names[ranking];
+    return ":/char_img/char_img/" + name + ".png";
 }
 string Player::role_loc()
 {
@@ -496,7 +497,7 @@ Card Player::give_random_card()
         Card c;
         c = cards_hand[i];
         cards_hand.erase(cards_hand.begin() + i);
-        if(c.name == "Dynamit")
+        if(c.mode == DYNAMIT)
         {
             c.dyn_active = false;
         }
@@ -507,7 +508,7 @@ Card Player::give_random_card()
         Card c;
         c = cards_desk[i - cards_hand.size()];
         cards_desk.erase(cards_desk.begin() + i - cards_hand.size());
-        if(c.name == "Dynamit")
+        if(c.mode == DYNAMIT)
         {
             c.dyn_active = false;
         }
@@ -579,6 +580,7 @@ int Player::choose(const std::vector<Card>& cards)
             return Ai::index_type(cards, NEU);
         }
     }
+    return 0;
 }
 void Player::set_target_id(const std::string& name)
 {

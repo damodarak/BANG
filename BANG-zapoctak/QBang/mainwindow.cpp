@@ -120,7 +120,6 @@ void MainWindow::Start(int players, const std::string& roles)
     delete g;
     g = new Game();
 
-    GameTools::load_characters(g, g->characters);
     LoadCards();
     g->create(players, roles);
     GameTools::rotate_serif(g);//serif na pozici 0 v g->game_order
@@ -430,9 +429,9 @@ void MainWindow::on_actionStart_7_triggered()
 }
 void MainWindow::on_play_clicked()
 {
-    std::string name = ui->choose_c->currentText().toStdString();
+    int i = ui->choose_c->currentIndex();
     //muzeme-li jako reakci na nejakou kartu zahrat tuto kartu
-    bool can_play = g->can_respond_with_card(name);
+    bool can_play = g->can_respond_with_card(i);
     if(g->mode != NONE)
     {
         if(can_play)
@@ -446,7 +445,6 @@ void MainWindow::on_play_clicked()
 
 
     g->game_order[g->notai]->drawed = true;
-    int i = ui->choose_c->currentIndex();
     int p = ui->choose_p->currentIndex();
     //nemuzeme zahrat kartu, ktera je polozena pred nama na stole
     if((size_t)i >= g->game_order[g->notai]->cards_hand.size())

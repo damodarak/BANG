@@ -17,7 +17,7 @@ string Card::file_loc()
 
 string Card::suit_loc()
 {
-    return ":/suits/suits/" + suit + ".png";
+    return ":/suits/suits/" + Suit_names[suit] + ".png";
 }
 
 //prevod cisla na hodnost karty

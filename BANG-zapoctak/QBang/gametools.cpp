@@ -4,7 +4,7 @@
 
 using namespace std;
 
-void GameTools::load_characters(Game* g, std::vector<Hrac>& characters)
+void GameTools::load_chars(Game* g, std::vector<Hrac>& characters)
 {
     //nacteni vsech moznych hracu
     Hrac pl = make_unique<Bart>(g);
@@ -53,7 +53,7 @@ void GameTools::load_characters(Game* g, std::vector<Hrac>& characters)
 void GameTools::load_card(Game *g, std::vector<std::string> &v)
 {
     string name = v[0];
-    string suit = v[1];
+    int suit = stoi(v[1]);
     int rank = stoi(v[2]);
     char edge = v[3][0];
     int id = stoi(v[4]);

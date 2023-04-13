@@ -32,7 +32,7 @@ public:
     void resolve_played_card();//mode != ""
     void killed(int id);//odstani mrtveho hrace z game_order a zmeni hodnoty pro beh hry
     void resolve_notai_play();
-    bool can_respond_with_card(std::string name);
+    bool can_respond_with_card(int index);
     void resolve_notai_react(size_t c_index);
 
 	std::deque<Card> deck;//front->draw, back->discard
@@ -47,10 +47,8 @@ public:
     int neu_turn;//mode == "Indiani"/"Kulomet"/"Hokynarstvi".....pokud zrovna neni zadny mode, tak neu_turn == -1
     bool duel_active_turn;//mode == "Duel"
     int active_player;//hrac, ktery je na tahu
-
-    friend class MainWindow;
 private:
-    std::vector<Hrac> characters;  
+    std::vector<Hrac> characters;
 };
 
 #endif

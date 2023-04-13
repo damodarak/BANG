@@ -82,7 +82,7 @@ bool Calamity::resolve_slab_bang()
     int hand_vedle_bang = 0;
     for(size_t i = 0; i < cards_hand.size(); i++)
     {
-        if(cards_hand[i].name == "Vedle" || cards_hand[i].name == "Bang")
+        if(cards_hand[i].mode == VEDLE || cards_hand[i].mode == BANG)
         {
             hand_vedle_bang++;
         }

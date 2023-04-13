@@ -14,7 +14,7 @@ typedef std::unique_ptr<Player> Hrac;
 class GameTools{
 
 public:
-    static void load_characters(Game* g, std::vector<Hrac>& characters);
+    static void load_chars(Game* g, std::vector<Hrac>& characters);
     static void load_card(Game* g, std::vector<std::string>& v);
     static void rm_enemy(Game* g, int id);//po smrti hrace odstranime jeho id ze vsech seznamu nepratel
     static void rotate_serif(Game* g);//serif je vzdy na pozici game_order[0]

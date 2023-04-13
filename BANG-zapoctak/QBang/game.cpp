@@ -16,6 +16,8 @@ Card Game::draw_from_deck()
 }
 void Game::create(int players, string roles)
 {
+    GameTools::load_chars(this, characters);
+
     player_alive = player_count = players;
     create_players(players - 1);
 
@@ -527,7 +529,7 @@ void Game::killed(int id)
     char role = game_order[pos]->role;
 
     //nekdo zabil banditu
-    if(role == 'B' && deck.back().name != "Dynamit" && mode != DUEL)
+    if(role == 'B' && deck.back().mode != DYNAMIT && mode != DUEL)
     {
         int bounty = 3;
         for(int i = 0; i < bounty; i++)
@@ -557,7 +559,7 @@ void Game::killed(int id)
         }
     }
     //Serif zabil sveho pomocnika
-    else if(role == 'V' && game_order[active_player]->role == 'S' && deck.back().name != "Dynamit")
+    else if(role == 'V' && game_order[active_player]->role == 'S' && deck.back().mode != DYNAMIT)
     {
         vector<Card> shame = game_order[active_player]->give_all_cards();
         for(size_t i = 0; i < shame.size(); i++)
@@ -600,14 +602,14 @@ void Game::resolve_notai_play()
             Card c = deck.back();
             deck.pop_back();
             game_order[active_player]->cards_desk.push_back(c);
-            if(c.name == "Volcanic")
+            if(c.mode == VOLCANIC)
             {
                 game_order[active_player]->played_bang = false;
             }
         }
     }
     //vezeni
-    else if(deck.back().name == "Vezeni")
+    else if(deck.back().mode == VEZENI)
     {
         if(pos != -1 && game_order[pos]->role != 'S'
                 && Ai::index_name(game_order[pos]->cards_desk, VEZENI) == -1)
@@ -629,17 +631,17 @@ void Game::resolve_notai_play()
         }
     }
     //dostavnik
-    else if(deck.back().name == "Dostavnik")
+    else if(deck.back().mode == DOSTAVNIK)
     {
         game_order[active_player]->dostavnik_wells(2);
     }
     //wellsfargo
-    else if(deck.back().name == "WellsFargo")
+    else if(deck.back().mode == WELLSFARGO)
     {
         game_order[active_player]->dostavnik_wells(3);
     }
     //pivo
-    else if(deck.back().name == "Pivo")
+    else if(deck.back().mode == PIVO)
     {
         if(game_order[active_player]->health < game_order[active_player]->max_health)
         {
@@ -649,7 +651,7 @@ void Game::resolve_notai_play()
     //neu
     else if(deck.back().card_type == NEU)
     {
-        if(deck.back().name == "Salon")
+        if(deck.back().mode == SALON)
         {
             GameTools::saloon(this);
         }
@@ -668,7 +670,7 @@ void Game::resolve_notai_play()
         }
     }
     //Cat Balou
-    else if(deck.back().name == "CatBalou")
+    else if(deck.back().mode == BALOU)
     {
         if(pos != -1 && Ai::panika_balou_play(this, enemy))
         {
@@ -677,7 +679,7 @@ void Game::resolve_notai_play()
         }
     }
     //Panika
-    else if(deck.back().name == "Panika")
+    else if(deck.back().mode == PANIKA)
     {
         if(pos != -1 && Ai::panika_balou_play(this, enemy) &&
             Ai::can_play_panika(this, game_order[active_player]->id, enemy))
@@ -691,15 +693,10 @@ void Game::resolve_notai_play()
               ((Modes)deck.back().mode == VEDLE && (Chars)game_order[active_player]->ranking == CALAMITY)) &&
             !game_order[active_player]->played_bang &&
             distances.find(game_order[active_player]->id)->second[enemy] <= 1)
-    {
-        if((Chars)game_order[active_player]->ranking == WILLY || Ai::has_gun(game_order[active_player]->cards_desk) == 1)
-        {
-            game_order[active_player]->played_bang = false;
-        }
-        else
-        {
-            game_order[active_player]->played_bang = true;
-        }
+    { 
+       game_order[active_player]->played_bang = !((Chars)game_order[active_player]->ranking == WILLY ||
+                                                   Ai::has_gun(game_order[active_player]->cards_desk) == 1);
+
         mode = ((Chars)game_order[active_player]->ranking == SLAB) ? SLAB_BANG : BANG;
     }
     else if((Modes)deck.back().mode == DUEL)
@@ -710,37 +707,41 @@ void Game::resolve_notai_play()
 
     set_distances();
 }
-bool Game::can_respond_with_card(string name)
+bool Game::can_respond_with_card(int index)
 {
+    Card c = ((size_t)index >= game_order[notai]->cards_hand.size() ?
+    game_order[notai]->cards_desk[index - game_order[notai]->cards_hand.size()] :
+                  game_order[notai]->cards_hand[index]);
+
     if(mode == DUEL || mode == INDIANI)
     {
-        return name == "Bang" || ((Chars)game_order[notai]->ranking == CALAMITY && name == "Vedle");
+        return c.mode == BANG || ((Chars)game_order[notai]->ranking == CALAMITY && c.mode == VEDLE);
     }
     else if(mode == KULOMET)
     {
-        return name == "Vedle" || ((Chars)game_order[notai]->ranking == CALAMITY && name == "Bang") ||
-                (name == "Barel" && game_order[notai]->barel == 0);
+        return c.mode == VEDLE || ((Chars)game_order[notai]->ranking == CALAMITY && c.mode == BANG) ||
+                (c.mode == BAREL && game_order[notai]->barel == 0);
     }
     else if(mode == BANG || mode == VEDLE)
     {
-        return name == "Vedle" || ((Chars)game_order[notai]->ranking == CALAMITY && name == "Bang") ||
-                (name == "Barel" && game_order[notai]->barel == 0);
+        return c.mode == VEDLE || ((Chars)game_order[notai]->ranking == CALAMITY && c.mode == BANG) ||
+                (c.mode == BAREL && game_order[notai]->barel == 0);
     }
     else if(mode == SLAB_BANG)
     {
-        if(name == "Vedle")
+        if(c.mode == VEDLE)
         {
             return true;
         }
-        else if(game_order[notai]->barel == 0 && name == "Barel")
+        else if(game_order[notai]->barel == 0 && c.mode == BAREL)
         {
             return true;
         }
-        else if(name == "Barel" && game_order[notai]->barel < 2)
+        else if(c.mode == BAREL && game_order[notai]->barel < 2)
         {
             return true;
         }
-        else if((Chars)game_order[notai]->ranking == CALAMITY && name == "Bang")
+        else if((Chars)game_order[notai]->ranking == CALAMITY && c.mode == BANG)
         {
             return true;
         }
