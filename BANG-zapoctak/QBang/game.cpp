@@ -634,12 +634,12 @@ void Game::resolve_notai_play()
     //dostavnik
     else if(deck.back().mode == DOSTAVNIK)
     {
-        game_order[active_player]->dostavnik_wells(2);
+        GameTools::dostavnik_wells(this, active_player, 2);
     }
     //wellsfargo
     else if(deck.back().mode == WELLSFARGO)
     {
-        game_order[active_player]->dostavnik_wells(3);
+        GameTools::dostavnik_wells(this, active_player, 3);
     }
     //pivo
     else if(deck.back().mode == PIVO)

@@ -41,7 +41,6 @@ public:
     virtual bool resolve_slab_bang();//schopnost Slaba the Killera
     std::string file_loc();
     std::string role_loc();
-    void dostavnik_wells(int count);
     bool has_notai_ability();
     bool has_dyn();
     bool has_jail();

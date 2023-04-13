@@ -282,3 +282,31 @@ bool Ai::no_jourd_abil(Game *g, int barel)
     return ((Chars)g->game_order[g->active_player]->pd.ranking == SLAB && barel == 2) ||
            ((Chars)g->game_order[g->active_player]->pd.ranking != SLAB && barel == 1);
 }
+
+bool Ai::bang(int position, PlayerData& pd)
+{
+    Game* g = pd.g;
+
+    for(size_t j = 0; j < g->game_order.size(); j++)
+    {
+        if(pd.enemies_id.find(g->game_order[j]->id) != pd.enemies_id.end() &&
+            g->distances.find(g->game_order[position]->id)->second[g->game_order[j]->id] <= 1)
+        {
+            g->game_order[position]->target_id = g->game_order[j]->id;
+            pd.played_bang = (Ai::index_name(g->game_order[position]->cards_desk, VOLCANIC) != -1 ||
+                              pd.ranking == WILLY) ? false : true;
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Ai::beer(int position, Game *g)
+{
+    if(g->game_order[position]->health < g->game_order[position]->max_health)
+    {
+        g->game_order[position]->health++;
+        return true;
+    }
+    return false;
+}

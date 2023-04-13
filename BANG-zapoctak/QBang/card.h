@@ -36,7 +36,7 @@ public:
     std::string file_loc();
     std::string suit_loc();
     std::string rnk();
-    bool play(Game *g, int position, PlayerData& pd);
+    bool play(int position, PlayerData& pd);
 
 	int id;
 	std::string name;

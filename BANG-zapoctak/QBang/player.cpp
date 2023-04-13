@@ -1,5 +1,6 @@
 #include "game.h"
 #include "ai.h"
+#include "gametools.h"
 
 using namespace std;
 
@@ -38,14 +39,14 @@ int Player::game_phase()
         //Dostavnik, WellsFargo, Pivo, Vezeni, Dynamit
         if(pd.cards_hand[i].mode == DOSTAVNIK)
         {
-            dostavnik_wells(2);//lize si 2 karty
+            GameTools::dostavnik_wells(pd.g, pd.g->active_player, 2);//lize si 2 karty
             pd.g->deck.push_back(pd.cards_hand[i]);
             pd.cards_hand.erase(pd.cards_hand.begin() + i);
             return 2;
         }
         else if(pd.cards_hand[i].mode == WELLSFARGO)
         {
-            dostavnik_wells(3);//lize si 3 karty
+            GameTools::dostavnik_wells(pd.g, pd.g->active_player, 3);//lize si 3 karty
             pd.g->deck.push_back(pd.cards_hand[i]);
             pd.cards_hand.erase(pd.cards_hand.begin() + i);
             return 2;
@@ -365,15 +366,6 @@ bool Player::resolve_slab_bang()
         return true;
     }
     return false;
-}
-void Player::dostavnik_wells(int count)
-{
-    Card c;
-    for (int i = 0; i < count; i++)
-    {
-        c = pd.g->draw_from_deck();
-        pd.cards_hand.push_back(c);
-    }
 }
 bool Player::has_notai_ability()
 {

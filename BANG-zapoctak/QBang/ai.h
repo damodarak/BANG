@@ -3,9 +3,11 @@
 
 #include <vector>
 #include <string>
+#include <set>
 
 class Game;
 class Card;
+class PlayerData;
 
 class Ai {
 public:
@@ -24,6 +26,8 @@ public:
     static bool jesse_abil(Game* g);
     static bool no_pedro_abil(Game* g, int id);
     static bool no_jourd_abil(Game* g, int barel);
+    static bool bang(int position, PlayerData& pd);
+    static bool beer(int position, Game* g);
 
 private:
     //staticka trida

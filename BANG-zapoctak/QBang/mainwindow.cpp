@@ -433,6 +433,11 @@ void MainWindow::on_actionStart_7_triggered()
 void MainWindow::on_play_clicked()
 {
     int i = ui->choose_c->currentIndex();
+    //pokud hrajeme kartu, ktera potrebuje cil
+    if(i == -1)
+    {
+        return;
+    }
     //muzeme-li jako reakci na nejakou kartu zahrat tuto kartu
     bool can_play = g->can_respond_with_card(i);
     if(g->mode != NONE)
@@ -448,11 +453,6 @@ void MainWindow::on_play_clicked()
 
     //nemuzeme zahrat kartu, ktera je polozena pred nama na stole
     if((size_t)i >= g->game_order[g->notai]->hand_size())
-    {
-        return;
-    }
-    //pokud hrajeme kartu, ktera potrebuje cil
-    if(i == -1)
     {
         return;
     }

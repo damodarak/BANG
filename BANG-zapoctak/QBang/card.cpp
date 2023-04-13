@@ -1,4 +1,6 @@
 #include "game.h"
+#include "ai.h"
+
 #include <string>
 #include <cctype>
 
@@ -48,23 +50,26 @@ string Card::rnk()
     }
 }
 
-bool Card::play(Game *g, int position, PlayerData& pd)
+bool Card::play(int position, PlayerData& pd)
 {
     //karty s hnedym okrajem
     switch(mode)
     {
     case BANG:
-        break;
+        return Ai::bang(position, pd);
     case VEDLE:
-        break;
+        return Ai::bang(position, pd) && pd.ranking == CALAMITY;
     case PIVO:
-        break;
+        return Ai::beer(position, pd.g);
     case SALON:
-        break;
+        GameTools::saloon(pd.g);
+        return true;
     case WELLSFARGO:
-        break;
+
+        return true;
     case DOSTAVNIK:
-        break;
+
+        return true;
     case HOKYNARSTVI:
         break;
     case PANIKA:
@@ -77,8 +82,9 @@ bool Card::play(Game *g, int position, PlayerData& pd)
         break;
     case DUEL:
         break;
+    default:
+        return false;
     }
-    return false;
 }
 
 //DYNAMIT, VEZENI, BAREL, MUSTANG, APPALOOSA, VOLCANIC, SCHOFIELD, REMINGTON, CARABINE, WINCHESTER

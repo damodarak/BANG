@@ -181,3 +181,13 @@ string GameTools::id_to_name(Game* g, int id)
     }
     return "";
 }
+
+void GameTools::dostavnik_wells(Game *g, int position, int count)
+{
+    Card c;
+    for(int i = 0; i < count; i++)
+    {
+        c = g->draw_from_deck();
+        g->game_order[position]->take_card(c);
+    }
+}
