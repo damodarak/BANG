@@ -112,7 +112,7 @@ void MainWindow::AddLivePlayers()
             continue;
         }
         ui->choose_p->addItem(QIcon(QString::fromStdString(g->game_order[i]->file_loc())),
-                              QString::fromStdString(Names[g->game_order[i]->ranking]));
+                              QString::fromStdString(g->game_order[i]->say_name()));
     }
 }
 void MainWindow::Start(int players, const std::string& roles)
@@ -139,7 +139,7 @@ void MainWindow::SetButtons()
     ui->choose_e->setEnabled(false);
 
     //emporio
-    if(g->mode == HOKYNARSTVI && g->neu_turn != -1 && !g->game_order[g->neu_turn]->isai)
+    if(g->mode == HOKYNARSTVI && g->neu_turn != -1 && !g->game_order[g->neu_turn]->is_isai())
     {
         ui->choose_e->setEnabled(true);
         ui->play->setEnabled(false);
@@ -161,18 +161,18 @@ void MainWindow::SetButtons()
         ui->react->setEnabled(false);
     }
     //indiani, kulomet...notAI reaguje
-    else if(g->neu_turn != -1 && !g->game_order[g->neu_turn]->isai)
+    else if(g->neu_turn != -1 && !g->game_order[g->neu_turn]->is_isai())
     {
         //dovolit jen bang, vedle, pivo, barel, jourd
         ui->play->setEnabled(true);
-        ui->ability->setEnabled(g->game_order[g->notai]->has_notai_ability() && !g->game_order[g->notai]->ability_used);
+        ui->ability->setEnabled(g->game_order[g->notai]->has_notai_ability() && !g->game_order[g->notai]->can_abil());
         ui->draw->setEnabled(false);
         ui->react->setEnabled(false);
         ui->discard->setEnabled(false);
         ui->finish->setEnabled(true);
     }
     //hraje notAI, lize si na DYNAMIT
-    else if(!g->game_order[g->active_player]->isai && g->game_order[g->active_player]->has_dyn())
+    else if(!g->game_order[g->active_player]->is_isai() && g->game_order[g->active_player]->has_dyn())
     {
         ui->play->setEnabled(false);
         ui->finish->setEnabled(false);
@@ -182,7 +182,7 @@ void MainWindow::SetButtons()
         ui->react->setEnabled(false);
     }
     //hraje notAI, lize si na VEZENI
-    else if(!g->game_order[g->active_player]->isai && g->game_order[g->active_player]->has_jail())
+    else if(!g->game_order[g->active_player]->is_isai() && g->game_order[g->active_player]->has_jail())
     {
         ui->play->setEnabled(false);
         ui->finish->setEnabled(false);
@@ -192,17 +192,18 @@ void MainWindow::SetButtons()
         ui->react->setEnabled(false);
     }
     //hraje notAI
-    else if(!g->game_order[g->active_player]->isai && g->mode == NONE)
+    else if(!g->game_order[g->active_player]->is_isai() && g->mode == NONE)
     {
         ui->play->setEnabled(true);
         ui->finish->setEnabled(true);
         ui->discard->setEnabled(true);
-        ui->ability->setEnabled(g->game_order[g->active_player]->has_notai_ability() && !g->game_order[g->notai]->ability_used);
-        ui->draw->setEnabled(!g->game_order[g->notai]->drawed);
+        ui->ability->setEnabled(g->game_order[g->active_player]->has_notai_ability() &&
+                                !g->game_order[g->notai]->can_abil());
+        ui->draw->setEnabled(!g->game_order[g->notai]->can_draw());
         ui->react->setEnabled(false);
     }
     //AI bude reagovat na kartu od notAI
-    else if(!g->game_order[g->active_player]->isai && g->mode != NONE && !g->duel_active_turn)
+    else if(!g->game_order[g->active_player]->is_isai() && g->mode != NONE && !g->duel_active_turn)
     {
         ui->play->setEnabled(false);
         ui->finish->setEnabled(false);
@@ -215,7 +216,8 @@ void MainWindow::SetButtons()
     else if((g->mode == BANG || g->mode == VEDLE || g->mode == SLAB_BANG) && NotaiReact())
     {
         ui->play->setEnabled(true);
-        ui->ability->setEnabled(g->game_order[g->notai]->has_notai_ability() && !g->game_order[g->notai]->ability_used);
+        ui->ability->setEnabled(g->game_order[g->notai]->has_notai_ability() &&
+                                !g->game_order[g->notai]->can_abil());
         ui->draw->setEnabled(false);
         ui->react->setEnabled(false);
         ui->discard->setEnabled(false);
@@ -245,7 +247,7 @@ void MainWindow::SetButtons()
 bool MainWindow::NotaiReact()
 {
     //hraje-li notAI a ceka na reakci od AI
-    return !g->game_order[GameTools::id_to_pos(g, g->game_order[g->active_player]->target_id)]->isai;
+    return !g->game_order[GameTools::id_to_pos(g, g->game_order[g->active_player]->target_id)]->is_isai();
 }
 void MainWindow::FalseLabels()
 {
@@ -274,7 +276,7 @@ void MainWindow::AddLayoutIndexes()
     size_t count = g->game_order.size();
     for(; g->notai < count; g->notai++)
     {
-        if(!g->game_order[g->notai]->isai)
+        if(!g->game_order[g->notai]->is_isai())
         {
             break;
         }
@@ -297,9 +299,10 @@ bool MainWindow::NotAiDuelReact()
     }
 
 
-    return (g->game_order[g->active_player]->isai &&
-            !g->duel_active_turn && !g->game_order[GameTools::id_to_pos(g, g->game_order[g->active_player]->target_id)]->isai) ||
-           (!g->game_order[g->active_player]->isai && g->duel_active_turn);
+    return (g->game_order[g->active_player]->is_isai() &&
+            !g->duel_active_turn &&
+            !g->game_order[GameTools::id_to_pos(g, g->game_order[g->active_player]->target_id)]->is_isai()) ||
+           (!g->game_order[g->active_player]->is_isai() && g->duel_active_turn);
 }
 void MainWindow::PaintLayout()
 {
@@ -338,7 +341,7 @@ void MainWindow::PaintLayout()
 
     for(size_t i = 0; i < g->game_order.size(); i++)
     {
-        if(g->game_order[i]->isai)
+        if(g->game_order[i]->is_isai())
         {
             //AI
             qobject_cast<QGroupBox*>(layout[g->game_order[i]->layout_index][0]->parent()->parent())
@@ -347,7 +350,7 @@ void MainWindow::PaintLayout()
             SetLabel(layout[g->game_order[i]->layout_index][0], QString::fromStdString(g->game_order[i]->file_loc()));
             layout[g->game_order[i]->layout_index][1]->setText(QString::number(g->game_order[i]->health));
             SetLabel(layout[g->game_order[i]->layout_index][2], ":/cards/cards/back-playing.png");
-            layout[g->game_order[i]->layout_index][3]->setText(QString::number(g->game_order[i]->cards_hand.size()));
+            layout[g->game_order[i]->layout_index][3]->setText(QString::number(g->game_order[i]->hand_size()));
             SetLabel(layout[g->game_order[i]->layout_index][4], QString::fromStdString(g->game_order[i]->role_loc()));
 
             int start_index = 5;
@@ -359,9 +362,9 @@ void MainWindow::PaintLayout()
         else
         {
             //REAL PERSON CARDS
-            for(size_t j = 0; j < g->game_order[i]->cards_hand.size(); j++)
+            for(size_t j = 0; j < g->game_order[i]->hand_size(); j++)
             {
-                ui->choose_c->addItem(QIcon(QString::fromStdString(g->game_order[i]->cards_hand[j].file_loc())), QString::fromStdString(g->game_order[i]->cards_hand[j].name));
+                ui->choose_c->addItem(QIcon(QString::fromStdString(g->game_order[i]->card_hand_loc(j))), QString::fromStdString(g->game_order[i]->card_hand_name(j)));
             }
             for(size_t j = 0; j < g->game_order[i]->cards_desk.size(); j++)
             {
@@ -373,7 +376,7 @@ void MainWindow::PaintLayout()
             layout[g->game_order[i]->layout_index][1]->setText(QString::number(g->game_order[i]->health));
             SetLabel(layout[g->game_order[i]->layout_index][2], QString::fromStdString(g->game_order[i]->role_loc()));
 
-            size_t cards = g->game_order[i]->cards_hand.size();
+            size_t cards = g->game_order[i]->hand_size();
             if(cards > 10)
             {
                 cards = 10;
@@ -382,7 +385,7 @@ void MainWindow::PaintLayout()
             int start_index = 9;
             for(size_t j = 0; j < cards; j++)
             {
-                SetLabel(layout[g->game_order[i]->layout_index][j + start_index], QString::fromStdString(g->game_order[i]->cards_hand[j].file_loc()));
+                SetLabel(layout[g->game_order[i]->layout_index][j + start_index], QString::fromStdString(g->game_order[i]->card_hand_loc(j)));
             }
 
             start_index = 3;
@@ -395,7 +398,7 @@ void MainWindow::PaintLayout()
     //mrtvym hracum se jenom zobrazi postava, role v pripade AI oznameni, ze jsou mrtvi
     for(size_t i = 0; i < g->dead.size(); i++)
     {
-        if(g->dead[i]->isai)
+        if(g->dead[i]->is_isai())
         {
             SetLabel(layout[g->dead[i]->layout_index][0], QString::fromStdString(g->dead[i]->file_loc()));
             SetLabel(layout[g->dead[i]->layout_index][4], QString::fromStdString(g->dead[i]->role_loc()));
@@ -443,20 +446,18 @@ void MainWindow::on_play_clicked()
         return;
     }
 
-
-    g->game_order[g->notai]->drawed = true;
-    int p = ui->choose_p->currentIndex();
     //nemuzeme zahrat kartu, ktera je polozena pred nama na stole
-    if((size_t)i >= g->game_order[g->notai]->cards_hand.size())
+    if((size_t)i >= g->game_order[g->notai]->hand_size())
     {
         return;
     }
     //pokud hrajeme kartu, ktera potrebuje cil
-    if(i == -1 || (g->game_order[g->notai]->cards_hand[i].need_target() && p == -1))
+    if(i == -1)
     {
         return;
     }
-    Ai::discard_card(g, g->game_order[g->notai]->cards_hand, g->game_order[g->notai]->cards_desk, i);
+    PlayerData& info = g->game_order[g->notai]->data();
+    Ai::discard_card(g, info.cards_hand, g->game_order[g->notai]->cards_desk, i);
     g->game_order[g->notai]->set_target_id(ui->choose_p->currentText().toStdString());
     g->game_loop();
     PaintLayout();
@@ -495,29 +496,28 @@ void MainWindow::on_draw_clicked()
         }
     }
 
-    g->game_order[g->notai]->drawed = true;
     g->game_order[g->notai]->draw_phase();
     PaintLayout();
 }
 void MainWindow::on_discard_clicked()
 {
-    g->game_order[g->notai]->drawed = true;
     int i = ui->choose_c->currentIndex();
     if(i == -1)
     {
         return;
     }
-    Ai::discard_card(g, g->game_order[g->notai]->cards_hand, g->game_order[g->notai]->cards_desk, i);
+    PlayerData& info = g->game_order[g->notai]->data();
+    Ai::discard_card(g, info.cards_hand, g->game_order[g->notai]->cards_desk, i);
 
     //pokud Sir Ketchum vyhodi 2 karty muze si dobyt 1 zivot, jeho schopnost
-    g->game_order[g->notai]->discarded++;
+    g->game_order[g->notai]->discarded();
     PaintLayout();
 }
 void MainWindow::on_finish_clicked()
 {
     //nemuzeme ukoncit tah jestli mame v ruce vice karet nez zivotu
-    if(!g->game_order[g->active_player]->isai &&
-        g->game_order[g->active_player]->cards_hand.size() <= (size_t)g->game_order[g->active_player]->health &&
+    if(!g->game_order[g->active_player]->is_isai() &&
+        g->game_order[g->active_player]->hand_size() <= (size_t)g->game_order[g->active_player]->health &&
             g->mode == NONE)
     {
         g->game_order[g->active_player]->turn_reset();
@@ -525,7 +525,7 @@ void MainWindow::on_finish_clicked()
         PaintLayout();
         return;
     }
-    else if(!g->game_order[g->active_player]->isai && g->mode == NONE)
+    else if(!g->game_order[g->active_player]->is_isai() && g->mode == NONE)
     {
         PaintLayout();
         return;
@@ -552,7 +552,7 @@ void MainWindow::on_choose_e_activated(int index)
     {
         Card c = g->emporio[index];
         g->emporio.erase(g->emporio.begin() + index);
-        g->game_order[g->notai]->cards_hand.push_back(c);
+        g->game_order[g->notai]->take_card(c);
         if(g->emporio.size() == 1)
         {
             g->emporio.clear();
@@ -566,7 +566,7 @@ void MainWindow::on_choose_e_activated(int index)
     //notAI si vybral kartu z hokynarstvi
     Card c = g->emporio[index];
     g->emporio.erase(g->emporio.begin() + index);
-    g->game_order[g->neu_turn]->cards_hand.push_back(c);
+    g->game_order[g->neu_turn]->take_card(c);
 
     g->neu_turn = (g->neu_turn + 1) % g->player_alive;
     if(g->active_player == g->neu_turn)

@@ -4,33 +4,33 @@
 void Pedro::draw_phase()
 {
     //pokud zbyva posledni hrac mimo nas tak ho pridame na seznam nepratel
-    if(g->game_order.size() == 2)
+    if(pd.g->game_order.size() == 2)
     {
-        enemies_id.insert(g->game_order[(g->active_player + 1) % 2]->id);
+        pd.enemies_id.insert(pd.g->game_order[(pd.g->active_player + 1) % 2]->id);
     }
     //Kdyby nahodou si tam pomocnik serifa dal serifa
-    if(role == 'V' && enemies_id.find(g->game_order[0]->id) != enemies_id.end())
+    if(pd.role == 'V' && pd.enemies_id.find(pd.g->game_order[0]->id) != pd.enemies_id.end())
     {
-        enemies_id.erase(enemies_id.find(g->game_order[0]->id));
+        pd.enemies_id.erase(pd.enemies_id.find(pd.g->game_order[0]->id));
     }
 
-    ability_used = true;
-    drawed = true;
+    pd.ability_used = true;
+    pd.drawed = true;
 
     //zjistujeme jestli nas zajima dana karta nebo jestli nam nepomuze ze situace
-    if(g->deck.back().mode == DOSTAVNIK || g->deck.back().mode == WELLSFARGO)
+    if(pd.g->deck.back().mode == DOSTAVNIK || pd.g->deck.back().mode == WELLSFARGO)
     {
-        cards_hand.push_back(g->draw_from_deck());
-        cards_hand.push_back(g->deck.back());
-        g->deck.pop_back();
+        pd.cards_hand.push_back(pd.g->draw_from_deck());
+        pd.cards_hand.push_back(pd.g->deck.back());
+        pd.g->deck.pop_back();
         return;
     }
-    else if((health > max_health / 2 && g->deck.back().card_type == AGR) ||
-            (health <= max_health / 2 && g->deck.back().card_type == DEF))
+    else if((health > max_health / 2 && pd.g->deck.back().card_type == AGR) ||
+            (health <= max_health / 2 && pd.g->deck.back().card_type == DEF))
     {
-        cards_hand.push_back(g->draw_from_deck());
-        cards_hand.push_back(g->deck.back());
-        g->deck.pop_back();
+        pd.cards_hand.push_back(pd.g->draw_from_deck());
+        pd.cards_hand.push_back(pd.g->deck.back());
+        pd.g->deck.pop_back();
         return;
     }
     else
@@ -41,13 +41,13 @@ void Pedro::draw_phase()
 
 void Pedro::ability()
 {
-    if(Ai::no_pedro_abil(g, id))
+    if(Ai::no_pedro_abil(pd.g, id))
     {
         return;
     }
-    cards_hand.push_back(g->draw_from_deck());
-    cards_hand.push_back(g->deck.back());
-    g->deck.pop_back();
-    ability_used = true;
-    drawed = true;
+    pd.cards_hand.push_back(pd.g->draw_from_deck());
+    pd.cards_hand.push_back(pd.g->deck.back());
+    pd.g->deck.pop_back();
+    pd.ability_used = true;
+    pd.drawed = true;
 }

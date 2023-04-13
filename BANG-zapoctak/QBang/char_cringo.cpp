@@ -7,9 +7,9 @@ bool Cringo::dec_hp(int lifes)
     int beers = 0;
     if(health <= 0)
     {
-        for(size_t i = 0; i < cards_hand.size(); i++)
+        for(size_t i = 0; i < pd.cards_hand.size(); i++)
         {
-            if(cards_hand[i].mode == PIVO)
+            if(pd.cards_hand[i].mode == PIVO)
             {
                 beers++;
             }
@@ -18,7 +18,7 @@ bool Cringo::dec_hp(int lifes)
         {
             while(health <= 0)
             {
-                Ai::discard_card(g, cards_hand, cards_desk, Ai::index_name(cards_hand, PIVO));
+                Ai::discard_card(pd.g, pd.cards_hand, cards_desk, Ai::index_name(pd.cards_hand, PIVO));
                 health++;
             }
         }
@@ -26,9 +26,9 @@ bool Cringo::dec_hp(int lifes)
 
 
     //je-li nekym zasazen, tak si od neho vezme kartu z ruky
-    if(g->mode == BANG || g->mode == VEDLE || g->mode == SLAB_BANG)
+    if(pd.g->mode == BANG || pd.g->mode == VEDLE || pd.g->mode == SLAB_BANG)
     {
-        Ai::cringo_abil(g);
+        Ai::cringo_abil(pd.g);
     }
 
 

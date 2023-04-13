@@ -43,9 +43,9 @@ bool Suzy::resolve_slab_bang()
 }
 void Suzy::ability()
 {
-    if(0 == cards_hand.size())
+    if(0 == pd.cards_hand.size())
     {
-        cards_hand.push_back(g->draw_from_deck());
+        pd.cards_hand.push_back(pd.g->draw_from_deck());
     }
 }
 

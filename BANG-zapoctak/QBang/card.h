@@ -5,6 +5,9 @@
 #include <vector>
 #include <climits>
 
+class Game;
+class PlayerData;
+
 enum Modes {NONE, BANG, VEDLE, PIVO, SALON, WELLSFARGO, DOSTAVNIK,
              HOKYNARSTVI, PANIKA, BALOU, INDIANI, KULOMET, DUEL, DYNAMIT,
              VEZENI, BAREL, MUSTANG, APPALOOSA, VOLCANIC, SCHOFIELD,
@@ -33,7 +36,7 @@ public:
     std::string file_loc();
     std::string suit_loc();
     std::string rnk();
-    bool need_target();
+    bool play(Game *g, int position, PlayerData& pd);
 
 	int id;
 	std::string name;

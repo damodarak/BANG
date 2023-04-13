@@ -50,7 +50,7 @@ void GameTools::load_chars(Game* g, std::vector<Hrac>& characters)
     }
 }
 
-void GameTools::load_card(Game *g, std::vector<std::string> &v)
+void GameTools::load_card(Game* g, std::vector<std::string> &v)
 {
     string name = v[0];
     int suit = stoi(v[1]);
@@ -71,22 +71,22 @@ void GameTools::load_card(Game *g, std::vector<std::string> &v)
     shuffle(begin(g->deck), end(g->deck), rng);//pro nahodny vyber karet
 }
 
-void GameTools::rm_enemy(Game *g, int id)
+void GameTools::rm_enemy(Game* g, int id)
 {
     //kdykoli nekdo umre, tak nema smysl uchovavat tohoto hrace v seznamu nepratel
 
     for(size_t i = 0; i <g->game_order.size(); i++)
     {
-        if(g->game_order[i]->enemies_id.find(id) != g->game_order[i]->enemies_id.end())
+        if(g->game_order[i]->pd.enemies_id.find(id) != g->game_order[i]->pd.enemies_id.end())
         {
-            g->game_order[i]->enemies_id.erase(id);
+            g->game_order[i]->pd.enemies_id.erase(id);
         }
     }
 }
 
-void GameTools::rotate_serif(Game *g)
+void GameTools::rotate_serif(Game* g)
 {
-    while (g->game_order[0]->role != 'S')
+    while (g->game_order[0]->say_role() != 'S')
     {
         rotate(g->game_order.begin(), g->game_order.begin() + 1, g->game_order.end());
     }
@@ -94,7 +94,7 @@ void GameTools::rotate_serif(Game *g)
     g->active_player = 0;
 }
 
-void GameTools::saloon(Game *g)
+void GameTools::saloon(Game* g)
 {
     //vsem +1 zivot, pokud jiz nemaji max. pocet
     for(size_t i = 0; i < g->game_order.size(); i++)
@@ -106,11 +106,11 @@ void GameTools::saloon(Game *g)
     }
 }
 
-void GameTools::set_notai(Game *g)
+void GameTools::set_notai(Game* g)
 {
     for(size_t i = 0; i < g->game_order.size(); i++)
     {
-        if(!g->game_order[i]->isai)
+        if(!g->game_order[i]->pd.isai)
         {
             g->notai = i;
             return;
@@ -119,7 +119,7 @@ void GameTools::set_notai(Game *g)
     g->notai = 0;
 }
 
-void GameTools::load_emporio(Game *g)
+void GameTools::load_emporio(Game* g)
 {
     //byla zahrana karta Hokynarstvi
     for(size_t i = 0; i < g->game_order.size(); i++)
@@ -128,7 +128,7 @@ void GameTools::load_emporio(Game *g)
     }
 }
 
-int GameTools::id_to_pos(Game *g, int id)
+int GameTools::id_to_pos(Game* g, int id)
 {
     for(size_t i = 0; i < g->game_order.size(); i++)
     {
@@ -140,13 +140,13 @@ int GameTools::id_to_pos(Game *g, int id)
     return -1;
 }
 
-void GameTools::suzy_abil(Game *g)
+void GameTools::suzy_abil(Game* g)
 {
     int suzy_ranking = 14;
 
     for(size_t i = 0; i < g->game_order.size(); i++)
     {
-        if(g->game_order[i]->ranking == suzy_ranking)
+        if(g->game_order[i]->pd.ranking == suzy_ranking)
         {
             g->game_order[i]->ability();
             return;
@@ -154,19 +154,19 @@ void GameTools::suzy_abil(Game *g)
     }
 }
 
-size_t GameTools::hand_size(Game *g, int id)
+size_t GameTools::hand_size(Game* g, int id)
 {
     for(size_t i = 0; i < g->game_order.size(); i++)
     {
         if(g->game_order[i]->id == id)
         {
-            return g->game_order[i]->cards_hand.size();
+            return g->game_order[i]->pd.cards_hand.size();
         }
     }
     return 0;
 }
 
-string GameTools::id_to_name(Game *g, int id)
+string GameTools::id_to_name(Game* g, int id)
 {
     if(id == -1)
     {
@@ -176,7 +176,7 @@ string GameTools::id_to_name(Game *g, int id)
     {
         if(g->game_order[i]->id == id)
         {
-            return Names[g->game_order[i]->ranking];
+            return Names[g->game_order[i]->pd.ranking];
         }
     }
     return "";

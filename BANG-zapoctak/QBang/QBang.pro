@@ -51,7 +51,8 @@ HEADERS += \
     game.h \
     gametools.h \
     mainwindow.h \
-    player.h
+    player.h \
+    player_data.h
 
 FORMS += \
     mainwindow.ui

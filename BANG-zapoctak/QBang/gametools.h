@@ -10,7 +10,6 @@ class Game;
 
 typedef std::unique_ptr<Player> Hrac;
 
-
 class GameTools{
 
 public:
@@ -21,11 +20,10 @@ public:
     static void saloon(Game* g);//vsem prida zivot, je-li to mozne
     static void set_notai(Game* g);
     static void load_emporio(Game* g);
-    static int id_to_pos(Game*g, int id);
-    static void suzy_abil(Game*g);
+    static int id_to_pos(Game* g, int id);
+    static void suzy_abil(Game* g);
     static size_t hand_size(Game* g, int id);
     static std::string id_to_name(Game* g, int id);
-
 private:
     //staticka trida
     GameTools() {}

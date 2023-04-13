@@ -4,17 +4,17 @@
 int Calamity::game_phase()
 {
     int result = Player::game_phase();
-    if(!played_bang && Ai::index_name(cards_hand, VEDLE) != -1 && result == 0)
+    if(!pd.played_bang && Ai::index_name(pd.cards_hand, VEDLE) != -1 && result == 0)
     {
-        for(size_t i = 0; i < g->game_order.size(); i++)
+        for(size_t i = 0; i < pd.g->game_order.size(); i++)
         {
-            if(enemies_id.find(g->game_order[i]->id) != enemies_id.end() &&
-                g->distances.find(id)->second[g->game_order[i]->id] <= 1)
+            if(pd.enemies_id.find(pd.g->game_order[i]->id) != pd.enemies_id.end() &&
+                pd.g->distances.find(id)->second[pd.g->game_order[i]->id] <= 1)
             {
-                target_id = g->game_order[i]->id;
-                g->deck.push_back(cards_hand[Ai::index_name(cards_hand, VEDLE)]);
-                cards_hand.erase(cards_hand.begin() + Ai::index_name(cards_hand, VEDLE));
-                played_bang = true;
+                target_id = pd.g->game_order[i]->id;
+                pd.g->deck.push_back(pd.cards_hand[Ai::index_name(pd.cards_hand, VEDLE)]);
+                pd.cards_hand.erase(pd.cards_hand.begin() + Ai::index_name(pd.cards_hand, VEDLE));
+                pd.played_bang = true;
                 return 1;
             }
         }
@@ -28,10 +28,10 @@ bool Calamity::play_bang()
 
     if(!res)
     {
-        if(Ai::index_name(cards_hand, VEDLE) != -1)
+        if(Ai::index_name(pd.cards_hand, VEDLE) != -1)
         {
             res = true;
-            Ai::discard_card(g, cards_hand, cards_desk, Ai::index_name(cards_hand, VEDLE));
+            Ai::discard_card(pd.g, pd.cards_hand, cards_desk, Ai::index_name(pd.cards_hand, VEDLE));
         }
     }
 
@@ -44,10 +44,10 @@ bool Calamity::play_vedle()
 
     if(!res)
     {
-        if(Ai::index_name(cards_hand, BANG) != -1)
+        if(Ai::index_name(pd.cards_hand, BANG) != -1)
         {
             res = true;
-            Ai::discard_card(g, cards_hand, cards_desk, Ai::index_name(cards_hand, BANG));
+            Ai::discard_card(pd.g, pd.cards_hand, cards_desk, Ai::index_name(pd.cards_hand, BANG));
         }
     }
 
@@ -56,12 +56,12 @@ bool Calamity::play_vedle()
 
 bool Calamity::resolve_slab_bang()
 {
-    if(id != g->game_order[g->active_player]->id)
+    if(id != pd.g->game_order[pd.g->active_player]->id)
     {
-        enemies_id.insert(g->game_order[g->active_player]->id);
-        if(role == 'S')
+        pd.enemies_id.insert(pd.g->game_order[pd.g->active_player]->id);
+        if(pd.role == 'S')
         {
-            Ai::vice_add_enemy(g, g->game_order[g->active_player]->id);
+            Ai::vice_add_enemy(pd.g, pd.g->game_order[pd.g->active_player]->id);
         }
     }
 
@@ -80,9 +80,9 @@ bool Calamity::resolve_slab_bang()
     }
 
     int hand_vedle_bang = 0;
-    for(size_t i = 0; i < cards_hand.size(); i++)
+    for(size_t i = 0; i < pd.cards_hand.size(); i++)
     {
-        if(cards_hand[i].mode == VEDLE || cards_hand[i].mode == BANG)
+        if(pd.cards_hand[i].mode == VEDLE || pd.cards_hand[i].mode == BANG)
         {
             hand_vedle_bang++;
         }
@@ -93,13 +93,13 @@ bool Calamity::resolve_slab_bang()
     {
         while(vedle < 2)
         {
-            if(Ai::index_name(cards_hand, VEDLE) != -1)
+            if(Ai::index_name(pd.cards_hand, VEDLE) != -1)
             {
-                Ai::discard_card(g, cards_hand, cards_desk, Ai::index_name(cards_hand, VEDLE));
+                Ai::discard_card(pd.g, pd.cards_hand, cards_desk, Ai::index_name(pd.cards_hand, VEDLE));
             }
             else
             {
-                Ai::discard_card(g, cards_hand, cards_desk, Ai::index_name(cards_hand, VEDLE));
+                Ai::discard_card(pd.g, pd.cards_hand, cards_desk, Ai::index_name(pd.cards_hand, VEDLE));
             }
             vedle++;
         }

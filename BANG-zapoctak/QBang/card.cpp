@@ -1,4 +1,4 @@
-#include "card.h"
+#include "game.h"
 #include <string>
 #include <cctype>
 
@@ -19,7 +19,6 @@ string Card::suit_loc()
 {
     return ":/suits/suits/" + Suit_names[suit] + ".png";
 }
-
 //prevod cisla na hodnost karty
 string Card::rnk()
 {
@@ -49,22 +48,37 @@ string Card::rnk()
     }
 }
 
-bool Card::need_target()
+bool Card::play(Game *g, int position, PlayerData& pd)
 {
-    if((Modes)mode == VEZENI)
+    //karty s hnedym okrajem
+    switch(mode)
     {
-        return true;
+    case BANG:
+        break;
+    case VEDLE:
+        break;
+    case PIVO:
+        break;
+    case SALON:
+        break;
+    case WELLSFARGO:
+        break;
+    case DOSTAVNIK:
+        break;
+    case HOKYNARSTVI:
+        break;
+    case PANIKA:
+        break;
+    case BALOU:
+        break;
+    case INDIANI:
+        break;
+    case KULOMET:
+        break;
+    case DUEL:
+        break;
     }
-    else if(edge == 'M')
-    {
-        return false;
-    }
-    else if((Types)card_type == AGR)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return false;
 }
+
+//DYNAMIT, VEZENI, BAREL, MUSTANG, APPALOOSA, VOLCANIC, SCHOFIELD, REMINGTON, CARABINE, WINCHESTER

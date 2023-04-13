@@ -5,20 +5,20 @@ using namespace std;
 
 void Player::draw_phase()
 {
-    discarded = 0;
+    pd.discarded = 0;
     //pokud zbyva posledni hrac mimo nas tak ho pridame na seznam nepratel
-    if(g->game_order.size() == 2)
+    if(pd.g->game_order.size() == 2)
     {
-        enemies_id.insert(g->game_order[(g->active_player + 1) % 2]->id);
+        pd.enemies_id.insert(pd.g->game_order[(pd.g->active_player + 1) % 2]->id);
     }
     //Kdyby nahodou si tam pomocnik serifa dal serifa
-    if(role == 'V' && enemies_id.find(g->game_order[0]->id) != enemies_id.end())
+    if(pd.role == 'V' && pd.enemies_id.find(pd.g->game_order[0]->id) != pd.enemies_id.end())
     {
-        enemies_id.erase(enemies_id.find(g->game_order[0]->id));
+        pd.enemies_id.erase(pd.enemies_id.find(pd.g->game_order[0]->id));
     }
-    if(role == 'O' && g->game_order.size() != 2 && enemies_id.find(g->game_order[0]->id) != enemies_id.end())
+    if(pd.role == 'O' && pd.g->game_order.size() != 2 && pd.enemies_id.find(pd.g->game_order[0]->id) != pd.enemies_id.end())
     {
-        enemies_id.erase(enemies_id.find(g->game_order[0]->id));
+        pd.enemies_id.erase(pd.enemies_id.find(pd.g->game_order[0]->id));
     }
 
 
@@ -26,145 +26,145 @@ void Player::draw_phase()
     //ze zacatku se lize 2 karty
 	for (size_t i = 0; i < 2; i++)
 	{
-		c = g->draw_from_deck();
-		cards_hand.push_back(c);
+        c = pd.g->draw_from_deck();
+        pd.cards_hand.push_back(c);
 	}
-    drawed = true;
+    pd.drawed = true;
 }
 int Player::game_phase()
 {
-    for(size_t i = 0; i < cards_hand.size(); i++)
+    for(size_t i = 0; i < pd.cards_hand.size(); i++)
     {
         //Dostavnik, WellsFargo, Pivo, Vezeni, Dynamit
-        if(cards_hand[i].mode == DOSTAVNIK)
+        if(pd.cards_hand[i].mode == DOSTAVNIK)
         {
             dostavnik_wells(2);//lize si 2 karty
-            g->deck.push_back(cards_hand[i]);
-            cards_hand.erase(cards_hand.begin() + i);
+            pd.g->deck.push_back(pd.cards_hand[i]);
+            pd.cards_hand.erase(pd.cards_hand.begin() + i);
             return 2;
         }
-        else if(cards_hand[i].mode == WELLSFARGO)
+        else if(pd.cards_hand[i].mode == WELLSFARGO)
         {
             dostavnik_wells(3);//lize si 3 karty
-            g->deck.push_back(cards_hand[i]);
-            cards_hand.erase(cards_hand.begin() + i);
+            pd.g->deck.push_back(pd.cards_hand[i]);
+            pd.cards_hand.erase(pd.cards_hand.begin() + i);
             return 2;
         }
-        else if(cards_hand[i].mode == PIVO && health < max_health)
+        else if(pd.cards_hand[i].mode == PIVO && health < max_health)
         {
-            g->deck.push_back(cards_hand[i]);
-            cards_hand.erase(cards_hand.begin() + i);
+            pd.g->deck.push_back(pd.cards_hand[i]);
+            pd.cards_hand.erase(pd.cards_hand.begin() + i);
             health++;
             return 2;
         }
-        else if(cards_hand[i].mode == VEZENI && exist_enemy_jail() != -1)
+        else if(pd.cards_hand[i].mode == VEZENI && exist_enemy_jail() != -1)
         {
             //musi existovat nekdo komu muzeme predat vezeni a je nas nepritel, nesmime to dat serifovi
             pass_jail(i, exist_enemy_jail());
             return 2;
         }
-        else if(cards_hand[i].mode == DYNAMIT)
+        else if(pd.cards_hand[i].mode == DYNAMIT)
         {
-            cards_hand[i].dyn_active = true;
-            cards_desk.push_back(cards_hand[i]);
-            cards_hand.erase(cards_hand.begin() + i);
+            pd.cards_hand[i].dyn_active = true;
+            cards_desk.push_back(pd.cards_hand[i]);
+            pd.cards_hand.erase(pd.cards_hand.begin() + i);
             return 2;
         }
 
         //Modre
-        else if(cards_hand[i].range > Ai::has_gun(cards_desk) && Ai::best_gun(cards_hand) == static_cast<int>(i))
+        else if(pd.cards_hand[i].range > Ai::has_gun(cards_desk) && Ai::best_gun(pd.cards_hand) == static_cast<int>(i))
         {
             //vyhodit starou zbran
             for(size_t j = 0; j < cards_desk.size(); j++)
             {
                 if(cards_desk[j].range != 0)
                 {
-                    Ai::discard_card(g, cards_hand, cards_desk,j + cards_hand.size());
+                    Ai::discard_card(pd.g, pd.cards_hand, cards_desk, j + pd.cards_hand.size());
                 }
             }
 
             //nasadit novou
-            cards_desk.push_back(cards_hand[i]);
-            cards_hand.erase(cards_hand.begin() + i);
+            cards_desk.push_back(pd.cards_hand[i]);
+            pd.cards_hand.erase(pd.cards_hand.begin() + i);
             if(cards_desk.back().mode == VOLCANIC)
             {
-                played_bang = false;
+                pd.played_bang = false;
             }
             return 2;
         }
-        else if(cards_hand[i].edge == 'M' && cards_hand[i].range == 0 &&
-                Ai::index_name(cards_desk, cards_hand[i].mode) == -1 && cards_hand[i].mode != VEZENI)
+        else if(pd.cards_hand[i].edge == 'M' && pd.cards_hand[i].range == 0 &&
+                Ai::index_name(cards_desk, pd.cards_hand[i].mode) == -1 && pd.cards_hand[i].mode != VEZENI)
         {
-            cards_desk.push_back(cards_hand[i]);
-            cards_hand.erase(cards_hand.begin() + i);
+            cards_desk.push_back(pd.cards_hand[i]);
+            pd.cards_hand.erase(pd.cards_hand.begin() + i);
             return 2;
         }
 
         //neutralni karty: hokynarstvi, salon, kulomet, indiani
-        else if(cards_hand[i].card_type == NEU && Ai::play_neu(g, cards_hand[i].mode))
+        else if(pd.cards_hand[i].card_type == NEU && Ai::play_neu(pd.g, pd.cards_hand[i].mode))
         {
-           g->deck.push_back(cards_hand[i]);
-           cards_hand.erase(cards_hand.begin() + i);
-           if(g->deck.back().mode == SALON)
+           pd.g->deck.push_back(pd.cards_hand[i]);
+           pd.cards_hand.erase(pd.cards_hand.begin() + i);
+           if(pd.g->deck.back().mode == SALON)
            {
-               GameTools::saloon(g);
+               GameTools::saloon(pd.g);
                return 2;
            }
            return 1;
         }
 
         //agro
-        else if(cards_hand[i].card_type == AGR && cards_hand[i].edge != 'M' && enemies_id.size() != 0)
+        else if(pd.cards_hand[i].card_type == AGR && pd.cards_hand[i].edge != 'M' && pd.enemies_id.size() != 0)
         {
-            int name = cards_hand[i].mode;
+            int name = pd.cards_hand[i].mode;
             if(name == DUEL)
             {
-                target_id = *enemies_id.begin();
-                g->deck.push_back(cards_hand[i]);
-                cards_hand.erase(cards_hand.begin() + i);
-                g->duel_active_turn = false;
+                target_id = *pd.enemies_id.begin();
+                pd.g->deck.push_back(pd.cards_hand[i]);
+                pd.cards_hand.erase(pd.cards_hand.begin() + i);
+                pd.g->duel_active_turn = false;
                 return 1;
             }
             if(name == BALOU)
             {
-                for(auto p : enemies_id)
+                for(auto p : pd.enemies_id)
                 {
-                    if(Ai::panika_balou_play(g, p))
+                    if(Ai::panika_balou_play(pd.g, p))
                     {
                         target_id = p;
-                        g->deck.push_back(cards_hand[i]);
-                        cards_hand.erase(cards_hand.begin() + i);
+                        pd.g->deck.push_back(pd.cards_hand[i]);
+                        pd.cards_hand.erase(pd.cards_hand.begin() + i);
                         return 1;
                     }
                 }
             }
-            if(name == BANG && !played_bang)
+            if(name == BANG && !pd.played_bang)
             {
-                for(size_t j = 0; j < g->game_order.size(); j++)
+                for(size_t j = 0; j < pd.g->game_order.size(); j++)
                 {
-                    if(enemies_id.find(g->game_order[j]->id) != enemies_id.end() &&
-                        g->distances.find(id)->second[g->game_order[j]->id] <= 1)
+                    if(pd.enemies_id.find(pd.g->game_order[j]->id) != pd.enemies_id.end() &&
+                        pd.g->distances.find(id)->second[pd.g->game_order[j]->id] <= 1)
                     {
-                        target_id = g->game_order[j]->id;
-                        g->deck.push_back(cards_hand[i]);
-                        cards_hand.erase(cards_hand.begin() + i);
-                        played_bang = (Ai::index_name(cards_desk, VOLCANIC) != -1 ||
-                                ranking == WILLY) ? false : true;
+                        target_id = pd.g->game_order[j]->id;
+                        pd.g->deck.push_back(pd.cards_hand[i]);
+                        pd.cards_hand.erase(pd.cards_hand.begin() + i);
+                        pd.played_bang = (Ai::index_name(cards_desk, VOLCANIC) != -1 ||
+                                pd.ranking == WILLY) ? false : true;
                         return 1;
                     }
                 }
             }
             if(name == PANIKA)
             {
-                for(size_t j = 0; j < g->game_order.size(); j++)
+                for(size_t j = 0; j < pd.g->game_order.size(); j++)
                 {
                     //muzeme pouzit jenom na vzdalenost mensi rovno 1
-                    if(enemies_id.find(g->game_order[j]->id) != enemies_id.end() &&
-                        Ai::can_play_panika(g, id, g->game_order[j]->id) && Ai::panika_balou_play(g, g->game_order[j]->id))
+                    if(pd.enemies_id.find(pd.g->game_order[j]->id) != pd.enemies_id.end() &&
+                        Ai::can_play_panika(pd.g, id, pd.g->game_order[j]->id) && Ai::panika_balou_play(pd.g, pd.g->game_order[j]->id))
                     {
-                        target_id = g->game_order[j]->id;
-                        g->deck.push_back(cards_hand[i]);
-                        cards_hand.erase(cards_hand.begin() + i);
+                        target_id = pd.g->game_order[j]->id;
+                        pd.g->deck.push_back(pd.cards_hand[i]);
+                        pd.cards_hand.erase(pd.cards_hand.begin() + i);
                         return 1;
                     }
                 }
@@ -179,28 +179,28 @@ void Player::discard_phase()
     * > max_health/2 => odhazuju nejdriv 'neu' karty pak 'def' pak 'M' pak 'agr'
     * <= max_health/2 => odhazuju nejriv 'neu' pak 'M' pak 'agr' pak 'def'
     */
-    if (cards_hand.size() <= (size_t)health)
+    if (pd.cards_hand.size() <= (size_t)health)
     {
         return;
     }
 
-    while (cards_hand.size() > (size_t)health)
+    while (pd.cards_hand.size() > (size_t)health)
     {
         //jsme agresivni
         if (health > max_health / 2)
         {
-            bool result = (Ai::discard_card(g, cards_hand, NEU) ? true : false);
-            result = (result ? true : Ai::discard_card(g, cards_hand, DEF));
-            result = (result ? true : Ai::discard_blue(g, cards_hand));
-            result = (result ? true : Ai::discard_card(g, cards_hand, AGR));
+            bool result = (Ai::discard_card(pd.g, pd.cards_hand, NEU) ? true : false);
+            result = (result ? true : Ai::discard_card(pd.g, pd.cards_hand, DEF));
+            result = (result ? true : Ai::discard_blue(pd.g, pd.cards_hand));
+            result = (result ? true : Ai::discard_card(pd.g, pd.cards_hand, AGR));
         }
         //jsme defensivni
         else
         {
-            bool result = (Ai::discard_card(g, cards_hand, NEU) ? true : false);
-            result = (result ? true : Ai::discard_blue(g, cards_hand));
-            result = (result ? true : Ai::discard_card(g, cards_hand, AGR));
-            result = (result ? true : Ai::discard_card(g, cards_hand, DEF));
+            bool result = (Ai::discard_card(pd.g, pd.cards_hand, NEU) ? true : false);
+            result = (result ? true : Ai::discard_blue(pd.g, pd.cards_hand));
+            result = (result ? true : Ai::discard_card(pd.g, pd.cards_hand, AGR));
+            result = (result ? true : Ai::discard_card(pd.g, pd.cards_hand, DEF));
         }
     }
 }
@@ -211,10 +211,10 @@ bool Player::resolve_jail()
         return true;
     }
 
-    Card c = g->draw_from_deck();
+    Card c = pd.g->draw_from_deck();
     bool result = (c.suit == SRDCE ? true : false);
-    g->deck.push_back(c);
-    g->deck.push_back(cards_desk[Ai::index_name(cards_desk, VEZENI)]);
+    pd.g->deck.push_back(c);
+    pd.g->deck.push_back(cards_desk[Ai::index_name(cards_desk, VEZENI)]);
     cards_desk.erase(cards_desk.begin() + Ai::index_name(cards_desk, VEZENI));
     return result;
 }
@@ -226,32 +226,32 @@ bool Player::resolve_dyn()
         return false;
     }
 
-    Card c = g->draw_from_deck();
+    Card c = pd.g->draw_from_deck();
     bool result = (c.rank >= 2 && c.rank <= 9 && c.suit == PIKY ? true : false);
-    g->deck.push_back(c);
+    pd.g->deck.push_back(c);
 
 
     size_t next;
     if(!result)//prehodit dalsimu hraci, kdyz nebouchl
     {
-        for(size_t i = 0; i < g->game_order.size(); i++)
+        for(size_t i = 0; i < pd.g->game_order.size(); i++)
         {
-            if(g->game_order[i]->id == id)
+            if(pd.g->game_order[i]->id == id)
             {
-                next = (i + 1) % g->player_alive;
+                next = (i + 1) % pd.g->player_alive;
             }
         }
 
         //dynamit je aktivni a pripraven bouchnout
         cards_desk[Ai::index_name(cards_desk, DYNAMIT)].dyn_active = true;
-        g->game_order[next]->cards_desk.push_back(cards_desk[Ai::index_name(cards_desk, DYNAMIT)]);
+        pd.g->game_order[next]->cards_desk.push_back(cards_desk[Ai::index_name(cards_desk, DYNAMIT)]);
         cards_desk.erase(cards_desk.begin() + Ai::index_name(cards_desk, DYNAMIT));
     }
     else
     {
         //dynamit bude doutnat po dalsim nasazeni
         cards_desk[Ai::index_name(cards_desk, DYNAMIT)].dyn_active = false;
-        g->deck.push_back(cards_desk[Ai::index_name(cards_desk, DYNAMIT)]);
+        pd.g->deck.push_back(cards_desk[Ai::index_name(cards_desk, DYNAMIT)]);
         cards_desk.erase(cards_desk.begin() + Ai::index_name(cards_desk, DYNAMIT));
     }
     return result;
@@ -262,35 +262,34 @@ bool Player::resolve_barrel()
     {
         return false;
     }
-    Card c = g->draw_from_deck();
+    Card c = pd.g->draw_from_deck();
     bool result = (c.suit == SRDCE ? true : false);
-    g->deck.push_back(c);
+    pd.g->deck.push_back(c);
     return result;
 }
 bool Player::play_bang()
 {
     //vynuceni zahrani karty bang nebo ekvivalentu
     bool res = false;
-    for(size_t i = 0; i < cards_hand.size(); i++)
+    for(size_t i = 0; i < pd.cards_hand.size(); i++)
     {
-        if(cards_hand[i].mode == BANG)
+        if(pd.cards_hand[i].mode == BANG)
         {
-            Ai::discard_card(g, cards_hand, cards_desk, Ai::index_name(cards_hand, BANG));
+            Ai::discard_card(pd.g, pd.cards_hand, cards_desk, Ai::index_name(pd.cards_hand, BANG));
             res = true;
             break;
         }
     }
 
     //zapsani na seznam nepratel + pokud se strili na serifa tak i jeho pomocnici si zaznamenaji
-    if(g->mode == DUEL && id != g->game_order[g->active_player]->id)
+    if(pd.g->mode == DUEL && id != pd.g->game_order[pd.g->active_player]->id)
     {
-        enemies_id.insert(g->game_order[g->active_player]->id);
-        if(role == 'S')
+        pd.enemies_id.insert(pd.g->game_order[pd.g->active_player]->id);
+        if(pd.role == 'S')
         {
-            Ai::vice_add_enemy(g, g->game_order[g->active_player]->id);
+            Ai::vice_add_enemy(pd.g, pd.g->game_order[pd.g->active_player]->id);
         }
     }
-
     return res;
 }
 bool Player::play_vedle()
@@ -299,11 +298,11 @@ bool Player::play_vedle()
 
     if(!barel)
     {
-        for(size_t i = 0; i < cards_hand.size(); i++)
+        for(size_t i = 0; i < pd.cards_hand.size(); i++)
         {
-            if(cards_hand[i].mode == VEDLE)
+            if(pd.cards_hand[i].mode == VEDLE)
             {
-                Ai::discard_card(g, cards_hand, cards_desk, Ai::index_name(cards_hand, VEDLE));
+                Ai::discard_card(pd.g, pd.cards_hand, cards_desk, Ai::index_name(pd.cards_hand, VEDLE));
                 barel = true;
                 break;
             }
@@ -311,12 +310,12 @@ bool Player::play_vedle()
     }
 
     //zapsani na seznam nepratel + pokud se strili na serifa tak i jeho pomocnici si zaznamenaji
-    if(g->mode == BANG || g->mode == VEDLE || g->mode == SLAB_BANG)
+    if(pd.g->mode == BANG || pd.g->mode == VEDLE || pd.g->mode == SLAB_BANG)
     {
-        enemies_id.insert(g->game_order[g->active_player]->id);
-        if(role == 'S')
+        pd.enemies_id.insert(pd.g->game_order[pd.g->active_player]->id);
+        if(pd.role == 'S')
         {
-            Ai::vice_add_enemy(g, g->game_order[g->active_player]->id);
+            Ai::vice_add_enemy(pd.g, pd.g->game_order[pd.g->active_player]->id);
         }
     }
 
@@ -340,19 +339,19 @@ bool Player::resolve_slab_bang()
     }
 
     int hand_vedle = 0;
-    for(size_t i = 0; i < cards_hand.size(); i++)
+    for(size_t i = 0; i < pd.cards_hand.size(); i++)
     {
-        if(cards_hand[i].mode == VEDLE)
+        if(pd.cards_hand[i].mode == VEDLE)
         {
             hand_vedle++;
         }
     }
 
     //zapsani na seznam nepratel + pokud se strili na serifa tak i jeho pomocnici si zaznamenaji
-    enemies_id.insert(g->game_order[g->active_player]->id);
-    if(role == 'S')
+    pd.enemies_id.insert(pd.g->game_order[pd.g->active_player]->id);
+    if(pd.role == 'S')
     {
-        Ai::vice_add_enemy(g, g->game_order[g->active_player]->id);
+        Ai::vice_add_enemy(pd.g, pd.g->game_order[pd.g->active_player]->id);
     }
 
     //musime odhodit 2 karty vedle nebo jejich ekvivalent, jinak ztracime zivot
@@ -360,7 +359,7 @@ bool Player::resolve_slab_bang()
     {
         while(vedle < 2)
         {
-            Ai::discard_card(g, cards_hand, cards_desk, Ai::index_name(cards_hand, VEDLE));
+            Ai::discard_card(pd.g, pd.cards_hand, cards_desk, Ai::index_name(pd.cards_hand, VEDLE));
             vedle++;
         }
         return true;
@@ -372,15 +371,15 @@ void Player::dostavnik_wells(int count)
     Card c;
     for (int i = 0; i < count; i++)
     {
-        c = g->draw_from_deck();
-        cards_hand.push_back(c);
+        c = pd.g->draw_from_deck();
+        pd.cards_hand.push_back(c);
     }
 }
 bool Player::has_notai_ability()
 {
     //jenom tito muzou pouzit schopnost jako notAI
-    return (Chars)ranking == JOURD || (Chars)ranking == KETCHUM ||
-           (Chars)ranking == PEDRO || (Chars)ranking == JESSE || (Chars)ranking == CARLSON;
+    return (Chars)pd.ranking == JOURD || (Chars)pd.ranking == KETCHUM ||
+           (Chars)pd.ranking == PEDRO || (Chars)pd.ranking == JESSE || (Chars)pd.ranking == CARLSON;
 }
 bool Player::has_dyn()
 {
@@ -390,6 +389,55 @@ bool Player::has_jail()
 {
     return Ai::index_name(cards_desk, VEZENI) != -1;
 }
+char Player::say_role()
+{
+    return pd.role;
+}
+
+string Player::say_name()
+{
+    return Names[pd.ranking];
+}
+
+bool Player::is_isai()
+{
+    return pd.isai;
+}
+
+bool Player::can_abil()
+{
+    return pd.ability_used;
+}
+
+bool Player::can_draw()
+{
+    return pd.drawed;
+}
+
+size_t Player::hand_size()
+{
+    return pd.cards_hand.size();
+}
+
+string Player::card_hand_loc(int index)
+{
+    return pd.cards_hand[index].file_loc();
+}
+
+string Player::card_hand_name(int index)
+{
+    return pd.cards_hand[index].name;
+}
+
+void Player::discarded()
+{
+    pd.discarded++;
+}
+
+PlayerData& Player::data()
+{
+    return pd;
+}
 bool Player::dec_hp(int lifes)
 {
     health -= lifes;
@@ -398,9 +446,9 @@ bool Player::dec_hp(int lifes)
     //pokud mam v ruce piva, tak se jeste muzu zachranit
     if(health <= 0)
     {
-        for(size_t i = 0; i < cards_hand.size(); i++)
+        for(size_t i = 0; i < pd.cards_hand.size(); i++)
         {
-            if(cards_hand[i].mode == PIVO)
+            if(pd.cards_hand[i].mode == PIVO)
             {
                 beers++;
             }
@@ -409,7 +457,7 @@ bool Player::dec_hp(int lifes)
         {
             while(health <= 0)
             {
-                Ai::discard_card(g, cards_hand, cards_desk, Ai::index_name(cards_hand, PIVO));
+                Ai::discard_card(pd.g, pd.cards_hand, cards_desk, Ai::index_name(pd.cards_hand, PIVO));
                 health++;
             }
         }
@@ -418,22 +466,22 @@ bool Player::dec_hp(int lifes)
 }
 string Player::file_loc()
 {
-    string name = Names[ranking];
+    string name = Names[pd.ranking];
     return ":/char_img/char_img/" + name + ".png";
 }
 string Player::role_loc()
 {
-    bool end = g->finished();
-    switch(role)
+    bool end = pd.g->finished();
+    switch(pd.role)
     {
         case 'S':
             return ":/cards/cards/sheriff.png";
         case 'V':
-            return (health > 0  && isai && !end ? ":/cards/cards/back-role.png" : ":/cards/cards/deputy.png");
+            return (health > 0  && pd.isai && !end ? ":/cards/cards/back-role.png" : ":/cards/cards/deputy.png");
         case 'O':
-            return (health > 0  && isai && !end ? ":/cards/cards/back-role.png" : ":/cards/cards/renegade.png");
+            return (health > 0  && pd.isai && !end ? ":/cards/cards/back-role.png" : ":/cards/cards/renegade.png");
         case 'B':
-            return (health > 0  && isai && !end ? ":/cards/cards/back-role.png" : ":/cards/cards/outlaw.png");
+            return (health > 0  && pd.isai && !end ? ":/cards/cards/back-role.png" : ":/cards/cards/outlaw.png");
         default:
             break;
     }
@@ -441,29 +489,29 @@ string Player::role_loc()
 }
 void Player::set_enemy(int sheriff, const vector<int>& ids)
 {
-	switch (role)
+    switch (pd.role)
 	{
 	case 'O':
 		for (auto&& pl : ids)
 		{
 			if (pl != sheriff && pl != id)
 			{
-				enemies_id.insert(pl);
+                pd.enemies_id.insert(pl);
 			}
 		}
 		break;
 	case 'B':
-		enemies_id.insert(sheriff);
+        pd.enemies_id.insert(sheriff);
 		break;
 	case 'V':
         //pokud je pocet hracu roven 5 nebo 6, tak vime jiste kdo jsou nasi nepratele
-        if (g->player_count == 5 || g->player_count == 6)
+        if (pd.g->player_count == 5 || pd.g->player_count == 6)
 		{
 			for (auto&& pl : ids)
 			{
 				if (pl != sheriff && pl != id)
 				{
-					enemies_id.insert(pl);
+                    pd.enemies_id.insert(pl);
 				}
 			}
 		}
@@ -475,16 +523,16 @@ void Player::set_enemy(int sheriff, const vector<int>& ids)
 Card Player::give_random_card()
 {
     //zapsani na seznam nepratel + pokud se strili na serifa tak i jeho pomocnici si zaznamenaji
-    if(id != g->game_order[g->active_player]->id)
+    if(id != pd.g->game_order[pd.g->active_player]->id)
     {
-        enemies_id.insert(g->game_order[g->active_player]->id);
-        if(role == 'S')
+        pd.enemies_id.insert(pd.g->game_order[pd.g->active_player]->id);
+        if(pd.role == 'S')
         {
-            Ai::vice_add_enemy(g, g->game_order[g->active_player]->id);
+            Ai::vice_add_enemy(pd.g, pd.g->game_order[pd.g->active_player]->id);
         }
     }
 
-    size_t max = cards_hand.size() + cards_desk.size() - 1;
+    size_t max = pd.cards_hand.size() + cards_desk.size() - 1;
 
     //nadhodny generator pro vsechny karty, na stole i v ruce
     random_device dev;
@@ -492,11 +540,11 @@ Card Player::give_random_card()
     uniform_int_distribution<std::mt19937::result_type> dist(0,max);
 
     size_t i = dist(rng);
-    if(i < cards_hand.size())
+    if(i < pd.cards_hand.size())
     {
         Card c;
-        c = cards_hand[i];
-        cards_hand.erase(cards_hand.begin() + i);
+        c = pd.cards_hand[i];
+        pd.cards_hand.erase(pd.cards_hand.begin() + i);
         if(c.mode == DYNAMIT)
         {
             c.dyn_active = false;
@@ -506,8 +554,8 @@ Card Player::give_random_card()
     else
     {
         Card c;
-        c = cards_desk[i - cards_hand.size()];
-        cards_desk.erase(cards_desk.begin() + i - cards_hand.size());
+        c = cards_desk[i - pd.cards_hand.size()];
+        cards_desk.erase(cards_desk.begin() + i - pd.cards_hand.size());
         if(c.mode == DYNAMIT)
         {
             c.dyn_active = false;
@@ -518,16 +566,16 @@ Card Player::give_random_card()
 Card Player::give_random_card_hand()
 {
     //zapsani na seznam nepratel + pokud se strili na serifa tak i jeho pomocnici si zaznamenaji
-    if(id != g->game_order[g->active_player]->id)
+    if(id != pd.g->game_order[pd.g->active_player]->id)
     {
-        enemies_id.insert(g->game_order[g->active_player]->id);
-        if(role == 'S')
+        pd.enemies_id.insert(pd.g->game_order[pd.g->active_player]->id);
+        if(pd.role == 'S')
         {
-            Ai::vice_add_enemy(g, g->game_order[g->active_player]->id);
+            Ai::vice_add_enemy(pd.g, pd.g->game_order[pd.g->active_player]->id);
         }
     }
 
-    size_t max = cards_hand.size() - 1;
+    size_t max = pd.cards_hand.size() - 1;
 
     random_device dev;
     mt19937 rng(dev());
@@ -535,8 +583,8 @@ Card Player::give_random_card_hand()
 
     size_t i = dist(rng);
     Card c;
-    c = cards_hand[i];
-    cards_hand.erase(cards_hand.begin() + i);
+    c = pd.cards_hand[i];
+    pd.cards_hand.erase(pd.cards_hand.begin() + i);
     return c;
 }
 int Player::choose(const std::vector<Card>& cards)
@@ -584,25 +632,30 @@ int Player::choose(const std::vector<Card>& cards)
 }
 void Player::set_target_id(const std::string& name)
 {
-    for(size_t i = 0; i < g->game_order.size(); i++)
+    for(size_t i = 0; i < pd.g->game_order.size(); i++)
     {
-        if(Names[g->game_order[i]->ranking] == name)
+        if(Names[pd.g->game_order[i]->pd.ranking] == name)
         {
-            target_id = g->game_order[i]->id;
+            target_id = pd.g->game_order[i]->id;
             return;
         }
     }
     target_id = -1;
 }
+
+void Player::take_card(Card &c)
+{
+    pd.cards_hand.push_back(c);
+}
 int Player::exist_enemy_jail()
 {
     //nalezeni nepritele, ktereho bychom mohli posadit do vezenis
-    for(auto p : enemies_id)
+    for(auto p : pd.enemies_id)
     {
-        if(p != g->game_order[0]->id)
+        if(p != pd.g->game_order[0]->id)
         {
-            int pos = GameTools::id_to_pos(g, p);
-            if(Ai::index_name(g->game_order[pos]->cards_desk, VEZENI) == -1)
+            int pos = GameTools::id_to_pos(pd.g, p);
+            if(Ai::index_name(pd.g->game_order[pos]->cards_desk, VEZENI) == -1)
             {
                 return p;
             }
@@ -614,15 +667,15 @@ int Player::exist_enemy_jail()
 void Player::pass_jail(int c_index, int enemy_id)
 {
     Card c;
-    c = cards_hand[c_index];
-    cards_hand.erase(cards_hand.begin() + c_index);
+    c = pd.cards_hand[c_index];
+    pd.cards_hand.erase(pd.cards_hand.begin() + c_index);
 
-    for(size_t i = 0; i < g->game_order.size(); i++)
+    for(size_t i = 0; i < pd.g->game_order.size(); i++)
     {
-        if(g->game_order[i]->id == enemy_id)
+        if(pd.g->game_order[i]->id == enemy_id)
         {
-            g->game_order[i]->cards_desk.push_back(c);
-            g->game_order[i]->enemies_id.insert(id);
+            pd.g->game_order[i]->cards_desk.push_back(c);
+            pd.g->game_order[i]->pd.enemies_id.insert(id);
         }
     }
 }
@@ -630,10 +683,10 @@ std::vector<Card> Player::give_all_cards()
 {
     //odevzdani vsech karet ze stolu a z ruky, napr kdyz umrel nebo serif zabil Vice
     vector<Card> v;
-    while(cards_hand.size() > 0)
+    while(pd.cards_hand.size() > 0)
     {
-        v.push_back(cards_hand[0]);
-        cards_hand.erase(cards_hand.begin());
+        v.push_back(pd.cards_hand[0]);
+        pd.cards_hand.erase(pd.cards_hand.begin());
     }
     while(cards_desk.size() > 0)
     {
@@ -646,13 +699,13 @@ std::vector<Card> Player::give_all_cards()
 void Player::turn_reset()
 {
     //defaultni reset vsech hodnot aktivniho hrace
-    played_bang = false;
-    played_vedle = 0;
-    discarded = 0;
-    drawed = false;
+    pd.played_bang = false;
+    pd.played_vedle = 0;
+    pd.discarded = 0;
+    pd.drawed = false;
     target_id = -1;
-    ability_used = false;
-    barel = 0;
+    pd.ability_used = false;
+    pd.barel = 0;
     if(Ai::index_name(cards_desk, DYNAMIT) != -1)
     {
         cards_desk[Ai::index_name(cards_desk, DYNAMIT)].dyn_active = true;

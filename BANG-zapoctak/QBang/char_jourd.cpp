@@ -5,9 +5,9 @@
 
 bool Jourd::resolve_barrel()
 {
-    Card c = g->draw_from_deck();
+    Card c = pd.g->draw_from_deck();
     bool result1 = (c.suit == SRDCE ? true : false);
-    g->deck.push_back(c);
+    pd.g->deck.push_back(c);
 
     bool result2 = false;
     if(!result1 && Ai::index_name(cards_desk, BAREL) != -1)
@@ -20,47 +20,47 @@ bool Jourd::resolve_barrel()
 //for not AI
 void Jourd::ability()
 {
-    if(Ai::no_jourd_abil(g, barel))
+    if(Ai::no_jourd_abil(pd.g, pd.barel))
     {
         return;
     }
 
-    barel++;
-    if(g->mode == KULOMET)
+    pd.barel++;
+    if(pd.g->mode == KULOMET)
     {
         if(resolve_barrel())
         {
-            barel = 0;
-            g->neu_turn = (g->neu_turn + 1) % g->player_alive;
+            pd.barel = 0;
+            pd.g->neu_turn = (pd.g->neu_turn + 1) % pd.g->player_alive;
 
-            if(g->active_player == g->neu_turn)
+            if(pd.g->active_player == pd.g->neu_turn)
             {
-                g->mode = NONE;
-                g->neu_turn = -1;
+                pd.g->mode = NONE;
+                pd.g->neu_turn = -1;
             }
         }
     }
-    else if(g->mode == SLAB_BANG)
+    else if(pd.g->mode == SLAB_BANG)
     {
         if(resolve_barrel())
         {   
-            played_vedle++;
+            pd.played_vedle++;
         }
 
-        if(played_vedle == 2)
+        if(pd.played_vedle == 2)
         {
-            g->mode = NONE;
-            barel = 0;
-            played_vedle = 0;
+            pd.g->mode = NONE;
+            pd.barel = 0;
+            pd.played_vedle = 0;
         }
     }
-    else if(g->mode == VEDLE || g->mode == BANG)
+    else if(pd.g->mode == VEDLE || pd.g->mode == BANG)
     {
         if(resolve_barrel())
         {
-            barel = 0;
-            g->mode = NONE;
-            played_vedle = 0;
+            pd.barel = 0;
+            pd.g->mode = NONE;
+            pd.played_vedle = 0;
         }
     }
 }

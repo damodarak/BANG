@@ -8,8 +8,8 @@ bool Bart::dec_hp(int lifes)
     Card c;
     for (int i = 0; i < lifes; i++)
     {
-        c = g->draw_from_deck();
-        cards_hand.push_back(c);
+        c = pd.g->draw_from_deck();
+        pd.cards_hand.push_back(c);
     }
     return health > 0;
 }
