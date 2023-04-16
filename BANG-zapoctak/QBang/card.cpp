@@ -61,30 +61,28 @@ bool Card::play(int position, PlayerData& pd)
         return Ai::bang(position, pd) && pd.ranking == CALAMITY;
     case PIVO:
         return Ai::beer(position, pd.g);
-    case SALON:
-        GameTools::saloon(pd.g);
-        return true;
     case WELLSFARGO:
-
+        GameTools::dostavnik_wells(pd.g, pd.g->active_player, 3);
         return true;
     case DOSTAVNIK:
-
+        GameTools::dostavnik_wells(pd.g, pd.g->active_player, 2);
         return true;
+    case SALON:
+        return Ai::neu(pd.g, SALON);
     case HOKYNARSTVI:
-        break;
-    case PANIKA:
-        break;
-    case BALOU:
-        break;
+        return Ai::neu(pd.g, HOKYNARSTVI);
     case INDIANI:
-        break;
+        return Ai::neu(pd.g, INDIANI);
     case KULOMET:
-        break;
+        return Ai::neu(pd.g, KULOMET);
+    case PANIKA:
+        return Ai::panika(pd, pd.g->game_order[position]->target_id, pd.g->game_order[position]->id);
+    case BALOU:
+        return Ai::balou(pd, pd.g->game_order[position]->target_id);
     case DUEL:
-        break;
+        return Ai::duel(pd, pd.g->game_order[position]->target_id);
     default:
         return false;
     }
+    //DYNAMIT, VEZENI, BAREL, MUSTANG, APPALOOSA, VOLCANIC, SCHOFIELD, REMINGTON, CARABINE, WINCHESTER
 }
-
-//DYNAMIT, VEZENI, BAREL, MUSTANG, APPALOOSA, VOLCANIC, SCHOFIELD, REMINGTON, CARABINE, WINCHESTER

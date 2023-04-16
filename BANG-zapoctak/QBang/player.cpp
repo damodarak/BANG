@@ -13,15 +13,11 @@ void Player::draw_phase()
         pd.enemies_id.insert(pd.g->game_order[(pd.g->active_player + 1) % 2]->id);
     }
     //Kdyby nahodou si tam pomocnik serifa dal serifa
-    if(pd.role == 'V' && pd.enemies_id.find(pd.g->game_order[0]->id) != pd.enemies_id.end())
+    if((pd.role == 'V' && pd.enemies_id.find(pd.g->game_order[0]->id) != pd.enemies_id.end()) ||
+        (pd.role == 'O' && pd.g->game_order.size() != 2 && pd.enemies_id.find(pd.g->game_order[0]->id) != pd.enemies_id.end()))
     {
         pd.enemies_id.erase(pd.enemies_id.find(pd.g->game_order[0]->id));
     }
-    if(pd.role == 'O' && pd.g->game_order.size() != 2 && pd.enemies_id.find(pd.g->game_order[0]->id) != pd.enemies_id.end())
-    {
-        pd.enemies_id.erase(pd.enemies_id.find(pd.g->game_order[0]->id));
-    }
-
 
 	Card c;
     //ze zacatku se lize 2 karty
@@ -228,11 +224,11 @@ bool Player::resolve_dyn()
     }
 
     Card c = pd.g->draw_from_deck();
-    bool result = (c.rank >= 2 && c.rank <= 9 && c.suit == PIKY ? true : false);
+    bool result = c.rank >= 2 && c.rank <= 9 && c.suit == PIKY;
     pd.g->deck.push_back(c);
 
-
-    size_t next;
+    size_t next = 0;
+    cards_desk[Ai::index_name(cards_desk, DYNAMIT)].dyn_active = result;
     if(!result)//prehodit dalsimu hraci, kdyz nebouchl
     {
         for(size_t i = 0; i < pd.g->game_order.size(); i++)
@@ -242,19 +238,16 @@ bool Player::resolve_dyn()
                 next = (i + 1) % pd.g->player_alive;
             }
         }
-
         //dynamit je aktivni a pripraven bouchnout
-        cards_desk[Ai::index_name(cards_desk, DYNAMIT)].dyn_active = true;
         pd.g->game_order[next]->cards_desk.push_back(cards_desk[Ai::index_name(cards_desk, DYNAMIT)]);
-        cards_desk.erase(cards_desk.begin() + Ai::index_name(cards_desk, DYNAMIT));
     }
     else
     {
         //dynamit bude doutnat po dalsim nasazeni
-        cards_desk[Ai::index_name(cards_desk, DYNAMIT)].dyn_active = false;
-        pd.g->deck.push_back(cards_desk[Ai::index_name(cards_desk, DYNAMIT)]);
-        cards_desk.erase(cards_desk.begin() + Ai::index_name(cards_desk, DYNAMIT));
-    }
+        pd.g->deck.push_back(cards_desk[Ai::index_name(cards_desk, DYNAMIT)]);        
+    }  
+    cards_desk.erase(cards_desk.begin() + Ai::index_name(cards_desk, DYNAMIT));
+
     return result;
 }
 bool Player::resolve_barrel()
@@ -285,11 +278,7 @@ bool Player::play_bang()
     //zapsani na seznam nepratel + pokud se strili na serifa tak i jeho pomocnici si zaznamenaji
     if(pd.g->mode == DUEL && id != pd.g->game_order[pd.g->active_player]->id)
     {
-        pd.enemies_id.insert(pd.g->game_order[pd.g->active_player]->id);
-        if(pd.role == 'S')
-        {
-            Ai::vice_add_enemy(pd.g, pd.g->game_order[pd.g->active_player]->id);
-        }
+        add_enemy();
     }
     return res;
 }
@@ -311,13 +300,9 @@ bool Player::play_vedle()
     }
 
     //zapsani na seznam nepratel + pokud se strili na serifa tak i jeho pomocnici si zaznamenaji
-    if(pd.g->mode == BANG || pd.g->mode == VEDLE || pd.g->mode == SLAB_BANG)
+    if(pd.g->mode != KULOMET)
     {
-        pd.enemies_id.insert(pd.g->game_order[pd.g->active_player]->id);
-        if(pd.role == 'S')
-        {
-            Ai::vice_add_enemy(pd.g, pd.g->game_order[pd.g->active_player]->id);
-        }
+        add_enemy();
     }
 
     return barel;
@@ -349,11 +334,7 @@ bool Player::resolve_slab_bang()
     }
 
     //zapsani na seznam nepratel + pokud se strili na serifa tak i jeho pomocnici si zaznamenaji
-    pd.enemies_id.insert(pd.g->game_order[pd.g->active_player]->id);
-    if(pd.role == 'S')
-    {
-        Ai::vice_add_enemy(pd.g, pd.g->game_order[pd.g->active_player]->id);
-    }
+    add_enemy();
 
     //musime odhodit 2 karty vedle nebo jejich ekvivalent, jinak ztracime zivot
     if(vedle + hand_vedle >= 2)
@@ -515,17 +496,9 @@ void Player::set_enemy(int sheriff, const vector<int>& ids)
 Card Player::give_random_card()
 {
     //zapsani na seznam nepratel + pokud se strili na serifa tak i jeho pomocnici si zaznamenaji
-    if(id != pd.g->game_order[pd.g->active_player]->id)
-    {
-        pd.enemies_id.insert(pd.g->game_order[pd.g->active_player]->id);
-        if(pd.role == 'S')
-        {
-            Ai::vice_add_enemy(pd.g, pd.g->game_order[pd.g->active_player]->id);
-        }
-    }
+    add_enemy();
 
     size_t max = pd.cards_hand.size() + cards_desk.size() - 1;
-
     //nadhodny generator pro vsechny karty, na stole i v ruce
     random_device dev;
     mt19937 rng(dev());
@@ -558,17 +531,9 @@ Card Player::give_random_card()
 Card Player::give_random_card_hand()
 {
     //zapsani na seznam nepratel + pokud se strili na serifa tak i jeho pomocnici si zaznamenaji
-    if(id != pd.g->game_order[pd.g->active_player]->id)
-    {
-        pd.enemies_id.insert(pd.g->game_order[pd.g->active_player]->id);
-        if(pd.role == 'S')
-        {
-            Ai::vice_add_enemy(pd.g, pd.g->game_order[pd.g->active_player]->id);
-        }
-    }
+    add_enemy();
 
     size_t max = pd.cards_hand.size() - 1;
-
     random_device dev;
     mt19937 rng(dev());
     uniform_int_distribution<std::mt19937::result_type> dist(0,max);
@@ -701,5 +666,14 @@ void Player::turn_reset()
     if(Ai::index_name(cards_desk, DYNAMIT) != -1)
     {
         cards_desk[Ai::index_name(cards_desk, DYNAMIT)].dyn_active = true;
+    }
+}
+
+void Player::add_enemy()
+{
+    pd.enemies_id.insert(pd.g->game_order[pd.g->active_player]->id);
+    if(pd.role == 'S')
+    {
+        Ai::vice_add_enemy(pd.g, pd.g->game_order[pd.g->active_player]->id);
     }
 }

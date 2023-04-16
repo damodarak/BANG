@@ -47,6 +47,7 @@ public:
     void set_target_id(const std::string& name);
     void take_card(Card& c);
     void turn_reset();//na konci kola kazdeho hrace
+    void add_enemy();
 
     char say_role();
     std::string say_name();

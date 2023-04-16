@@ -295,6 +295,8 @@ bool Ai::bang(int position, PlayerData& pd)
             g->game_order[position]->target_id = g->game_order[j]->id;
             pd.played_bang = (Ai::index_name(g->game_order[position]->cards_desk, VOLCANIC) != -1 ||
                               pd.ranking == WILLY) ? false : true;
+
+            pd.g->mode = (pd.ranking == SLAB ? SLAB_BANG : BANG);
             return true;
         }
     }
@@ -307,6 +309,87 @@ bool Ai::beer(int position, Game *g)
     {
         g->game_order[position]->health++;
         return true;
+    }
+    return false;
+}
+
+bool Ai::neu(Game* g, int mode)
+{
+    switch(mode)
+    {
+    case HOKYNARSTVI:
+        if(play_neu(g, HOKYNARSTVI))
+        {
+            GameTools::load_emporio(g);
+            g->mode = HOKYNARSTVI;
+            return true;
+        }
+        break;
+    case INDIANI:
+        if(play_neu(g, INDIANI))
+        {
+            g->mode = INDIANI;
+            return true;
+        }
+        break;
+    case KULOMET:
+        if(play_neu(g, KULOMET))
+        {
+            g->mode = KULOMET;
+            return true;
+        }
+        break;
+    case SALON:
+        if(play_neu(g, SALON))
+        {
+            GameTools::saloon(g);
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool Ai::duel(PlayerData &pd, int& target_id)
+{
+    if(pd.enemies_id.size() != 0)
+    {
+        target_id = *pd.enemies_id.begin();
+        pd.g->duel_active_turn = false;
+        pd.g->mode = DUEL;
+        return true;
+    }
+
+    return false;
+}
+
+bool Ai::balou(PlayerData &pd, int& target_id)
+{
+    for(auto p : pd.enemies_id)
+    {
+        if(Ai::panika_balou_play(pd.g, p))
+        {
+            target_id = p;
+            pd.g->mode = BALOU;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool Ai::panika(PlayerData &pd, int &target_id, int id)
+{
+    for(size_t j = 0; j < pd.g->game_order.size(); j++)
+    {
+        //muzeme pouzit jenom na vzdalenost mensi rovno 1
+        if(pd.enemies_id.find(pd.g->game_order[j]->id) != pd.enemies_id.end() &&
+            Ai::can_play_panika(pd.g, id, pd.g->game_order[j]->id) && Ai::panika_balou_play(pd.g, pd.g->game_order[j]->id))
+        {
+            target_id = pd.g->game_order[j]->id;
+            pd.g->mode = PANIKA;
+            return true;
+        }
     }
     return false;
 }

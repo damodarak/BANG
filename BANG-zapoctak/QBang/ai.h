@@ -28,6 +28,10 @@ public:
     static bool no_jourd_abil(Game* g, int barel);
     static bool bang(int position, PlayerData& pd);
     static bool beer(int position, Game* g);
+    static bool neu(Game* g, int mode);
+    static bool duel(PlayerData& pd, int& target_id);
+    static bool balou(PlayerData& pd, int& target_id);
+    static bool panika(PlayerData& pd, int& target_id, int id);
 
 private:
     //staticka trida
