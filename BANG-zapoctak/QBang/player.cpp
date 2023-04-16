@@ -32,28 +32,13 @@ int Player::game_phase()
 {
     for(size_t i = 0; i < pd.cards_hand.size(); i++)
     {
-        //Dostavnik, WellsFargo, Pivo, Vezeni, Dynamit
-        if(pd.cards_hand[i].mode == DOSTAVNIK)
+        if(pd.cards_hand[i].play(pd.g->active_player, pd))
         {
-            GameTools::dostavnik_wells(pd.g, pd.g->active_player, 2);//lize si 2 karty
             pd.g->deck.push_back(pd.cards_hand[i]);
             pd.cards_hand.erase(pd.cards_hand.begin() + i);
             return 2;
         }
-        else if(pd.cards_hand[i].mode == WELLSFARGO)
-        {
-            GameTools::dostavnik_wells(pd.g, pd.g->active_player, 3);//lize si 3 karty
-            pd.g->deck.push_back(pd.cards_hand[i]);
-            pd.cards_hand.erase(pd.cards_hand.begin() + i);
-            return 2;
-        }
-        else if(pd.cards_hand[i].mode == PIVO && health < max_health)
-        {
-            pd.g->deck.push_back(pd.cards_hand[i]);
-            pd.cards_hand.erase(pd.cards_hand.begin() + i);
-            health++;
-            return 2;
-        }
+
         else if(pd.cards_hand[i].mode == VEZENI && exist_enemy_jail() != -1)
         {
             //musi existovat nekdo komu muzeme predat vezeni a je nas nepritel, nesmime to dat serifovi
@@ -67,7 +52,6 @@ int Player::game_phase()
             pd.cards_hand.erase(pd.cards_hand.begin() + i);
             return 2;
         }
-
         //Modre
         else if(pd.cards_hand[i].range > Ai::has_gun(cards_desk) && Ai::best_gun(pd.cards_hand) == static_cast<int>(i))
         {
@@ -95,77 +79,6 @@ int Player::game_phase()
             cards_desk.push_back(pd.cards_hand[i]);
             pd.cards_hand.erase(pd.cards_hand.begin() + i);
             return 2;
-        }
-
-        //neutralni karty: hokynarstvi, salon, kulomet, indiani
-        else if(pd.cards_hand[i].card_type == NEU && Ai::play_neu(pd.g, pd.cards_hand[i].mode))
-        {
-           pd.g->deck.push_back(pd.cards_hand[i]);
-           pd.cards_hand.erase(pd.cards_hand.begin() + i);
-           if(pd.g->deck.back().mode == SALON)
-           {
-               GameTools::saloon(pd.g);
-               return 2;
-           }
-           return 1;
-        }
-
-        //agro
-        else if(pd.cards_hand[i].card_type == AGR && pd.cards_hand[i].edge != 'M' && pd.enemies_id.size() != 0)
-        {
-            int name = pd.cards_hand[i].mode;
-            if(name == DUEL)
-            {
-                target_id = *pd.enemies_id.begin();
-                pd.g->deck.push_back(pd.cards_hand[i]);
-                pd.cards_hand.erase(pd.cards_hand.begin() + i);
-                pd.g->duel_active_turn = false;
-                return 1;
-            }
-            if(name == BALOU)
-            {
-                for(auto p : pd.enemies_id)
-                {
-                    if(Ai::panika_balou_play(pd.g, p))
-                    {
-                        target_id = p;
-                        pd.g->deck.push_back(pd.cards_hand[i]);
-                        pd.cards_hand.erase(pd.cards_hand.begin() + i);
-                        return 1;
-                    }
-                }
-            }
-            if(name == BANG && !pd.played_bang)
-            {
-                for(size_t j = 0; j < pd.g->game_order.size(); j++)
-                {
-                    if(pd.enemies_id.find(pd.g->game_order[j]->id) != pd.enemies_id.end() &&
-                        pd.g->distances.find(id)->second[pd.g->game_order[j]->id] <= 1)
-                    {
-                        target_id = pd.g->game_order[j]->id;
-                        pd.g->deck.push_back(pd.cards_hand[i]);
-                        pd.cards_hand.erase(pd.cards_hand.begin() + i);
-                        pd.played_bang = (Ai::index_name(cards_desk, VOLCANIC) != -1 ||
-                                pd.ranking == WILLY) ? false : true;
-                        return 1;
-                    }
-                }
-            }
-            if(name == PANIKA)
-            {
-                for(size_t j = 0; j < pd.g->game_order.size(); j++)
-                {
-                    //muzeme pouzit jenom na vzdalenost mensi rovno 1
-                    if(pd.enemies_id.find(pd.g->game_order[j]->id) != pd.enemies_id.end() &&
-                        Ai::can_play_panika(pd.g, id, pd.g->game_order[j]->id) && Ai::panika_balou_play(pd.g, pd.g->game_order[j]->id))
-                    {
-                        target_id = pd.g->game_order[j]->id;
-                        pd.g->deck.push_back(pd.cards_hand[i]);
-                        pd.cards_hand.erase(pd.cards_hand.begin() + i);
-                        return 1;
-                    }
-                }
-            }
         }
     }  
     return 0;

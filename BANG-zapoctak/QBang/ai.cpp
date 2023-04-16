@@ -294,7 +294,7 @@ bool Ai::bang(int position, PlayerData& pd)
         {
             g->game_order[position]->target_id = g->game_order[j]->id;
             pd.played_bang = (Ai::index_name(g->game_order[position]->cards_desk, VOLCANIC) != -1 ||
-                              pd.ranking == WILLY) ? false : true;
+                              pd.ranking == WILLY) ? true : false;
 
             pd.g->mode = (pd.ranking == SLAB ? SLAB_BANG : BANG);
             return true;
