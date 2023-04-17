@@ -25,6 +25,7 @@ public:
     static size_t hand_size(Game* g, int id);
     static std::string id_to_name(Game* g, int id);
     static void dostavnik_wells(Game* g, int position, int count);
+    static void discard_killed(Game* g, char role, int pos);
 private:
     //staticka trida
     GameTools() {}

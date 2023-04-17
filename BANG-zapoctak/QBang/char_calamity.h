@@ -9,7 +9,7 @@
 class Calamity : public Player {
 public:
     Calamity(Game* game) : Player(1, 4, game) {}
-    virtual int game_phase() override;
+    virtual bool game_phase() override;
     virtual bool play_bang() override;
     virtual bool play_vedle() override;
     virtual bool resolve_slab_bang() override;

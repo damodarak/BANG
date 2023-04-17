@@ -17,14 +17,7 @@ bool Lucky::resolve_dyn()
         pd.g->deck.push_back(c2);
         pd.g->deck.push_back(c1);
 
-        size_t next = 0;
-        for(size_t i = 0; i < pd.g->game_order.size(); i++)
-        {
-            if(pd.g->game_order[i]->id == id)
-            {
-                next = (i + 1) % pd.g->player_alive;
-            }
-        }
+        size_t next = (pd.g->active_player + 1) % pd.g->player_alive;
 
         cards_desk[Ai::index_name(cards_desk, DYNAMIT)].dyn_active = true;
         pd.g->game_order[next]->cards_desk.push_back(cards_desk[Ai::index_name(cards_desk, DYNAMIT)]);
@@ -37,14 +30,7 @@ bool Lucky::resolve_dyn()
         pd.g->deck.push_back(c1);
         pd.g->deck.push_back(c2);
 
-        size_t next = 0;
-        for(size_t i = 0; i < pd.g->game_order.size(); i++)
-        {
-            if(pd.g->game_order[i]->id == id)
-            {
-                next = (i + 1) % pd.g->player_alive;
-            }
-        }
+        size_t next = (pd.g->active_player + 1) % pd.g->player_alive;
 
         cards_desk[Ai::index_name(cards_desk, DYNAMIT)].dyn_active = true;
         pd.g->game_order[next]->cards_desk.push_back(cards_desk[Ai::index_name(cards_desk, DYNAMIT)]);
@@ -70,7 +56,6 @@ bool Lucky::resolve_jail()
     {
         return true;
     }
-
 
     Card c1 = pd.g->draw_from_deck();
     Card c2 = pd.g->draw_from_deck();
@@ -101,7 +86,6 @@ bool Lucky::resolve_barrel()
     {
         return false;
     }
-
 
     Card c1 = pd.g->draw_from_deck();
     Card c2 = pd.g->draw_from_deck();

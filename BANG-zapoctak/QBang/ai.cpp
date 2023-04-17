@@ -289,6 +289,14 @@ bool Ai::bang(int position, PlayerData& pd)
     {
         return false;
     }
+    if(!pd.isai && g->distances.find(g->game_order[position]->id)->second[g->game_order[position]->target_id] <= 1)
+    {
+        pd.played_bang = (Ai::index_name(g->game_order[position]->cards_desk, VOLCANIC) != -1 ||
+                          pd.ranking == WILLY) ? false : true;
+
+        pd.g->mode = (pd.ranking == SLAB ? SLAB_BANG : BANG);
+        return true;
+    }
 
     for(size_t j = 0; j < g->game_order.size(); j++)
     {
@@ -318,6 +326,24 @@ bool Ai::beer(int position, Game *g)
 
 bool Ai::neu(Game* g, int mode)
 {
+    if(!g->game_order[g->active_player]->data().isai)
+    {
+        switch(mode)
+        {
+        case HOKYNARSTVI:
+            GameTools::load_emporio(g);
+            g->mode = HOKYNARSTVI;
+            break;
+        case SALON:
+            GameTools::saloon(g);
+            break;
+        default:
+            g->mode = (Modes)mode;
+            break;
+        }
+        return true;
+    }
+
     switch(mode)
     {
     case HOKYNARSTVI:
@@ -355,6 +381,13 @@ bool Ai::neu(Game* g, int mode)
 
 bool Ai::duel(PlayerData &pd, int& target_id)
 {
+    if(!pd.isai && target_id != -1)
+    {
+        pd.g->duel_active_turn = false;
+        pd.g->mode = DUEL;
+        return true;
+    }
+
     if(pd.enemies_id.size() != 0)
     {
         target_id = *pd.enemies_id.begin();
@@ -362,12 +395,17 @@ bool Ai::duel(PlayerData &pd, int& target_id)
         pd.g->mode = DUEL;
         return true;
     }
-
     return false;
 }
 
 bool Ai::balou(PlayerData &pd, int& target_id)
 {
+    if(!pd.isai && target_id != -1 && panika_balou_play(pd.g, target_id))
+    {
+        pd.g->mode = BALOU;
+        return true;
+    }
+
     for(auto p : pd.enemies_id)
     {
         if(Ai::panika_balou_play(pd.g, p))
@@ -377,17 +415,23 @@ bool Ai::balou(PlayerData &pd, int& target_id)
             return true;
         }
     }
-
     return false;
 }
 
 bool Ai::panika(PlayerData &pd, int &target_id, int id)
 {
+    if(!pd.isai && target_id != -1 && panika_balou_play(pd.g, target_id) &&
+        can_play_panika(pd.g, id, target_id))
+    {
+        pd.g->mode = PANIKA;
+        return true;
+    }
+
     for(size_t j = 0; j < pd.g->game_order.size(); j++)
     {
         //muzeme pouzit jenom na vzdalenost mensi rovno 1
         if(pd.enemies_id.find(pd.g->game_order[j]->id) != pd.enemies_id.end() &&
-            Ai::can_play_panika(pd.g, id, pd.g->game_order[j]->id) && Ai::panika_balou_play(pd.g, pd.g->game_order[j]->id))
+            can_play_panika(pd.g, id, pd.g->game_order[j]->id) && panika_balou_play(pd.g, pd.g->game_order[j]->id))
         {
             target_id = pd.g->game_order[j]->id;
             pd.g->mode = PANIKA;
@@ -395,4 +439,19 @@ bool Ai::panika(PlayerData &pd, int &target_id, int id)
         }
     }
     return false;
+}
+
+void Ai::enemy_check(PlayerData &pd)
+{
+    //pokud zbyva posledni hrac mimo nas tak ho pridame na seznam nepratel
+    if(pd.g->game_order.size() == 2)
+    {
+        pd.enemies_id.insert(pd.g->game_order[(pd.g->active_player + 1) % 2]->id);
+    }
+    //Kdyby nahodou si tam pomocnik serifa dal serifa
+    if((pd.role == 'V' && pd.enemies_id.find(pd.g->game_order[0]->id) != pd.enemies_id.end()) ||
+        (pd.role == 'O' && pd.g->game_order.size() != 2 && pd.enemies_id.find(pd.g->game_order[0]->id) != pd.enemies_id.end()))
+    {
+        pd.enemies_id.erase(pd.enemies_id.find(pd.g->game_order[0]->id));
+    }
 }

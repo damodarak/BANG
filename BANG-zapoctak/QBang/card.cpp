@@ -55,10 +55,6 @@ bool Card::play(int position, PlayerData& pd)
     //karty s hnedym okrajem
     switch(mode)
     {
-    case BANG:
-        return Ai::bang(position, pd);
-    case VEDLE:
-        return pd.ranking == CALAMITY && Ai::bang(position, pd);
     case PIVO:
         return Ai::beer(position, pd.g);
     case WELLSFARGO:
@@ -71,14 +67,18 @@ bool Card::play(int position, PlayerData& pd)
         return Ai::neu(pd.g, SALON);
     case HOKYNARSTVI:
         return Ai::neu(pd.g, HOKYNARSTVI);
-    case INDIANI:
-        return Ai::neu(pd.g, INDIANI);
-    case KULOMET:
-        return Ai::neu(pd.g, KULOMET);
     case PANIKA:
         return Ai::panika(pd, pd.g->game_order[position]->target_id, pd.g->game_order[position]->id);
     case BALOU:
         return Ai::balou(pd, pd.g->game_order[position]->target_id);
+    case INDIANI:
+        return Ai::neu(pd.g, INDIANI);
+    case KULOMET:
+        return Ai::neu(pd.g, KULOMET);    
+    case BANG:
+        return Ai::bang(position, pd);
+    case VEDLE:
+        return pd.ranking == CALAMITY && Ai::bang(position, pd);
     case DUEL:
         return Ai::duel(pd, pd.g->game_order[position]->target_id);
     default:

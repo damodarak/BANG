@@ -23,7 +23,7 @@ public:
         health(max_hp), max_health(max_hp), layout_index(0), pd(rank, game)  {}
 
     virtual void draw_phase();
-    virtual int game_phase();//0-koncim, 1-chci pokracovat po vyreseni odehrane karty, 2-chci hrat hned
+    virtual bool game_phase();//0-koncim, 1-chci pokracovat po vyreseni odehrane karty, 2-chci hrat hned
     virtual void ability() {}//jenom 5 postav ma schopnost, kterou muze notAI vyvolat tlacitkem
     virtual void discard_phase();//odhozeni karet, aby platilo cards <= health
     virtual bool dec_hp(int lifes);//decresase health

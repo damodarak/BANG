@@ -188,3 +188,46 @@ void GameTools::dostavnik_wells(Game *g, int position, int count)
         g->game_order[position]->take_card(c);
     }
 }
+
+void GameTools::discard_killed(Game* g, char role, int pos)
+{
+    //nekdo zabil banditu
+    if(role == 'B' && g->deck.back().mode != DYNAMIT && g->mode != DUEL)
+    {
+        int bounty = 3;
+        for(int i = 0; i < bounty; i++)
+        {
+            g->game_order[g->active_player]->data().cards_hand.push_back(g->draw_from_deck());
+        }
+    }
+    //zabit pri duelu
+    else if(role == 'B' && g->mode == DUEL)
+    {
+        int bounty = 3;
+        if(g->duel_active_turn)
+        {
+            for(int i = 0; i < bounty; i++)
+            {
+                int killed_by = g->game_order[pos]->target_id;
+                int duel_killer = GameTools::id_to_pos(g, killed_by);
+                g->game_order[duel_killer]->data().cards_hand.push_back(g->draw_from_deck());
+            }
+        }
+        else
+        {
+            for(int i = 0; i < bounty; i++)
+            {
+                g->game_order[g->active_player]->data().cards_hand.push_back(g->draw_from_deck());
+            }
+        }
+    }
+    //Serif zabil sveho pomocnika
+    else if(role == 'V' && g->game_order[g->active_player]->data().role == 'S' && g->deck.back().mode != DYNAMIT)
+    {
+        vector<Card> shame = g->game_order[g->active_player]->give_all_cards();
+        for(size_t i = 0; i < shame.size(); i++)
+        {
+            g->deck.push_back(shame[i]);
+        }
+    }
+}

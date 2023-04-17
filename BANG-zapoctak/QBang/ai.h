@@ -32,6 +32,7 @@ public:
     static bool duel(PlayerData& pd, int& target_id);
     static bool balou(PlayerData& pd, int& target_id);
     static bool panika(PlayerData& pd, int& target_id, int id);
+    static void enemy_check(PlayerData& pd);
 
 private:
     //staticka trida

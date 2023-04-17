@@ -24,14 +24,11 @@ bool Cringo::dec_hp(int lifes)
         }
     }
 
-
     //je-li nekym zasazen, tak si od neho vezme kartu z ruky
     if(pd.g->mode == BANG || pd.g->mode == VEDLE || pd.g->mode == SLAB_BANG)
     {
         Ai::cringo_abil(pd.g);
     }
-
-
 
     return health > 0;
 }

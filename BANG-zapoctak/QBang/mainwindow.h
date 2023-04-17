@@ -44,6 +44,7 @@ private slots:
 
     void on_react_clicked();
 
+
 private:
     Ui::MainWindow *ui;
     QVector<QList<QLabel*>> layout;

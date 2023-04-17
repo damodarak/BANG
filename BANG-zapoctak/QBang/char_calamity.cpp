@@ -1,9 +1,9 @@
 #include "game.h"
 #include "ai.h"
 
-int Calamity::game_phase()
+bool Calamity::game_phase()
 {
-    int result = Player::game_phase();
+    bool result = Player::game_phase();
     if(!pd.played_bang && Ai::index_name(pd.cards_hand, VEDLE) != -1 && result == 0)
     {
         for(size_t i = 0; i < pd.g->game_order.size(); i++)
@@ -15,7 +15,7 @@ int Calamity::game_phase()
                 pd.g->deck.push_back(pd.cards_hand[Ai::index_name(pd.cards_hand, VEDLE)]);
                 pd.cards_hand.erase(pd.cards_hand.begin() + Ai::index_name(pd.cards_hand, VEDLE));
                 pd.played_bang = true;
-                return 1;
+                return true;
             }
         }
     }
@@ -34,7 +34,6 @@ bool Calamity::play_bang()
             Ai::discard_card(pd.g, pd.cards_hand, cards_desk, Ai::index_name(pd.cards_hand, VEDLE));
         }
     }
-
     return res;
 }
 
@@ -50,21 +49,12 @@ bool Calamity::play_vedle()
             Ai::discard_card(pd.g, pd.cards_hand, cards_desk, Ai::index_name(pd.cards_hand, BANG));
         }
     }
-
     return res;
 }
 
 bool Calamity::resolve_slab_bang()
 {
-    if(id != pd.g->game_order[pd.g->active_player]->id)
-    {
-        pd.enemies_id.insert(pd.g->game_order[pd.g->active_player]->id);
-        if(pd.role == 'S')
-        {
-            Ai::vice_add_enemy(pd.g, pd.g->game_order[pd.g->active_player]->id);
-        }
-    }
-
+    add_enemy();
 
     bool barel1 = resolve_barrel();
     bool barel2 = resolve_barrel();
@@ -99,7 +89,7 @@ bool Calamity::resolve_slab_bang()
             }
             else
             {
-                Ai::discard_card(pd.g, pd.cards_hand, cards_desk, Ai::index_name(pd.cards_hand, VEDLE));
+                Ai::discard_card(pd.g, pd.cards_hand, cards_desk, Ai::index_name(pd.cards_hand, BANG));
             }
             vedle++;
         }

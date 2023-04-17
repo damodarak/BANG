@@ -26,6 +26,7 @@ SOURCES += \
     gametools.cpp \
     main.cpp \
     mainwindow.cpp \
+    notaihandle.cpp \
     player.cpp
 
 HEADERS += \
@@ -51,6 +52,7 @@ HEADERS += \
     game.h \
     gametools.h \
     mainwindow.h \
+    notaihandle.h \
     player.h \
     player_data.h
 

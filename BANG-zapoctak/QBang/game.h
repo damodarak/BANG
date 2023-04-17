@@ -31,9 +31,9 @@ public:
     void vulture_sam(std::vector<Card>& reward);//schopnost jedne postavy ziskat karty po mrtvemu hraci
     void resolve_played_card();//mode != ""
     void killed(int id);//odstani mrtveho hrace z game_order a zmeni hodnoty pro beh hry
-    void resolve_notai_play();
     bool can_respond_with_card(int index);
     void resolve_notai_react(size_t c_index);
+    void next_neu();
 
 	std::deque<Card> deck;//front->draw, back->discard
 	std::vector<Card> emporio;//odsud se budou brat karty po pouziti karty Hokynarstvi

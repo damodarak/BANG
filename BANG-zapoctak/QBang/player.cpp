@@ -7,17 +7,7 @@ using namespace std;
 void Player::draw_phase()
 {
     pd.discarded = 0;
-    //pokud zbyva posledni hrac mimo nas tak ho pridame na seznam nepratel
-    if(pd.g->game_order.size() == 2)
-    {
-        pd.enemies_id.insert(pd.g->game_order[(pd.g->active_player + 1) % 2]->id);
-    }
-    //Kdyby nahodou si tam pomocnik serifa dal serifa
-    if((pd.role == 'V' && pd.enemies_id.find(pd.g->game_order[0]->id) != pd.enemies_id.end()) ||
-        (pd.role == 'O' && pd.g->game_order.size() != 2 && pd.enemies_id.find(pd.g->game_order[0]->id) != pd.enemies_id.end()))
-    {
-        pd.enemies_id.erase(pd.enemies_id.find(pd.g->game_order[0]->id));
-    }
+    Ai::enemy_check(pd);
 
 	Card c;
     //ze zacatku se lize 2 karty
@@ -28,7 +18,7 @@ void Player::draw_phase()
 	}
     pd.drawed = true;
 }
-int Player::game_phase()
+bool Player::game_phase()
 {
     for(size_t i = 0; i < pd.cards_hand.size(); i++)
     {
@@ -36,21 +26,21 @@ int Player::game_phase()
         {
             pd.g->deck.push_back(pd.cards_hand[i]);
             pd.cards_hand.erase(pd.cards_hand.begin() + i);
-            return 2;
+            return true;
         }
 
         else if(pd.cards_hand[i].mode == VEZENI && exist_enemy_jail() != -1)
         {
             //musi existovat nekdo komu muzeme predat vezeni a je nas nepritel, nesmime to dat serifovi
             pass_jail(i, exist_enemy_jail());
-            return 2;
+            return true;
         }
         else if(pd.cards_hand[i].mode == DYNAMIT)
         {
             pd.cards_hand[i].dyn_active = true;
             cards_desk.push_back(pd.cards_hand[i]);
             pd.cards_hand.erase(pd.cards_hand.begin() + i);
-            return 2;
+            return true;
         }
         //Modre
         else if(pd.cards_hand[i].range > Ai::has_gun(cards_desk) && Ai::best_gun(pd.cards_hand) == static_cast<int>(i))
@@ -71,17 +61,17 @@ int Player::game_phase()
             {
                 pd.played_bang = false;
             }
-            return 2;
+            return true;
         }
         else if(pd.cards_hand[i].edge == 'M' && pd.cards_hand[i].range == 0 &&
                 Ai::index_name(cards_desk, pd.cards_hand[i].mode) == -1 && pd.cards_hand[i].mode != VEZENI)
         {
             cards_desk.push_back(pd.cards_hand[i]);
             pd.cards_hand.erase(pd.cards_hand.begin() + i);
-            return 2;
+            return true;
         }
     }  
-    return 0;
+    return false;
 }
 void Player::discard_phase()
 {
@@ -122,10 +112,10 @@ bool Player::resolve_jail()
     }
 
     Card c = pd.g->draw_from_deck();
-    bool result = (c.suit == SRDCE ? true : false);
-    pd.g->deck.push_back(c);
+    bool result = c.suit == SRDCE;
     pd.g->deck.push_back(cards_desk[Ai::index_name(cards_desk, VEZENI)]);
     cards_desk.erase(cards_desk.begin() + Ai::index_name(cards_desk, VEZENI));
+    pd.g->deck.push_back(c);
     return result;
 }
 bool Player::resolve_dyn()
@@ -143,13 +133,7 @@ bool Player::resolve_dyn()
     size_t next = 0;
     if(!result)//prehodit dalsimu hraci, kdyz nebouchl
     {
-        for(size_t i = 0; i < pd.g->game_order.size(); i++)
-        {
-            if(pd.g->game_order[i]->id == id)
-            {
-                next = (i + 1) % pd.g->player_alive;
-            }
-        }
+        next = (pd.g->active_player + 1) % pd.g->player_alive;
         //dynamit je aktivni a pripraven bouchnout
         cards_desk[Ai::index_name(cards_desk, DYNAMIT)].dyn_active = true;
         pd.g->game_order[next]->cards_desk.push_back(cards_desk[Ai::index_name(cards_desk, DYNAMIT)]);
@@ -212,7 +196,6 @@ bool Player::play_vedle()
             }
         }
     }
-
     //zapsani na seznam nepratel + pokud se strili na serifa tak i jeho pomocnici si zaznamenaji
     if(pd.g->mode != KULOMET)
     {
@@ -482,7 +465,6 @@ int Player::exist_enemy_jail()
             }
         }
     }
-
     return -1;
 }
 void Player::pass_jail(int c_index, int enemy_id)

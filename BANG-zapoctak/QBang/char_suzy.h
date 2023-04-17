@@ -9,7 +9,7 @@
 class Suzy : public Player {
 public:
     Suzy(Game* game) : Player(13, 4, game) {}
-    virtual int game_phase() override;
+    virtual bool game_phase() override;
     virtual Card give_random_card() override;
     virtual Card give_random_card_hand() override;
     virtual bool play_bang() override;
