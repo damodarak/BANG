@@ -22,7 +22,7 @@ static std::string Suit_names[] {"Srdce", "Kary", "Piky", "Krize"};
 static std::string Card_names[] {"", "Bang", "Vedle", "Pivo", "Salon", "Wells Fargo", "Dostavnik",
                                 "Hokynarstvi", "Panika", "Cat Balou", "Indiani", "Kulomet", "Duel",
                                 "Dynamit", "Vezeni", "Barel", "Mustang", "Appaloosa", "Volcanic",
-                                "Schofield", "Remington", "Carabine", "Winchester", "", ""};
+                                "Schofield", "Remington", "Carabine", "Winchester", "Bang", ""};
 
 class Card {
 public:

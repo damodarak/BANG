@@ -77,16 +77,13 @@ void GameTools::rm_enemy(Game* g, int id)
 
     for(size_t i = 0; i <g->game_order.size(); i++)
     {
-        if(g->game_order[i]->pd.enemies_id.find(id) != g->game_order[i]->pd.enemies_id.end())
-        {
-            g->game_order[i]->pd.enemies_id.erase(id);
-        }
+        g->game_order[i]->data().enemies_id.erase(id);
     }
 }
 
 void GameTools::rotate_serif(Game* g)
 {
-    while (g->game_order[0]->say_role() != 'S')
+    while (g->game_order[0]->data().role != 'S')
     {
         rotate(g->game_order.begin(), g->game_order.begin() + 1, g->game_order.end());
     }
@@ -110,7 +107,7 @@ void GameTools::set_notai(Game* g)
 {
     for(size_t i = 0; i < g->game_order.size(); i++)
     {
-        if(!g->game_order[i]->pd.isai)
+        if(!g->game_order[i]->data().isai)
         {
             g->notai = i;
             return;
@@ -146,7 +143,7 @@ void GameTools::suzy_abil(Game* g)
 
     for(size_t i = 0; i < g->game_order.size(); i++)
     {
-        if(g->game_order[i]->pd.ranking == suzy_ranking)
+        if(g->game_order[i]->data().ranking == suzy_ranking)
         {
             g->game_order[i]->ability();
             return;
@@ -160,7 +157,7 @@ size_t GameTools::hand_size(Game* g, int id)
     {
         if(g->game_order[i]->id == id)
         {
-            return g->game_order[i]->pd.cards_hand.size();
+            return g->game_order[i]->hand_size();
         }
     }
     return 0;
@@ -176,7 +173,7 @@ string GameTools::id_to_name(Game* g, int id)
     {
         if(g->game_order[i]->id == id)
         {
-            return Names[g->game_order[i]->pd.ranking];
+            return Names[g->game_order[i]->data().ranking];
         }
     }
     return "";

@@ -24,10 +24,7 @@ public:
 
     virtual void draw_phase();
     virtual int game_phase();//0-koncim, 1-chci pokracovat po vyreseni odehrane karty, 2-chci hrat hned
-    virtual void ability()//jenom 5 postav ma schopnost, kterou muze notAI vyvolat tlacitkem
-    {
-
-    }
+    virtual void ability() {}//jenom 5 postav ma schopnost, kterou muze notAI vyvolat tlacitkem
     virtual void discard_phase();//odhozeni karet, aby platilo cards <= health
     virtual bool dec_hp(int lifes);//decresase health
 	void set_enemy(int sheriff, const std::vector<int>& ids);
@@ -48,17 +45,10 @@ public:
     void take_card(Card& c);
     void turn_reset();//na konci kola kazdeho hrace
     void add_enemy();
-
-    char say_role();
-    std::string say_name();
-    bool is_isai();
-    bool can_abil();
-    bool can_draw();
     size_t hand_size();
-    std::string card_hand_loc(int index);
-    std::string card_hand_name(int index);
-    void discarded();
     PlayerData& data();
+    std::vector<Card> give_all_cards();
+    int choose(const std::vector<Card>& cards);
 
     int id;
     int target_id;
@@ -66,17 +56,11 @@ public:
     int max_health;
     int layout_index;//index of QVector<Qlist<QLabel*>> with labels for blue cards, role,
 	std::vector<Card> cards_desk;//modre karty, ktere jsou na stole
-
-    friend class Ai;
-    friend class GameTools;
-    friend class Game;
 protected:
     PlayerData pd;
 
-    int choose(const std::vector<Card>& cards);
     int exist_enemy_jail();
-    void pass_jail(int c_index, int enemy_id);
-    std::vector<Card> give_all_cards();
+    void pass_jail(int c_index, int enemy_id); 
 };
 
 #endif

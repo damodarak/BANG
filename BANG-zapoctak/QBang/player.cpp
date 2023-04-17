@@ -141,7 +141,6 @@ bool Player::resolve_dyn()
     pd.g->deck.push_back(c);
 
     size_t next = 0;
-    cards_desk[Ai::index_name(cards_desk, DYNAMIT)].dyn_active = result;
     if(!result)//prehodit dalsimu hraci, kdyz nebouchl
     {
         for(size_t i = 0; i < pd.g->game_order.size(); i++)
@@ -152,11 +151,13 @@ bool Player::resolve_dyn()
             }
         }
         //dynamit je aktivni a pripraven bouchnout
+        cards_desk[Ai::index_name(cards_desk, DYNAMIT)].dyn_active = true;
         pd.g->game_order[next]->cards_desk.push_back(cards_desk[Ai::index_name(cards_desk, DYNAMIT)]);
     }
     else
     {
         //dynamit bude doutnat po dalsim nasazeni
+        cards_desk[Ai::index_name(cards_desk, DYNAMIT)].dyn_active = false;
         pd.g->deck.push_back(cards_desk[Ai::index_name(cards_desk, DYNAMIT)]);        
     }  
     cards_desk.erase(cards_desk.begin() + Ai::index_name(cards_desk, DYNAMIT));
@@ -275,51 +276,10 @@ bool Player::has_jail()
 {
     return Ai::index_name(cards_desk, VEZENI) != -1;
 }
-char Player::say_role()
-{
-    return pd.role;
-}
-
-string Player::say_name()
-{
-    return Names[pd.ranking];
-}
-
-bool Player::is_isai()
-{
-    return pd.isai;
-}
-
-bool Player::can_abil()
-{
-    return pd.ability_used;
-}
-
-bool Player::can_draw()
-{
-    return pd.drawed;
-}
-
 size_t Player::hand_size()
 {
     return pd.cards_hand.size();
 }
-
-string Player::card_hand_loc(int index)
-{
-    return pd.cards_hand[index].file_loc();
-}
-
-string Player::card_hand_name(int index)
-{
-    return pd.cards_hand[index].name;
-}
-
-void Player::discarded()
-{
-    pd.discarded++;
-}
-
 PlayerData& Player::data()
 {
     return pd;
@@ -418,28 +378,20 @@ Card Player::give_random_card()
     uniform_int_distribution<std::mt19937::result_type> dist(0,max);
 
     size_t i = dist(rng);
+    Card c;
     if(i < pd.cards_hand.size())
-    {
-        Card c;
+    {     
         c = pd.cards_hand[i];
-        pd.cards_hand.erase(pd.cards_hand.begin() + i);
-        if(c.mode == DYNAMIT)
-        {
-            c.dyn_active = false;
-        }
-        return c;
+        pd.cards_hand.erase(pd.cards_hand.begin() + i);     
     }
     else
     {
-        Card c;
         c = cards_desk[i - pd.cards_hand.size()];
         cards_desk.erase(cards_desk.begin() + i - pd.cards_hand.size());
-        if(c.mode == DYNAMIT)
-        {
-            c.dyn_active = false;
-        }
-        return c;
     }
+
+    c.dyn_active = false;
+    return c;
 }
 Card Player::give_random_card_hand()
 {
@@ -512,7 +464,6 @@ void Player::set_target_id(const std::string& name)
     }
     target_id = -1;
 }
-
 void Player::take_card(Card &c)
 {
     pd.cards_hand.push_back(c);
@@ -581,7 +532,6 @@ void Player::turn_reset()
         cards_desk[Ai::index_name(cards_desk, DYNAMIT)].dyn_active = true;
     }
 }
-
 void Player::add_enemy()
 {
     pd.enemies_id.insert(pd.g->game_order[pd.g->active_player]->id);

@@ -98,7 +98,7 @@ bool Ai::play_neu(Game *g, int name)
 
     for(size_t i = 0; i < g->game_order.size(); i++)
     {
-        switch(g->game_order[i]->say_role())
+        switch(g->game_order[i]->data().role)
         {
         case 'S':
             s++;
@@ -117,7 +117,7 @@ bool Ai::play_neu(Game *g, int name)
 
     if(name == HOKYNARSTVI || name == SALON)
     {
-        switch(g->game_order[g->active_player]->say_role())
+        switch(g->game_order[g->active_player]->data().role)
         {
         case 'O':
             return true;
@@ -139,7 +139,7 @@ bool Ai::play_neu(Game *g, int name)
             return true;
         }
 
-        switch(g->game_order[g->active_player]->say_role())
+        switch(g->game_order[g->active_player]->data().role)
         {
         case 'O':
             return true;
@@ -190,9 +190,9 @@ void Ai::vice_add_enemy(Game* g, int enemy_id)
     //pokud nekdo utoci na serifa, tak i jeho pomocnici si ulozi tohoto hrace do seznamu nepratel
     for(size_t i = 0; i < g->game_order.size(); i++)
     {
-        if(g->game_order[i]->say_role() == 'V')
+        if(g->game_order[i]->data().role == 'V')
         {
-            g->game_order[i]->pd.enemies_id.insert(enemy_id);
+            g->game_order[i]->data().enemies_id.insert(enemy_id);
         }
     }
 }
@@ -204,7 +204,7 @@ bool Ai::panika_balou_play(Game *g, int enemy_id)
         if(g->game_order[i]->id == enemy_id)
         {
             //musi mit nejake karty v ruce nebo na stole, jinak pouziti Paniky nebo Cat Balou nema smysl
-            return g->game_order[i]->pd.cards_hand.size() + g->game_order[i]->cards_desk.size() > 0;
+            return g->game_order[i]->data().cards_hand.size() + g->game_order[i]->cards_desk.size() > 0;
         }
     }
     return false;
@@ -217,32 +217,32 @@ void Ai::cringo_abil(Game *g)
 
     for(size_t i = 0; i < g->game_order.size(); i++)
     {
-        if(g->game_order[i]->pd.ranking == cringo_ranking)
+        if(g->game_order[i]->data().ranking == cringo_ranking)
         {
             cringo_pos = i;
             break;
         }
     }
 
-    if(g->game_order[g->active_player]->pd.cards_hand.size() > 0)
+    if(g->game_order[g->active_player]->data().cards_hand.size() > 0)
     {
-        g->game_order[cringo_pos]->pd.cards_hand.push_back(g->game_order[g->active_player]->give_random_card_hand());
+        g->game_order[cringo_pos]->data().cards_hand.push_back(g->game_order[g->active_player]->give_random_card_hand());
     }
 }
 
 bool Ai::jesse_abil(Game *g)
 {
     int index = -1;
-    int cards = -1;
+    int cards = 0;
     //najde mezi neprateli nejvetsi pocet karet v ruce a tam odebere kartu
-    if(g->game_order[g->active_player]->pd.enemies_id.size() != 0)
+    if(g->game_order[g->active_player]->data().enemies_id.size() != 0)
     {
         for(size_t i = 0; i < g->game_order.size(); i++)
         {
-            if(g->game_order[g->active_player]->pd.enemies_id.find(g->game_order[i]->id) != g->game_order[g->active_player]->pd.enemies_id.end() &&
-                g->game_order[i]->pd.cards_hand.size() > (size_t)cards)
+            if(g->game_order[g->active_player]->data().enemies_id.find(g->game_order[i]->id) != g->game_order[g->active_player]->data().enemies_id.end() &&
+                g->game_order[i]->data().cards_hand.size() > (size_t)cards)
             {
-                cards = g->game_order[i]->pd.cards_hand.size();
+                cards = g->game_order[i]->data().cards_hand.size();
                 index = i;
             }
         }
@@ -254,9 +254,8 @@ bool Ai::jesse_abil(Game *g)
     }
     else
     {
-        g->game_order[g->active_player]->pd.ability_used = true;
-        g->game_order[g->active_player]->pd.cards_hand.push_back(g->game_order[index]->give_random_card_hand());
-        g->game_order[g->active_player]->pd.cards_hand.push_back(g->draw_from_deck());
+        g->game_order[g->active_player]->data().cards_hand.push_back(g->game_order[index]->give_random_card_hand());
+        g->game_order[g->active_player]->data().cards_hand.push_back(g->draw_from_deck());
 
         return true;
     }
@@ -274,18 +273,22 @@ bool Ai::no_pedro_abil(Game *g, int id)
         }
     }
 
-    return g->game_order[g->active_player]->pd.isai || g->game_order[pedro_pos]->pd.drawed || g->mode != NONE;
+    return g->game_order[g->active_player]->data().isai || g->game_order[pedro_pos]->data().drawed || g->mode != NONE;
 }
 
 bool Ai::no_jourd_abil(Game *g, int barel)
 {
-    return ((Chars)g->game_order[g->active_player]->pd.ranking == SLAB && barel == 2) ||
-           ((Chars)g->game_order[g->active_player]->pd.ranking != SLAB && barel == 1);
+    return ((Chars)g->game_order[g->active_player]->data().ranking == SLAB && barel == 2) ||
+           ((Chars)g->game_order[g->active_player]->data().ranking != SLAB && barel == 1);
 }
 
 bool Ai::bang(int position, PlayerData& pd)
 {
     Game* g = pd.g;
+    if(pd.played_bang)
+    {
+        return false;
+    }
 
     for(size_t j = 0; j < g->game_order.size(); j++)
     {
@@ -294,7 +297,7 @@ bool Ai::bang(int position, PlayerData& pd)
         {
             g->game_order[position]->target_id = g->game_order[j]->id;
             pd.played_bang = (Ai::index_name(g->game_order[position]->cards_desk, VOLCANIC) != -1 ||
-                              pd.ranking == WILLY) ? true : false;
+                              pd.ranking == WILLY) ? false : true;
 
             pd.g->mode = (pd.ranking == SLAB ? SLAB_BANG : BANG);
             return true;

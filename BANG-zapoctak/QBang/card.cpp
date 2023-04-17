@@ -58,7 +58,7 @@ bool Card::play(int position, PlayerData& pd)
     case BANG:
         return Ai::bang(position, pd);
     case VEDLE:
-        return Ai::bang(position, pd) && pd.ranking == CALAMITY;
+        return pd.ranking == CALAMITY && Ai::bang(position, pd);
     case PIVO:
         return Ai::beer(position, pd.g);
     case WELLSFARGO:
