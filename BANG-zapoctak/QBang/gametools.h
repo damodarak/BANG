@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <memory>
-#include <string>
 
 class Player;
 class Game;
@@ -26,9 +25,17 @@ public:
     static std::string id_to_name(Game* g, int id);
     static void dostavnik_wells(Game* g, int position, int count);
     static void discard_killed(Game* g, char role, int pos);
+    static void resolve_played_card(Game* g);
 private:
     //staticka trida
     GameTools() {}
+
+    static void panika(Game* g);
+    static void balou(Game* g);
+    static void indiani_kulomet(Game* g);
+    static void hokynarstvi(Game* g);
+    static void bang(Game* g);
+    static void duel(Game* g);
 };
 
 

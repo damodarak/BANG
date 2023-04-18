@@ -1,4 +1,5 @@
 #include "game.h"
+#include "ai.h"
 
 #include <algorithm>
 
@@ -157,7 +158,7 @@ size_t GameTools::hand_size(Game* g, int id)
     {
         if(g->game_order[i]->id == id)
         {
-            return g->game_order[i]->hand_size();
+            return g->game_order[i]->data().cards_hand.size();
         }
     }
     return 0;
@@ -230,4 +231,179 @@ void GameTools::discard_killed(Game* g, char role, int pos)
             g->deck.push_back(shame[i]);
         }
     }
+}
+
+void GameTools::resolve_played_card(Game *g)
+{
+    switch(g->mode)
+    {
+    case PANIKA:
+        panika(g);
+        break;
+    case BALOU:
+        balou(g);
+        break;
+    case INDIANI:
+        indiani_kulomet(g);
+        break;
+    case KULOMET:
+        indiani_kulomet(g);
+        break;
+    case HOKYNARSTVI:
+        hokynarstvi(g);
+        break;
+    case BANG:
+        bang(g);
+        break;
+    case VEDLE:
+        bang(g);
+        break;
+    case SLAB_BANG:
+        bang(g);
+        break;
+    case DUEL:
+        duel(g);
+        break;
+    default:
+        break;
+    }
+}
+
+void GameTools::panika(Game *g)
+{
+    int enemy_id = g->game_order[g->active_player]->target_id;
+
+    if(Ai::can_play_panika(g, g->game_order[g->active_player]->id, enemy_id))
+    {
+        int pos = id_to_pos(g, enemy_id);
+        Card c = g->game_order[pos]->give_random_card();
+        g->game_order[g->active_player]->data().cards_hand.push_back(c);
+    }
+    g->mode = NONE;
+}
+
+void GameTools::balou(Game *g)
+{
+    int pos = id_to_pos(g, g->game_order[g->active_player]->target_id);
+    Card c = g->game_order[pos]->give_random_card();
+    g->deck.push_back(c);
+    g->mode = NONE;
+}
+
+void GameTools::indiani_kulomet(Game *g)
+{
+    if(g->neu_turn == -1)
+    {
+        g->neu_turn = (g->active_player + 1) % g->player_alive;
+        return;
+    }
+
+    bool result = false;
+    if(!g->game_order[g->neu_turn]->data().isai)
+    {
+        result = false;
+    }
+    else if(g->mode == INDIANI)
+    {
+        result = g->game_order[g->neu_turn]->play_bang();
+    }
+    else if(g->mode == KULOMET)
+    {
+        result = g->game_order[g->neu_turn]->play_vedle();
+    }
+    int react = g->neu_turn;
+    g->next_neu();
+
+    if(!result)
+    {
+        bool hp = g->game_order[react]->dec_hp(1);
+        if(!hp)
+        {
+            g->killed(g->game_order[react]->id);
+        }
+    }
+}
+
+void GameTools::hokynarstvi(Game *g)
+{
+    if(g->neu_turn == -1)
+    {
+        g->neu_turn = g->active_player;
+        return;
+    }
+    if(g->neu_turn != -1 && !g->game_order[g->neu_turn]->data().isai)
+    {
+        return;
+    }
+    int choice = g->game_order[g->neu_turn]->choose(g->emporio);
+    g->game_order[g->neu_turn]->data().cards_hand.push_back(g->emporio[choice]);
+    g->emporio.erase(g->emporio.begin() + choice);
+
+    g->next_neu();
+}
+
+void GameTools::bang(Game *g)
+{
+    int enemy_id = g->game_order[g->active_player]->target_id;
+    int pos = GameTools::id_to_pos(g, enemy_id);
+
+    bool vedle;
+    if(!g->game_order[pos]->data().isai)
+    {
+        vedle = false;
+        g->game_order[pos]->data().barel = 0;
+        g->game_order[pos]->data().played_vedle = 0;
+    }
+    else if(g->mode == BANG)
+    {
+        vedle = g->game_order[pos]->play_vedle();
+    }
+    else if(g->mode == SLAB_BANG)
+    {
+        vedle = g->game_order[pos]->resolve_slab_bang();
+    }
+
+    if(!vedle)
+    {
+        bool hp = g->game_order[pos]->dec_hp(1);
+        if(!hp)
+        {
+            g->killed(enemy_id);
+        }
+    }
+    g->mode = NONE;
+}
+
+void GameTools::duel(Game *g)
+{
+    bool result = false;
+    bool hp = false;
+    int duel_turn = (g->duel_active_turn ? g->active_player :
+                         GameTools::id_to_pos(g, g->game_order[g->active_player]->target_id));
+
+    if(!g->game_order[duel_turn]->data().isai)
+    {
+        result = false;
+    }
+    else
+    {
+        result = g->game_order[duel_turn]->play_bang();
+    }
+
+    if(!result)
+    {
+        hp = g->game_order[duel_turn]->dec_hp(1);
+        if(!hp)
+        {
+            int killed_id = g->game_order[duel_turn]->id;
+            g->active_player = (duel_turn == g->active_player ? (g->active_player + 1) % g->player_alive
+                                                              : g->active_player);
+            g->killed(killed_id);
+        }
+        g->mode = NONE;
+        g->duel_active_turn = false;
+        return;
+    }
+
+    g->duel_active_turn = !g->duel_active_turn;
 }

@@ -4,8 +4,6 @@
 
 #include <QPixmap>
 #include <QString>
-#include <string>
-#include <vector>
 #include <QFile>
 #include <QTextStream>
 #include <QMessageBox>
@@ -351,7 +349,7 @@ void MainWindow::PaintLayout()
             SetLabel(layout[g->game_order[i]->layout_index][0], QString::fromStdString(g->game_order[i]->file_loc()));
             layout[g->game_order[i]->layout_index][1]->setText(QString::number(g->game_order[i]->health));
             SetLabel(layout[g->game_order[i]->layout_index][2], ":/cards/cards/back-playing.png");
-            layout[g->game_order[i]->layout_index][3]->setText(QString::number(g->game_order[i]->hand_size()));
+            layout[g->game_order[i]->layout_index][3]->setText(QString::number(g->game_order[i]->data().cards_hand.size()));
             SetLabel(layout[g->game_order[i]->layout_index][4], QString::fromStdString(g->game_order[i]->role_loc()));
 
             int start_index = 5;
@@ -363,7 +361,7 @@ void MainWindow::PaintLayout()
         else
         {
             //REAL PERSON CARDS
-            for(size_t j = 0; j < g->game_order[i]->hand_size(); j++)
+            for(size_t j = 0; j < g->game_order[i]->data().cards_hand.size(); j++)
             {
                 ui->choose_c->addItem(QIcon(QString::fromStdString(g->game_order[i]->data().cards_hand[j].file_loc())), QString::fromStdString(g->game_order[i]->data().cards_hand[j].name));
             }
@@ -377,7 +375,7 @@ void MainWindow::PaintLayout()
             layout[g->game_order[i]->layout_index][1]->setText(QString::number(g->game_order[i]->health));
             SetLabel(layout[g->game_order[i]->layout_index][2], QString::fromStdString(g->game_order[i]->role_loc()));
 
-            size_t cards = g->game_order[i]->hand_size();
+            size_t cards = g->game_order[i]->data().cards_hand.size();
             if(cards > 10)
             {
                 cards = 10;
@@ -446,14 +444,14 @@ void MainWindow::on_play_clicked()
         if(can_play)
         {
             int i = ui->choose_c->currentIndex();
-            g->resolve_notai_react(i);
+            NotaiHandle::resolve_notai_react(g, i);
         }
         PaintLayout();
         return;
     }
 
     //nemuzeme zahrat kartu, ktera je polozena pred nama na stole
-    if((size_t)i >= g->game_order[g->notai]->hand_size())
+    if((size_t)i >= g->game_order[g->notai]->data().cards_hand.size())
     {
         return;
     }
@@ -519,7 +517,7 @@ void MainWindow::on_finish_clicked()
 {
     //nemuzeme ukoncit tah jestli mame v ruce vice karet nez zivotu
     if(!g->game_order[g->active_player]->data().isai &&
-        g->game_order[g->active_player]->hand_size() <= (size_t)g->game_order[g->active_player]->health &&
+        g->game_order[g->active_player]->data().cards_hand.size() <= (size_t)g->game_order[g->active_player]->health &&
             g->mode == NONE)
     {
         g->game_order[g->active_player]->turn_reset();
@@ -582,6 +580,6 @@ void MainWindow::on_choose_e_activated(int index)
 void MainWindow::on_react_clicked()
 {    
     //AI reaguje na kartu notAI
-    g->resolve_played_card();
+    GameTools::resolve_played_card(g);
     PaintLayout();
 }

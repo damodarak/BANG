@@ -155,7 +155,7 @@ bool Player::resolve_barrel()
         return false;
     }
     Card c = pd.g->draw_from_deck();
-    bool result = (c.suit == SRDCE ? true : false);
+    bool result = c.suit == SRDCE;
     pd.g->deck.push_back(c);
     return result;
 }
@@ -258,10 +258,6 @@ bool Player::has_dyn()
 bool Player::has_jail()
 {
     return Ai::index_name(cards_desk, VEZENI) != -1;
-}
-size_t Player::hand_size()
-{
-    return pd.cards_hand.size();
 }
 PlayerData& Player::data()
 {

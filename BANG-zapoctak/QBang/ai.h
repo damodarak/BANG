@@ -2,7 +2,6 @@
 #define AI_H
 
 #include <vector>
-#include <string>
 #include <set>
 
 class Game;

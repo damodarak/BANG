@@ -45,7 +45,6 @@ public:
     void take_card(Card& c);
     void turn_reset();//na konci kola kazdeho hrace
     void add_enemy();
-    size_t hand_size();
     PlayerData& data();
     std::vector<Card> give_all_cards();
     int choose(const std::vector<Card>& cards);

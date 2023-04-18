@@ -4,14 +4,13 @@
 #include <vector>
 #include <map>
 #include <deque>
-#include <iostream>
 #include <memory>
-#include <string>
 #include <random>
 
 #include "player.h"
 #include "characters.h"
 #include "gametools.h"
+#include "notaihandle.h"
 
 typedef std::unique_ptr<Player> Hrac;
 
@@ -29,11 +28,10 @@ public:
 	void change_distance(int id1, int change, int id2 = -1);
     void game_loop();//0-hra pokracuje, 404-konec hry
     void vulture_sam(std::vector<Card>& reward);//schopnost jedne postavy ziskat karty po mrtvemu hraci
-    void resolve_played_card();//mode != ""
     void killed(int id);//odstani mrtveho hrace z game_order a zmeni hodnoty pro beh hry
     bool can_respond_with_card(int index);
-    void resolve_notai_react(size_t c_index);
     void next_neu();
+    void pre_draw_phase();
 
 	std::deque<Card> deck;//front->draw, back->discard
 	std::vector<Card> emporio;//odsud se budou brat karty po pouziti karty Hokynarstvi
