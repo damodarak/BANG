@@ -509,6 +509,7 @@ void Player::turn_reset()
     {
         cards_desk[Ai::index_name(cards_desk, DYNAMIT)].dyn_active = true;
     }
+    GameTools::jourd_abil(pd.g);
 }
 void Player::add_enemy()
 {

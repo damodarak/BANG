@@ -303,6 +303,16 @@ bool MainWindow::NotAiDuelReact()
             !g->game_order[GameTools::id_to_pos(g, g->game_order[g->active_player]->target_id)]->data().isai) ||
            (!g->game_order[g->active_player]->data().isai && g->duel_active_turn);
 }
+
+bool MainWindow::NeedTarget(int index)
+{
+    if(index < static_cast<int>(g->game_order[g->active_player]->data().cards_hand.size()))
+    {
+        int mode = g->game_order[g->active_player]->data().cards_hand[index].mode;
+        return mode == BANG || mode == BALOU || mode == PANIKA || mode == DUEL || mode == VEZENI;
+    }
+    return false;
+}
 void MainWindow::PaintLayout()
 {
     g->set_distances();
@@ -433,7 +443,7 @@ void MainWindow::on_play_clicked()
 {
     int i = ui->choose_c->currentIndex();
     //pokud hrajeme kartu, ktera potrebuje cil
-    if(i == -1)
+    if(i == -1 || (g->mode == NONE && NeedTarget(i) && ui->choose_p->currentIndex() == -1))
     {
         return;
     }

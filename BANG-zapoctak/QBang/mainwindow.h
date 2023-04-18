@@ -64,5 +64,6 @@ private:
     void CheckFinished();
     void AddLayoutIndexes();
     bool NotAiDuelReact();
+    bool NeedTarget(int index);
 };
 #endif // MAINWINDOW_H

@@ -152,6 +152,20 @@ void GameTools::suzy_abil(Game* g)
     }
 }
 
+void GameTools::jourd_abil(Game *g)
+{
+    int jourd_ranking = JOURD;
+
+    for(size_t i = 0; i < g->game_order.size(); i++)
+    {
+        if(g->game_order[i]->data().ranking == jourd_ranking)
+        {
+            g->game_order[i]->data().barel = 0;
+            return;
+        }
+    }
+}
+
 size_t GameTools::hand_size(Game* g, int id)
 {
     for(size_t i = 0; i < g->game_order.size(); i++)
