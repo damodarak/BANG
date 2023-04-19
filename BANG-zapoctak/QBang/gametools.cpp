@@ -312,19 +312,19 @@ void GameTools::indiani_kulomet(Game *g)
         return;
     }
 
-    bool result = false;
-    if(!g->game_order[g->neu_turn]->data().isai)
+    bool result = false;//notai => false
+    if(g->game_order[g->neu_turn]->data().isai)
     {
-        result = false;
+        if(g->mode == INDIANI)
+        {
+            result = g->game_order[g->neu_turn]->play_bang();
+        }
+        else if(g->mode == KULOMET)
+        {
+            result = g->game_order[g->neu_turn]->play_vedle();
+        }
     }
-    else if(g->mode == INDIANI)
-    {
-        result = g->game_order[g->neu_turn]->play_bang();
-    }
-    else if(g->mode == KULOMET)
-    {
-        result = g->game_order[g->neu_turn]->play_vedle();
-    }
+
     int react = g->neu_turn;
     g->next_neu();
 
@@ -361,10 +361,9 @@ void GameTools::bang(Game *g)
     int enemy_id = g->game_order[g->active_player]->target_id;
     int pos = GameTools::id_to_pos(g, enemy_id);
 
-    bool vedle;
+    bool vedle = false;
     if(!g->game_order[pos]->data().isai)
     {
-        vedle = false;
         g->game_order[pos]->data().barel = 0;
         g->game_order[pos]->data().played_vedle = 0;
     }
@@ -390,16 +389,12 @@ void GameTools::bang(Game *g)
 
 void GameTools::duel(Game *g)
 {
-    bool result = false;
+    bool result = false;//notai => false
     bool hp = false;
     int duel_turn = (g->duel_active_turn ? g->active_player :
                          GameTools::id_to_pos(g, g->game_order[g->active_player]->target_id));
 
-    if(!g->game_order[duel_turn]->data().isai)
-    {
-        result = false;
-    }
-    else
+    if(g->game_order[duel_turn]->data().isai)
     {
         result = g->game_order[duel_turn]->play_bang();
     }
