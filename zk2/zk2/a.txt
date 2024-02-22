@@ -1,4 +1,0 @@
-node_1,node_2,distance
-a,b,1
-b,a,2
-b,c,3

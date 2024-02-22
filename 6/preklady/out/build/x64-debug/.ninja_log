@@ -1,7 +1,0 @@
-# ninja log v5
-1	1716	6912773151103873	preklady/CMakeFiles/preklady.dir/main.cpp.obj	d00f3c0a541d9db7
-7	1772	6912773151913844	preklady/CMakeFiles/preklady.dir/preklady.cpp.obj	f5df8c14214aec2
-1772	3469	6912773165672987	preklady/preklady.exe	4776f95cf3de4f51
-9	928	6967995547208664	preklady/CMakeFiles/preklady.dir/main.cpp.obj	32236eb11a065ebc
-1	997	6967995547909487	preklady/CMakeFiles/preklady.dir/preklady.cpp.obj	16a5545f5bd75e08
-997	1539	6967995552924285	preklady/preklady.exe	e97a5fdd4dc43ac
